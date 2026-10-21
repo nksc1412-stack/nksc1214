@@ -1,0 +1,628 @@
+<title>Reporte IRCA Unibán</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&display=swap">
+<style id="appcss">
+/* Layout: report column (max 1040px) — header, sede tabs, sede hero + mint summary panel, per-point sections with narrative + parameter table */
+:root{
+  --bg:#ffffff; --fg:#17312e; --muted:#5d6f6c; --faint:#8a9a97;
+  --teal:#00766c; --teal-ink:#0b4f49; --orange:#ef9431;
+  --mint:#eaf5f1; --mint-line:#cfe6de; --line:#dde7e4; --card:#ffffff; --track:#e6f2ee;
+  --ok:#1f8a5b; --ok-bg:#dff3e8; --low:#b58900; --low-bg:#fbf1c9; --mid:#c86a0a; --mid-bg:#fde6cd;
+  --high:#c0392b; --high-bg:#f9dcd8; --inv:#7d1a1a; --inv-bg:#f1cccc; --bad-row:#fdeceb;
+  --font:"Noto Sans","Segoe UI",system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1716; --fg:#e4efec; --muted:#9fb2ae; --faint:#71847f;
+  --teal:#3fb8a9; --teal-ink:#8fded3; --orange:#f3a552;
+  --mint:#152725; --mint-line:#24403c; --line:#243431; --card:#131e1c; --track:#1b2e2b;
+  --ok:#5fd19a; --ok-bg:#16382a; --low:#e6c14b; --low-bg:#3a3214; --mid:#f3a552; --mid-bg:#3d2812;
+  --high:#f08a7e; --high-bg:#44201c; --inv:#f2a0a0; --inv-bg:#4a1717; --bad-row:#2e1b1a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1716; --fg:#e4efec; --muted:#9fb2ae; --faint:#71847f;
+  --teal:#3fb8a9; --teal-ink:#8fded3; --orange:#f3a552;
+  --mint:#152725; --mint-line:#24403c; --line:#243431; --card:#131e1c; --track:#1b2e2b;
+  --ok:#5fd19a; --ok-bg:#16382a; --low:#e6c14b; --low-bg:#3a3214; --mid:#f3a552; --mid-bg:#3d2812;
+  --high:#f08a7e; --high-bg:#44201c; --inv:#f2a0a0; --inv-bg:#4a1717; --bad-row:#2e1b1a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:14px;line-height:1.5}
+.topbar{height:5px;background:linear-gradient(90deg,var(--teal) 0 68%,var(--orange) 68% 100%)}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:20px;padding-block:28px 56px}
+.eyebrow{font-size:12px;font-weight:700;color:var(--teal);letter-spacing:.01em}
+h1{font-size:clamp(26px,4vw,34px);line-height:1.15;font-weight:800;margin:6px 0 10px;text-wrap:balance;letter-spacing:-.01em}
+.meta{display:flex;flex-wrap:wrap;gap:6px 22px;color:var(--muted);font-size:13px}
+.meta b{color:var(--fg);font-weight:600}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:18px}
+.field{display:flex;flex-direction:column;gap:3px}
+.field label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+select,.btn{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;padding:7px 10px}
+select:focus-visible,.btn:focus-visible,.tab:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.btn{cursor:pointer;font-weight:600}
+.btn.primary{background:var(--teal);border-color:var(--teal);color:var(--bg)}
+.btn:hover{border-color:var(--teal)}
+.src{font-size:12px;color:var(--faint);margin-left:auto;align-self:center}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-top:22px;overflow-x:auto}
+.tab{background:none;border:0;font:inherit;font-weight:600;color:var(--muted);padding:10px 16px;border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--teal-ink);border-bottom-color:var(--teal)}
+.tab .mini{font-weight:700;font-size:11px;margin-left:6px;padding:1px 7px;border-radius:99px}
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:28px;align-items:center;margin-top:30px}
+.hero>*{min-width:0}
+.big{font-size:clamp(64px,10vw,96px);font-weight:800;line-height:.95;color:var(--teal-ink);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.big small{font-size:22px;font-weight:600;color:var(--muted);letter-spacing:0;margin-left:6px}
+.lead{font-weight:700;font-size:16px;margin:10px 0 8px}
+.hero p{color:var(--muted);max-width:52ch;margin:0}
+.hero p b{color:var(--fg)}
+.panel{background:var(--mint);border:1px solid var(--mint-line);border-radius:12px;padding:6px 18px}
+.prow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--mint-line)}
+.prow:last-child{border-bottom:0}
+.prow .k{font-weight:600}
+.prow .s{font-size:12px;color:var(--muted)}
+.prow .v{font-size:22px;font-weight:800;color:var(--teal-ink);font-variant-numeric:tabular-nums}
+.prow .v.warn{color:var(--orange)}
+.chip{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.lv0{background:var(--ok-bg);color:var(--ok)}.lv1{background:var(--low-bg);color:var(--low)}.lv2{background:var(--mid-bg);color:var(--mid)}.lv3{background:var(--high-bg);color:var(--high)}.lv4{background:var(--inv-bg);color:var(--inv)}.lvx{background:var(--track);color:var(--muted)}
+h2{font-size:13px;font-weight:700;color:var(--teal);margin:34px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.bars{border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:grid;gap:10px}
+.bar{display:grid;grid-template-columns:minmax(120px,240px) 1fr 92px;gap:14px;align-items:center}
+.bar>*{min-width:0}
+.bar .n{font-size:13px;overflow-wrap:anywhere}
+.track{position:relative;height:14px;border-radius:99px;background:var(--track);overflow:hidden}
+.fill{position:absolute;inset:0 auto 0 0;border-radius:99px}
+.tick{position:absolute;top:0;bottom:0;width:1px;background:var(--bg);opacity:.9}
+.bar .val{font-size:12px;font-weight:700;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.scale{display:grid;grid-template-columns:minmax(120px,240px) 1fr 92px;gap:14px;font-size:11px;color:var(--faint)}
+.scale div:nth-child(2){position:relative;height:14px}
+.scale span{position:absolute;transform:translateX(-50%)}
+.point{border:1px solid var(--line);border-radius:12px;margin-top:18px;overflow:hidden}
+.phead{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;padding:16px 18px;background:var(--mint);border-bottom:1px solid var(--mint-line)}
+.phead h3{margin:0;font-size:17px;font-weight:700}
+.phead .sub{font-size:12px;color:var(--muted)}
+.pscore{display:flex;align-items:center;gap:12px}
+.pscore .num{font-size:30px;font-weight:800;color:var(--teal-ink);font-variant-numeric:tabular-nums}
+.pbody{display:grid;grid-template-columns:1fr 1.15fr;gap:22px;padding:18px}
+.pbody>*{min-width:0}
+.pbody h4{margin:0 0 8px;font-size:13px;font-weight:700}
+.pbody ul{margin:0 0 14px;padding-left:18px;display:grid;gap:6px}
+.pbody li{max-width:62ch}
+.concl{margin:0 0 12px;max-width:62ch}
+.okmsg{color:var(--ok);font-weight:600;margin:0 0 14px}
+.copy{font-size:12px}
+.tblwrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:12px;font-variant-numeric:tabular-nums}
+th{background:var(--teal);color:var(--bg);font-weight:700;padding:6px 6px;text-align:center;font-size:11px}
+th:nth-child(1){text-align:left}
+td{padding:5px 6px;border-bottom:1px solid var(--line);text-align:center;white-space:nowrap}
+td:first-child{text-align:left;white-space:normal}
+tr.bad td{background:var(--bad-row)}
+tr.bad td.st{color:var(--high);font-weight:800}
+td.st{font-weight:700}
+tr.tot td{font-weight:800;background:var(--mint)}
+.muted{color:var(--muted)}
+.notes{margin-top:34px;font-size:12px;color:var(--muted);display:grid;gap:4px;max-width:90ch}
+.empty{margin-top:30px;padding:26px;border:1px dashed var(--line);border-radius:12px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--card)}
+.seg button{font:inherit;font-size:13px;font-weight:600;border:0;background:none;color:var(--muted);padding:7px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--teal);color:var(--bg)}
+.seg button:focus-visible{outline:2px solid var(--teal);outline-offset:-2px}
+.months{border:1px solid var(--line);border-radius:12px;padding:16px 14px 12px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px;align-items:end}
+.mcol{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
+.mcol .mv{font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}
+.mcol .mb{width:100%;max-width:44px;height:120px;border-radius:6px;background:var(--track);display:flex;align-items:flex-end;overflow:hidden}
+.mcol .mb i{display:block;width:100%;border-radius:6px 6px 0 0}
+.mcol .mn{font-size:11px;font-weight:700;color:var(--muted)}
+.mcol .ml{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;text-align:center;line-height:1.15;min-height:23px}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.pcard{border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.phdr{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:flex-end;justify-content:space-between;margin-bottom:8px}
+.psum{margin:8px 0 0;max-width:80ch;color:var(--muted)}
+.psum b{color:var(--fg)}
+.chartwrap{overflow-x:auto}.chart{width:100%;min-width:560px;height:auto;display:block}[hidden]{display:none!important}
+.drop{position:fixed;inset:0;background:color-mix(in srgb,var(--teal) 18%,transparent);border:3px dashed var(--teal);display:grid;place-items:center;font-size:20px;font-weight:800;color:var(--teal-ink);z-index:9}
+.guide{max-width:820px}
+.guide h2{font-size:15px}
+.guide ol,.guide ul{padding-left:20px;display:grid;gap:8px;margin:0}
+.guide li{max-width:72ch}
+.guide p{max-width:72ch}
+.guide code{font-size:12px;background:var(--mint);border:1px solid var(--mint-line);border-radius:4px;padding:0 4px}
+.steps{counter-reset:s;list-style:none;padding:0!important}
+.steps>li{counter-increment:s;position:relative;padding-left:40px;min-height:28px}
+.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:99px;background:var(--teal);color:var(--bg);display:grid;place-items:center;font-weight:800}
+.callout{background:var(--mint);border:1px solid var(--mint-line);border-radius:12px;padding:12px 16px;margin-top:12px}
+.report{margin-top:12px;font-size:13px}select{max-width:100%}.heat td,.heat th{padding-inline:4px}
+.chart text{font-family:var(--font);font-size:11px;fill:var(--muted)}
+.chart .vl{font-weight:700;fill:var(--fg)}
+.chart .lim{stroke:var(--orange);stroke-width:1.5;stroke-dasharray:5 4}
+.chart .limt{fill:var(--orange);font-weight:700}
+.chart .band{fill:var(--mint)}
+.chart .ln{fill:none;stroke:var(--teal);stroke-width:2}
+.chart .ax{stroke:var(--line)}
+.pick{display:flex;flex-wrap:wrap;gap:6px}
+.pick .btn{font-size:12px;padding:5px 10px}
+.pchips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.pchip{font:inherit;font-size:12px;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:99px;padding:5px 12px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.pchip span{font-size:10px;font-weight:700;color:var(--muted)}
+.pchip.hasbad span{color:var(--high)}
+.pchip[aria-pressed="true"]{background:var(--teal);border-color:var(--teal);color:var(--bg)}
+.pchip[aria-pressed="true"] span{color:var(--bg);opacity:.85}
+.pchip:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.pblock{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
+.pblock:first-child{border-top:0;margin-top:4px;padding-top:0}
+.ptitle{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
+.ptitle h4{margin:0;font-size:15px}
+#parChip{display:flex;gap:6px;flex-wrap:wrap}
+td.badc{background:var(--high-bg);color:var(--high);font-weight:800}
+td.nd{color:var(--faint)}
+tr.prow2{cursor:pointer}
+tr.prow2:hover td:first-child{text-decoration:underline}
+tr.sel td:first-child{box-shadow:inset 3px 0 0 var(--teal);font-weight:700}
+.heat td:first-child{min-width:130px}
+@media (max-width:760px){.mcol .ml{display:none}.mcol .mv{font-size:9px;letter-spacing:-.03em}.months{gap:3px;padding-inline:8px}.hero,.pbody{grid-template-columns:1fr}.bar,.scale{grid-template-columns:1fr 64px}.bar .n{grid-column:1/-1}.scale div:first-child{display:none}.src{margin-left:0}}
+</style>
+
+<div class="topbar"></div>
+<div class="wrap">
+  <div class="eyebrow">Unibán · Calidad del agua para consumo humano · Resolución 2115 de 2007</div>
+  <h1 id="title">Reporte IRCA mensual</h1>
+  <div class="meta" id="meta"></div>
+  <div class="controls">
+    <div class="field"><label>Vista</label><div class="seg" id="seg"><button type="button" data-mode="mes" aria-pressed="true">Reporte mensual</button><button type="button" data-mode="anio" aria-pressed="false">Comportamiento anual</button><button type="button" data-mode="guia" aria-pressed="false">Instructivo de carga</button></div></div>
+    <div class="field" id="fYear"><label for="selYear">Año</label><select id="selYear"></select></div>
+    <div class="field" id="fMonth"><label for="selMonth">Mes</label><select id="selMonth"></select></div>
+    <div class="field"><label for="fileIn">Datos</label>
+      <button class="btn primary" id="loadBtn" type="button">Cargar Excel actualizado</button>
+      <input type="file" id="fileIn" accept=".xlsx,.xlsm,.xls,.xlsb,.ods,.csv" hidden>
+    </div>
+    <div class="src" id="src"></div>
+  </div>
+  <div class="callout report" id="saveNote" hidden></div>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div id="view"></div>
+  <div class="notes">
+    <div><b>Cálculo:</b> IRCA = 100 × Σ puntajes de riesgo de los parámetros que no cumplen ÷ Σ puntajes de riesgo de los parámetros analizados. Límites y puntajes según la hoja «Config IRCA».</div>
+    <div><b>Nivel de riesgo (Res. 2115, art. 15):</b> 0–5 sin riesgo · 5,1–14 bajo · 14,1–35 medio · 35,1–80 alto · 80,1–100 inviable sanitariamente.</div>
+    <div>El IRCA de la sede evalúa cada parámetro con el promedio de todos sus puntos del mes, igual que «(Todos)» en el TABLERO IRCA. Resultados «&lt;X» (bajo el límite de detección) cuentan como 0. Parámetros con puntaje 0 se marcan «No cumple» si superan el límite, pero no suman al IRCA.</div>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+<div class="drop" id="drop" hidden>Suelte aquí el archivo de Excel</div>
+
+<script id="data" type="application/json">{"sedes":[],"puntos":[],"params":[],"rows":[],"cfg":[]}</script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script id="app">
+(function(){
+const MESES=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+const LEVELS=[
+  {max:5,  name:"Sin riesgo", color:"var(--ok)", txt:"Agua apta para consumo humano. Se debe continuar con la vigilancia."},
+  {max:14, name:"Riesgo bajo", color:"var(--low)", txt:"Agua no apta para consumo humano, susceptible de mejoramiento."},
+  {max:35, name:"Riesgo medio", color:"var(--mid)", txt:"Agua no apta para consumo humano; requiere gestión directa de la persona prestadora."},
+  {max:80, name:"Riesgo alto", color:"var(--high)", txt:"Agua no apta para consumo humano; requiere gestión directa y acciones correctivas prioritarias."},
+  {max:101,name:"Inviable sanitariamente", color:"var(--inv)", txt:"Agua no apta para consumo humano; inviable sanitariamente."}];
+let D=JSON.parse(document.getElementById('data').textContent);
+let srcLabel=D.meta?`${D.meta.file} · ${D.meta.n.toLocaleString("es-CO")} registros · guardado ${D.meta.date}`:"BD_calculo_IRCA_Res2115 · datos incluidos (13-oct-2026)";
+// Copia del marcado original (antes de dibujar) para poder volver a publicar la página con datos nuevos
+const SHELL=[".topbar",".wrap","#toast","#drop"].map(q=>document.querySelector(q).outerHTML).join("\n");
+const st={y:null,m:null,sede:null,mode:"mes",par:null};
+try{const h=location.hash.slice(1); if(h) st.hashSede=decodeURIComponent(h).replace(/_/g," ");}catch(e){}
+
+const $=id=>document.getElementById(id);
+const fmt=(v,d=3)=>typeof v==="number"?v.toLocaleString("es-CO",{maximumFractionDigits:d}):v;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function lvl(i){if(i==null)return -1;for(let k=0;k<LEVELS.length;k++)if(i<=LEVELS[k].max)return k;return 4;}
+function chip(i){const k=lvl(i);return k<0?'<span class="chip lvx">Sin IRCA</span>':`<span class="chip lv${k}">${LEVELS[k].name}</span>`;}
+
+// Resultado_num / LD_num, same rules as the Excel columns S and AL
+function parseRes(r){
+  if(typeof r==="number")return{v:r,ld:0};
+  const s=String(r).trim();
+  if(s.startsWith("<")){const n=parseFloat(s.slice(1).replace(/[\s\u00a0]/g,"").replace(",","."));return{v:0,ld:isNaN(n)?0:n};}
+  const n=parseFloat(s.replace(/[>\s\u00a0}]/g,"").replace(",","."));
+  return{v:isNaN(n)?0:n,ld:0};
+}
+let RX=[];
+const keyName=s=>String(s==null?"":s).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/_x000d_/g,"").replace(/\b(de|del|la|el|los|las)\b/g," ").replace(/[^a-z0-9]+/g,"");
+const cleanName=s=>String(s==null?"":s).replace(/_x000D_/gi,"").replace(/\s+/g," ").trim();
+// Une variantes del mismo nombre (mayúsculas, tildes, espacios, «de», puntuación): «Planta de Snacks» = «Planta Snacks»
+function unify(names,col){
+  const cnt=names.map(()=>0);D.rows.forEach(r=>cnt[r[col]]++);
+  const best={};names.forEach((n,i)=>{const k=keyName(n)||"sin nombre";if(!(k in best)||cnt[i]>cnt[best[k]]||(cnt[i]===cnt[best[k]]&&cleanName(n).length<cleanName(names[best[k]]).length))best[k]=i;});
+  const out=[],idx={};const map=names.map(n=>{const k=keyName(n)||"sin nombre";if(!(k in idx)){idx[k]=out.length;out.push(cleanName(names[best[k]])||"(sin nombre)");}return idx[k];});
+  D.rows.forEach(r=>{r[col]=map[r[col]];});return out;
+}
+function prep(){
+  D.sedes=unify(D.sedes,2); D.puntos=unify(D.puntos,3);
+  // Sedes ocultas en la página
+  const OCULTA=k=>k.includes("fundacion")||(k.includes("snack")&&k.includes("proceso"));
+  D.rows=D.rows.filter(r=>!OCULTA(keyName(D.sedes[r[2]])));
+  RX=D.cfg.map(c=>new RegExp(String(c.k).replace(/[.+?^${}()|[\]\\]/g,"\\$&").replace(/\*/g,".*"),"i"));
+  D.pm=D.params.map(p=>RX.map(rx=>rx.test(p)));
+  D.parsed=D.rows.map(r=>parseRes(r[5]));
+}
+function evalSet(rows){
+  const out=D.cfg.map(c=>({c,n:0,sum:0,ld:0}));
+  rows.forEach(i=>{const r=D.rows[i],pr=D.parsed[i],m=D.pm[r[4]];
+    for(let j=0;j<out.length;j++)if(m[j]){const o=out[j];o.n++;o.sum+=pr.v;if(pr.ld>o.ld)o.ld=pr.ld;}});
+  let pa=0,pi=0;
+  out.forEach(o=>{const c=o.c;if(!o.n){o.st="Sin dato";return;}
+    o.avg=Math.round(o.sum/o.n*1000)/1000;
+    const bad=c.t==="rango"?(o.avg<c.lo||o.avg>c.hi):(o.avg>c.hi);
+    o.st=bad?"NO CUMPLE":"CUMPLE"; o.low=c.t==="rango"&&o.avg<c.lo;
+    pa+=c.p; if(bad)pi+=c.p;});
+  const irca=pa>0?Math.round(1000*pi/pa)/10:null;
+  return{par:out,pa,pi,irca,an:out.filter(o=>o.n).length,bad:out.filter(o=>o.st==="NO CUMPLE")};
+}
+const lim=c=>c.t==="rango"?`${fmt(c.lo)} – ${fmt(c.hi)}`:(c.hi===0?"0 (ausencia)":`≤ ${fmt(c.hi)}`);
+const resTxt=o=>o.avg>0?fmt(o.avg):(o.ld>0?"<"+fmt(o.ld):"<1");
+
+function bullet(o){
+  const c=o.c,u=c.u;
+  let t;
+  if(c.t==="rango") t=o.low?`se registró un valor de <b>${fmt(o.avg)} ${esc(u)}</b>, inferior al mínimo permitido (rango ${lim(c)} ${esc(u)})`
+                          :`se registró un valor de <b>${fmt(o.avg)} ${esc(u)}</b>, superior al máximo permitido (rango ${lim(c)} ${esc(u)})`;
+  else if(c.hi===0) t=`se registró un valor de <b>${resTxt(o)} ${esc(u)}</b>; la norma exige ausencia (0 ${esc(u)})`;
+  else t=`se obtuvo un valor de <b>${fmt(o.avg)} ${esc(u)}</b>, que supera el valor máximo permitido (≤ ${fmt(c.hi)} ${esc(u)})`;
+  return `<b>${esc(c.n)}:</b> ${t}, por lo que <b>no cumple</b> con la Resolución 2115 de 2007${c.p===0?" (parámetro sin puntaje de riesgo: no suma al IRCA)":""}.`;
+}
+function conclusion(ev,sede,punto){
+  const who=punto?`Para el punto de muestreo <b>${esc(punto)}</b>`:`Para la sede <b>${esc(sede)}</b>`;
+  if(ev.irca==null) return `${who} solo se analizaron parámetros sin puntaje de riesgo, por lo que no es posible calcular el IRCA del mes.`;
+  const k=lvl(ev.irca);
+  let s=`${who}, el agua presenta un <b>IRCA de ${fmt(ev.irca,1)}</b>, que corresponde a un nivel ${k===0?"":"de "}<b>${LEVELS[k].name.toUpperCase()}</b>. ${LEVELS[k].txt}`;
+  if(ev.bad.length) s+=` Se recomienda realizar seguimiento y control a los parámetros que presentan incumplimiento, especialmente <b>${ev.bad.map(o=>o.c.n.toLowerCase()).join(", ").replace(/, ([^,]*)$/," y $1")}</b>.`;
+  else s+=" Todos los parámetros analizados cumplen con los valores máximos aceptables.";
+  return s;
+}
+function paramTable(ev){
+  let h='<div class="tblwrap"><table><thead><tr><th>Parámetro</th><th>Unidad</th><th>Resultado</th><th>Límite</th><th>Estado</th><th>Puntaje asignado</th><th>Puntaje de riesgo</th></tr></thead><tbody>';
+  ev.par.filter(o=>o.n).forEach(o=>{const bad=o.st==="NO CUMPLE";
+    h+=`<tr class="${bad?"bad":""}"><td>${esc(o.c.n)}</td><td class="muted">${esc(o.c.u)}</td><td><b>${resTxt(o)}</b></td><td>${lim(o.c)}</td><td class="st">${bad?"No cumple":"Cumple"}</td><td>${fmt(o.c.p)}</td><td>${bad?fmt(o.c.p):0}</td></tr>`;});
+  h+=`<tr class="tot"><td>Totales</td><td></td><td></td><td></td><td>Σ puntajes</td><td>${fmt(ev.pa)}</td><td>${fmt(ev.pi)}</td></tr></tbody></table></div>`;
+  return h;
+}
+function emailText(ev,sede,punto){
+  const strip=s=>s.replace(/<[^>]+>/g,"");
+  const mes=MESES[st.m-1].toLowerCase();
+  let t=`Mediante el presente correo, comparto los resultados del Índice de Riesgo de la Calidad del Agua para Consumo Humano (IRCA) correspondientes al mes de ${mes} de ${st.y}, para la sede ${sede}, en el punto de muestreo ${punto}, con base en los análisis realizados.\n\n`;
+  ev.bad.forEach(o=>t+="• "+strip(bullet(o))+"\n");
+  if(!ev.bad.length) t+="• Todos los parámetros analizados cumplen con la Resolución 2115 de 2007.\n";
+  t+="\nConclusión:\n\n"+strip(conclusion(ev,sede,punto))+"\n\nParámetro | Unidad | Resultado | Límite | Estado | Puntaje asignado | Puntaje de riesgo\n";
+  ev.par.filter(o=>o.n).forEach(o=>{const b=o.st==="NO CUMPLE";t+=`${o.c.n} | ${o.c.u} | ${resTxt(o)} | ${lim(o.c)} | ${b?"No cumple":"Cumple"} | ${fmt(o.c.p)} | ${b?fmt(o.c.p):0}\n`;});
+  t+=`Totales | | | | Σ puntajes | ${fmt(ev.pa)} | ${fmt(ev.pi)}\n`;
+  return t;
+}
+
+function monthRows(){const out={};D.rows.forEach((r,i)=>{if(r[0]===st.y&&r[1]===st.m){const s=D.sedes[r[2]];(out[s]=out[s]||[]).push(i);}});return out;}
+function fillSelectors(){
+  const ys=[...new Set(D.rows.map(r=>r[0]))].sort((a,b)=>b-a);
+  if(!ys.includes(st.y))st.y=ys[0];
+  $("selYear").innerHTML=ys.map(y=>`<option ${y===st.y?"selected":""}>${y}</option>`).join("");
+  const ms=[...new Set(D.rows.filter(r=>r[0]===st.y).map(r=>r[1]))].sort((a,b)=>a-b);
+  if(!ms.includes(st.m))st.m=ms[ms.length-1];
+  $("selMonth").innerHTML=ms.map(m=>`<option value="${m}" ${m===st.m?"selected":""}>${MESES[m-1]}</option>`).join("");
+}
+let cache={};
+function render(){
+  $("saveNote").hidden=!saveNote;if(saveNote==="NOVIEW")$("saveNote").innerHTML='Los datos se ven en esta pantalla, pero <b>esta vista no permite guardar</b> (pasa en la vista previa dentro del chat o en un archivo descargado). <a href="https://claude.ai/artifact/3gFTNSc16yBof3XVyH1zTw" target="_blank" rel="noopener">Abra la página completa en claude.ai</a> y cargue el Excel allí para que quede guardado para todos.';else $("saveNote").textContent=saveNote;
+  $("fMonth").hidden=st.mode==="anio";
+  $("seg").querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===st.mode));
+  $("fYear").hidden=st.mode==="guia";$("tabs").hidden=st.mode==="guia";
+  if(st.mode==="guia"){$("fMonth").hidden=true;return renderGuide();}
+  if(st.mode==="anio")return renderYear();
+  fillSelectors();
+  const bySede=monthRows(); const sedes=Object.keys(bySede);
+  cache={};
+  sedes.forEach(s=>{const rows=bySede[s];const pts=[];rows.forEach(i=>{const p=D.rows[i][3];if(!pts.includes(p))pts.push(p);});
+    cache[s]={all:evalSet(rows),pts:pts.map(p=>({name:D.puntos[p],ev:evalSet(rows.filter(i=>D.rows[i][3]===p))}))};});
+  if(!sedes.includes(st.sede)) st.sede=sedes.includes(st.hashSede)?st.hashSede:(sedes.includes("Planta Snacks")?"Planta Snacks":sedes[0]);
+  $("title").textContent=`Reporte IRCA · ${MESES[st.m-1]} ${st.y}`;
+  const npts=sedes.reduce((a,s)=>a+cache[s].pts.length,0);
+  $("meta").innerHTML=`<span>Periodo: <b>${MESES[st.m-1]} de ${st.y}</b></span><span>Sedes con muestreo: <b>${sedes.length}</b></span><span>Puntos de muestreo: <b>${npts}</b></span><span>Generado: <b>${new Date().toLocaleDateString("es-CO")}</b></span>`;
+  $("src").textContent=srcLabel;
+  $("tabs").innerHTML=sedes.map(s=>{const i=cache[s].all.irca,k=lvl(i);
+    return `<button class="tab" role="tab" aria-selected="${s===st.sede}" data-s="${esc(s)}">${esc(s)}<span class="mini ${k<0?"lvx":"lv"+k}">${i==null?"—":fmt(i,1)}</span></button>`;}).join("");
+  $("tabs").querySelectorAll(".tab").forEach(b=>b.onclick=()=>{st.sede=b.dataset.s;try{history.replaceState(null,"","#"+encodeURIComponent(st.sede).replace(/%20/g,"_"));}catch(e){}render();});
+  if(!sedes.length){$("view").innerHTML='<div class="empty">No hay registros para este mes. Cargue el Excel actualizado o elija otro mes.</div>';return;}
+  renderSede(st.sede);
+}
+function renderSede(s){
+  const C=cache[s],A=C.all,k=lvl(A.irca);
+  const worst=C.pts.filter(p=>p.ev.irca!=null).sort((a,b)=>b.ev.irca-a.ev.irca)[0];
+  let h=`<section class="hero"><div>
+    <div class="big">${A.irca==null?"—":fmt(A.irca,1)}<small>% IRCA</small></div>
+    <div class="lead">${esc(s)} · ${MESES[st.m-1]} ${st.y} &nbsp;${chip(A.irca)}</div>
+    <p>${A.irca==null?"No hay parámetros con puntaje de riesgo para calcular el IRCA.":LEVELS[k].txt} Se evaluaron <b>${C.pts.length} punto${C.pts.length>1?"s":""} de muestreo</b>${worst&&worst.ev.irca>0?`; el de mayor riesgo es <b>${esc(worst.name)}</b> (IRCA ${fmt(worst.ev.irca,1)})`:""}.</p>
+  </div><div class="panel">
+    <div class="prow"><div><div class="k">Puntos de muestreo</div><div class="s">con resultados en el mes</div></div><div class="v">${C.pts.length}</div></div>
+    <div class="prow"><div><div class="k">Parámetros analizados</div><div class="s">promedio de todos los puntos</div></div><div class="v">${A.an}</div></div>
+    <div class="prow"><div><div class="k">Parámetros que no cumplen</div><div class="s">${A.bad.length?A.bad.map(o=>esc(o.c.n)).join(", "):"ninguno"}</div></div><div class="v ${A.bad.length?"warn":""}">${A.bad.length}</div></div>
+    <div class="prow"><div><div class="k">Puntaje de riesgo</div><div class="s">no cumple / analizado</div></div><div class="v">${fmt(A.pi)}<span class="s"> / ${fmt(A.pa)}</span></div></div>
+  </div></section>`;
+  h+=`<h2>IRCA por punto de muestreo · ${esc(s)}</h2><div class="bars">`;
+  const ticks=[5,14,35,80].map(t=>`<i class="tick" style="left:${t}%"></i>`).join("");
+  C.pts.forEach(p=>{const i=p.ev.irca,kk=lvl(i);
+    h+=`<div class="bar"><div class="n">${esc(p.name)}</div><div class="track"><div class="fill" style="width:${i==null?0:Math.max(i,0.8)}%;background:${kk<0?"var(--faint)":LEVELS[kk].color}"></div>${ticks}</div><div class="val">${i==null?"sin IRCA":fmt(i,1)+" · "+(kk<0?"":LEVELS[kk].name.replace("Riesgo ",""))}</div></div>`;});
+  h+=`<div class="scale"><div></div><div><span style="left:0;transform:none">0</span><span style="left:5%">5</span><span style="left:14%">14</span><span style="left:35%">35</span><span style="left:80%">80</span><span style="left:100%;transform:translateX(-100%)">100</span></div><div></div></div></div>`;
+  h+=`<h2>Resultados por punto de muestreo</h2>`;
+  C.pts.forEach((p,ix)=>{const ev=p.ev;
+    h+=`<article class="point"><div class="phead"><div><h3>${esc(p.name)}</h3><div class="sub">${esc(s)} · ${MESES[st.m-1]} ${st.y} · ${ev.an} parámetros analizados</div></div>
+      <div class="pscore"><div class="num">${ev.irca==null?"—":fmt(ev.irca,1)}</div>${chip(ev.irca)}</div></div>
+      <div class="pbody"><div>
+        <h4>Parámetros que no cumplen</h4>
+        ${ev.bad.length?`<ul>${ev.bad.map(o=>`<li>${bullet(o)}</li>`).join("")}</ul>`:`<p class="okmsg">Todos los parámetros analizados cumplen.</p>`}
+        <h4>Conclusión</h4><p class="concl">${conclusion(ev,s,p.name)}</p>
+        <button class="btn copy" type="button" data-ix="${ix}">Copiar texto para correo</button>
+      </div><div>${paramTable(ev)}</div></div></article>`;});
+  $("view").innerHTML=h;
+  $("view").querySelectorAll(".copy").forEach(b=>b.onclick=()=>{const p=C.pts[+b.dataset.ix];const t=emailText(p.ev,s,p.name);
+    navigator.clipboard.writeText(t).then(()=>toast("Texto copiado: péguelo en el correo"),()=>{fallbackCopy(t);});});
+}
+
+// ---------- Vista anual: comportamiento por sede, mes a mes y por parámetro ----------
+const MA=MESES.map(m=>m.slice(0,3));
+const lista=a=>a.join(", ").replace(/, ([^,]*)$/," y $1");
+function renderYear(){
+  const ys=[...new Set(D.rows.map(r=>r[0]))].sort((a,b)=>b-a);
+  if(!ys.includes(st.y))st.y=ys[0];
+  $("selYear").innerHTML=ys.map(y=>`<option ${y===st.y?"selected":""}>${y}</option>`).join("");
+  const by={};
+  D.rows.forEach((r,i)=>{if(r[0]===st.y&&r[1]>=1&&r[1]<=12){const s=D.sedes[r[2]];(by[s]=by[s]||MESES.map(()=>[]))[r[1]-1].push(i);}});
+  const sedes=Object.keys(by),Y={};
+  sedes.forEach(s=>{const ms=by[s].map(rows=>rows.length?evalSet(rows):null);
+    const ir=ms.filter(e=>e&&e.irca!=null).map(e=>e.irca);
+    Y[s]={ms,avg:ir.length?Math.round(ir.reduce((a,b)=>a+b,0)/ir.length*10)/10:null};});
+  if(!sedes.includes(st.sede)) st.sede=sedes.includes(st.hashSede)?st.hashSede:(sedes.includes("Planta Snacks")?"Planta Snacks":sedes[0]);
+  $("title").textContent=`Comportamiento anual IRCA · ${st.y}`;
+  $("meta").innerHTML=`<span>Periodo: <b>enero a diciembre de ${st.y}</b></span><span>Sedes con muestreo: <b>${sedes.length}</b></span><span>Generado: <b>${new Date().toLocaleDateString("es-CO")}</b></span>`;
+  $("src").textContent=srcLabel;
+  $("tabs").innerHTML=sedes.map(s=>{const i=Y[s].avg,k=lvl(i);
+    return `<button class="tab" role="tab" aria-selected="${s===st.sede}" data-s="${esc(s)}">${esc(s)}<span class="mini ${k<0?"lvx":"lv"+k}">${i==null?"—":fmt(i,1)}</span></button>`;}).join("");
+  $("tabs").querySelectorAll(".tab").forEach(b=>b.onclick=()=>{st.sede=b.dataset.s;try{history.replaceState(null,"","#"+encodeURIComponent(st.sede).replace(/%20/g,"_"));}catch(e){}render();});
+  if(!sedes.length){$("view").innerHTML='<div class="empty">No hay registros para este año.</div>';return;}
+  renderYearSede(st.sede,Y[st.sede]);
+}
+function renderYearSede(s,YS){
+  const ms=YS.ms,k=lvl(YS.avg);
+  const con=ms.map((e,i)=>e&&e.irca!=null?i:-1).filter(i=>i>=0);
+  const muest=ms.filter(e=>e).length;
+  const worst=con.slice().sort((a,b)=>ms[b].irca-ms[a].irca)[0];
+  const okM=con.filter(i=>lvl(ms[i].irca)<=1).length, hiM=con.filter(i=>lvl(ms[i].irca)>=2).length;
+  // parámetros con dato en el año
+  const P=D.cfg.map((c,j)=>{const cells=ms.map(e=>e&&e.par[j].n?e.par[j]:null);const d=cells.filter(o=>o);
+    return{j,c,cells,n:d.length,bad:d.filter(o=>o.st==="NO CUMPLE").length};}).filter(p=>p.n);
+  const top=P.slice().sort((a,b)=>b.bad-a.bad)[0];
+  if(!st.pars)st.pars=[];st.pars=st.pars.filter(j=>P.some(p=>p.j===j));if(!st.pars.length){const cl=P.find(p=>/cloro/i.test(p.c.n));if(cl||P[0])st.pars=[(cl||P[0]).j];}
+  let h=`<section class="hero"><div>
+    <div class="big">${YS.avg==null?"—":fmt(YS.avg,1)}<small>% IRCA promedio</small></div>
+    <div class="lead">${esc(s)} · Año ${st.y} &nbsp;${chip(YS.avg)}</div>
+    <p>${YS.avg==null?"No hay meses con parámetros que permitan calcular el IRCA.":`Promedio de los <b>${con.length} mes${con.length>1?"es":""}</b> con IRCA calculado. ${worst!=null&&ms[worst].irca>0?`El mes de mayor riesgo fue <b>${MESES[worst].toLowerCase()}</b> (IRCA ${fmt(ms[worst].irca,1)}, ${LEVELS[lvl(ms[worst].irca)].name.toLowerCase()}).`:"Ningún mes presentó riesgo."}`}</p>
+  </div><div class="panel">
+    <div class="prow"><div><div class="k">Meses con muestreo</div><div class="s">de 12 en el año</div></div><div class="v">${muest}</div></div>
+    <div class="prow"><div><div class="k">Meses sin riesgo o en riesgo bajo</div><div class="s">IRCA hasta 14</div></div><div class="v">${okM}</div></div>
+    <div class="prow"><div><div class="k">Meses en riesgo medio, alto o inviable</div><div class="s">IRCA mayor a 14</div></div><div class="v ${hiM?"warn":""}">${hiM}</div></div>
+    <div class="prow"><div><div class="k">Parámetro que más incumple</div><div class="s">${top&&top.bad?esc(top.c.n)+" · meses que no cumple":"ninguno incumple"}</div></div><div class="v ${top&&top.bad?"warn":""}">${top?top.bad:0}</div></div>
+  </div></section>`;
+  // IRCA mes a mes
+  h+=`<h2>IRCA mes a mes · ${esc(s)} · ${st.y}</h2><div class="months">`;
+  ms.forEach((e,i)=>{const v=e?e.irca:null,kk=lvl(v);
+    h+=`<div class="mcol" title="${MESES[i]}: ${v==null?(e?"sin IRCA":"sin muestreo"):fmt(v,1)+" · "+LEVELS[kk].name}"><div class="mv" style="color:${kk<0?"var(--faint)":LEVELS[kk].color}">${v==null?"—":fmt(v,1)}</div><div class="mb"><i style="height:${v==null?0:Math.max(v,3)}%;background:${kk<0?"transparent":LEVELS[kk].color}"></i></div><div class="mn">${MA[i]}</div><div class="ml" style="color:${kk<0?"var(--faint)":LEVELS[kk].color}">${kk<0?(e?"Sin IRCA":"Sin dato"):LEVELS[kk].name.replace("Riesgo ","").replace(" sanitariamente","")}</div></div>`;});
+  h+=`</div><div class="legend">${LEVELS.map((l,i)=>`<span class="chip lv${i}">${l.name}</span>`).join("")}</div>`;
+  // parámetro seleccionado
+  h+=`<h2>Comportamiento por parámetro</h2><div class="pcard"><div class="phdr"><div class="field"><label>Parámetros (elija uno o varios)</label><div class="pick"><button type="button" class="btn" data-pick="todos">Todos</button><button type="button" class="btn" data-pick="malos">Solo los que no cumplen</button><button type="button" class="btn" data-pick="ninguno">Ninguno</button></div></div><div id="parChip"></div></div><div class="pchips" id="pchips">${P.map(p=>`<button type="button" class="pchip ${p.bad?"hasbad":""}" data-j="${p.j}" aria-pressed="false">${esc(p.c.n)}<span>${p.bad?p.bad+"/"+p.n+" no cumple":"cumple"}</span></button>`).join("")}</div><div id="parView"></div></div>`;
+  // tabla anual
+  h+=`<h2>Todos los parámetros, mes a mes</h2><div class="tblwrap"><table class="heat"><thead><tr><th>Parámetro</th><th>Límite</th>${MA.map(m=>`<th>${m}</th>`).join("")}<th>No cumple</th></tr></thead><tbody>`;
+  P.forEach(p=>{h+=`<tr class="prow2 ${st.pars.includes(p.j)?"sel":""}" data-j="${p.j}"><td>${esc(p.c.n)} <span class="muted">(${esc(p.c.u)})</span></td><td>${lim(p.c)}</td>${p.cells.map(o=>o?`<td class="${o.st==="NO CUMPLE"?"badc":""}">${resTxt(o)}</td>`:'<td class="nd">—</td>').join("")}<td class="${p.bad?"badc":""}">${p.bad} de ${p.n}</td></tr>`;});
+  h+=`<tr class="tot"><td>IRCA del mes (%)</td><td></td>${ms.map(e=>`<td>${e&&e.irca!=null?fmt(e.irca,1):"—"}</td>`).join("")}<td>${YS.avg==null?"—":"Prom. "+fmt(YS.avg,1)}</td></tr>`;
+  h+=`<tr><td><b>Nivel de riesgo</b></td><td></td>${ms.map(e=>`<td>${e?chip(e.irca).replace("Riesgo ","").replace(" sanitariamente",""):'<span class="muted">—</span>'}</td>`).join("")}<td>${chip(YS.avg)}</td></tr>`;
+  h+=`</tbody></table></div><p class="psum">Cada valor es el promedio de todos los puntos de muestreo de la sede en ese mes. Las celdas en rojo no cumplen la Resolución 2115. Toque un parámetro para agregarlo o quitarlo de las gráficas.</p>`;
+  $("view").innerHTML=h;
+  const draw=()=>{const sel=P.filter(p=>st.pars.includes(p.j));
+    $("parView").innerHTML=sel.length?sel.map(p=>`<section class="pblock"><div class="ptitle"><h4>${esc(p.c.n)} <span class="muted">(${esc(p.c.u)})</span></h4>${p.bad?`<span class="chip lv3">No cumple ${p.bad} de ${p.n} meses</span>`:`<span class="chip lv0">Cumple los ${p.n} meses</span>`}</div><div class="chartwrap">${paramChart(p,sel.length>1)}</div>${paramSummary(p,s)}</section>`).join(""):'<p class="psum">Elija uno o varios parámetros para ver su gráfica.</p>';
+    const nb=sel.filter(p=>p.bad).length;
+    $("parChip").innerHTML=sel.length?`<span class="chip lvx">${sel.length} seleccionado${sel.length>1?"s":""}</span>${nb?` <span class="chip lv3">${nb} con incumplimientos</span>`:""}`:"";
+    $("pchips").querySelectorAll(".pchip").forEach(b=>b.setAttribute("aria-pressed",st.pars.includes(+b.dataset.j)));
+    $("view").querySelectorAll("tr.prow2").forEach(r=>r.classList.toggle("sel",st.pars.includes(+r.dataset.j)));};
+  const toggle=j=>{st.pars=st.pars.includes(j)?st.pars.filter(x=>x!==j):st.pars.concat(j);draw();};
+  $("pchips").querySelectorAll(".pchip").forEach(b=>b.onclick=()=>toggle(+b.dataset.j));
+  $("view").querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{const k=b.dataset.pick;st.pars=k==="todos"?P.map(p=>p.j):k==="malos"?P.filter(p=>p.bad).map(p=>p.j):[];draw();});
+  $("view").querySelectorAll("tr.prow2").forEach(r=>r.onclick=()=>{toggle(+r.dataset.j);$("pchips").scrollIntoView({behavior:"smooth",block:"center"});});
+  draw();
+}
+function paramSummary(p,s){
+  const c=p.c,d=p.cells.map((o,i)=>o?{i,v:o.avg,o}:null).filter(x=>x);
+  const badM=d.filter(x=>x.o.st==="NO CUMPLE").map(x=>MESES[x.i].toLowerCase());
+  const mn=d.reduce((a,b)=>b.v<a.v?b:a),mx=d.reduce((a,b)=>b.v>a.v?b:a),avg=Math.round(d.reduce((a,b)=>a+b.v,0)/d.length*1000)/1000;
+  let t=`<b>${esc(c.n)}</b> en ${esc(s)} durante ${st.y}: se midió en <b>${d.length} mes${d.length>1?"es":""}</b> y el límite permitido es <b>${lim(c)} ${esc(c.u)}</b>. `;
+  t+=badM.length?`No cumplió en <b>${badM.length}</b> (${lista(badM)}) y cumplió en ${d.length-badM.length}. `:`Cumplió en todos los meses medidos. `;
+  t+=`Promedio del año <b>${fmt(avg,2)}</b>, mínimo ${resTxt(mn.o)} en ${MESES[mn.i].toLowerCase()} y máximo ${resTxt(mx.o)} en ${MESES[mx.i].toLowerCase()}.`;
+  if(c.p===0)t+=" Este parámetro no tiene puntaje de riesgo, por lo que no suma al IRCA.";
+  return `<p class="psum">${t}</p>`;
+}
+function niceStep(r){const e=Math.pow(10,Math.floor(Math.log10(r))),f=r/e;return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*e;}
+function paramChart(p,small){
+  const c=p.c,W=760,H=small?240:300,pl=58,pr=16,pt=24,pb=34,iw=W-pl-pr,ih=H-pt-pb;
+  const vals=p.cells.filter(o=>o).map(o=>o.avg);
+  let hiV=Math.max(...vals,c.hi||0); if(!(hiV>0))hiV=1;
+  const step=niceStep(hiV*1.15/4), top=Math.ceil(hiV*1.15/step)*step, bot=-top*0.06;
+  const x=i=>pl+iw*(i+.5)/12, y=v=>pt+ih*(top-v)/(top-bot);
+  const u=esc(c.u);
+  let g=`<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(c.n)} mes a mes frente al límite permitido">`;
+  // cuadrícula y eje Y con valores
+  for(let v=0;v<=top+1e-9;v+=step){g+=`<line class="ax" x1="${pl}" x2="${W-pr}" y1="${y(v)}" y2="${y(v)}" ${v>0?'stroke-dasharray="2 4"':""}/><text x="${pl-8}" y="${y(v)+4}" text-anchor="end">${fmt(Math.round(v*1000)/1000)}</text>`;}
+  g+=`<text x="12" y="${pt+ih/2}" transform="rotate(-90 12 ${pt+ih/2})" text-anchor="middle">${u}</text>`;
+  // franja / línea del límite
+  if(c.t==="rango") g+=`<rect class="band" x="${pl}" y="${y(c.hi)}" width="${iw}" height="${y(c.lo)-y(c.hi)}" opacity=".7"/><line class="lim" x1="${pl}" x2="${W-pr}" y1="${y(c.lo)}" y2="${y(c.lo)}"/>`;
+  g+=`<line class="lim" x1="${pl}" x2="${W-pr}" y1="${y(c.hi)}" y2="${y(c.hi)}"/><text class="limt" x="${W-pr}" y="${y(c.hi)-6}" text-anchor="end">${c.t==="rango"?"Rango permitido "+lim(c):c.hi===0?"Límite: 0 (ausencia)":"Límite "+lim(c)}</text>`;
+  // línea: continua entre meses seguidos, punteada cuando salta un mes sin dato
+  const pts=p.cells.map((o,i)=>o?{i,X:x(i),Y:y(o.avg),o}:null).filter(Boolean);
+  for(let k=1;k<pts.length;k++){const a=pts[k-1],b=pts[k];g+=`<line x1="${a.X}" y1="${a.Y}" x2="${b.X}" y2="${b.Y}" stroke="var(--teal)" stroke-width="2" ${b.i-a.i>1?'stroke-dasharray="4 4" opacity=".55"':""}/>`;}
+  const first=pts.length?pts[0].i:0,last=pts.length?pts[pts.length-1].i:-1;
+  p.cells.forEach((o,i)=>{g+=`<text x="${x(i)}" y="${H-10}" text-anchor="middle">${MA[i]}</text>`;
+    if(!o){if(i>first&&i<last)g+=`<text x="${x(i)}" y="${y(0)+18}" text-anchor="middle" style="font-size:10px;fill:var(--faint)">sin dato</text>`;return;}
+    const bad=o.st==="NO CUMPLE",Y=y(o.avg),ly=Y<pt+16?Y+18:Y-10;
+    g+=`<circle cx="${x(i)}" cy="${Y}" r="5.5" fill="${bad?"var(--high)":"var(--ok)"}" stroke="var(--bg)" stroke-width="2"><title>${MESES[i]}: ${resTxt(o)} ${u} · ${bad?"No cumple":"Cumple"}</title></circle><text class="vl" x="${x(i)}" y="${ly}" text-anchor="middle" ${bad?'style="fill:var(--high)"':'style="fill:var(--ok)"'}>${resTxt(o)}</text>`;});
+  g+=`<g transform="translate(${pl},${H-2})"></g>`;
+  return g+"</svg>"+`<div class="legend"><span class="chip lv0">● Cumple</span><span class="chip lv3">● No cumple</span><span class="chip lvx">- - - mes sin dato</span></div>`;
+}
+$("seg").querySelectorAll("button").forEach(b=>b.onclick=()=>{st.mode=b.dataset.mode;render();});
+function fallbackCopy(t){const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand("copy");}catch(e){}ta.remove();toast(ok?"Texto copiado: péguelo en el correo":"No se pudo copiar automáticamente");}
+function toast(m){const t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(t._h);t._h=setTimeout(()=>t.hidden=true,2600);}
+
+$("selYear").onchange=e=>{st.y=+e.target.value;st.m=null;render();};
+try{if(/anual/.test(location.search))st.mode="anio";}catch(e){}
+$("selMonth").onchange=e=>{st.m=+e.target.value;render();};
+$("loadBtn").onclick=()=>$("fileIn").click();
+const DEFAULT_CFG=D.cfg.slice();
+let lastReport="";
+const nrm=v=>String(v==null?"":v).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/\s+/g," ").trim();
+const MESN={ene:1,feb:2,mar:3,abr:4,apr:4,may:5,jun:6,jul:7,ago:8,aug:8,sep:9,set:9,oct:10,nov:11,dic:12,dec:12};
+function toYear(v){if(v instanceof Date)return v.getFullYear();const n=parseInt(String(v==null?"":v).replace(/[^\d]/g,""),10);return n>=1990&&n<=2100?n:null;}
+function toMonth(v){if(v instanceof Date)return v.getMonth()+1;if(typeof v==="number")return v>=1&&v<=12?Math.round(v):null;
+  const t=nrm(v);const n=parseInt(t,10);if(n>=1&&n<=12)return n;const k=t.slice(0,3);return MESN[k]||null;}
+function findCols(head){
+  const H=head.map(nrm),f=re=>H.findIndex(h=>re.test(h));
+  return{y:f(/^(ano|anio|year)\b/),m:f(/^mes\b|^month/),fecha:f(/^fecha/),sede:f(/sede|ptap|planta|instalacion/),pt:f(/punto|lugar|sitio/),par:f(/^parametro|^analisis|^variable/),res:f(/^resultado(?!_)|^valor/)};
+}
+function parseWorkbook(wb){
+  // 1) hoja de registros: la que tenga encabezados de Parámetro y Resultado (preferir «Registros monitoreo»)
+  const names=wb.SheetNames.slice().sort((a,b)=>(/registro/i.test(b)?1:0)-(/registro/i.test(a)?1:0));
+  let pick=null;
+  for(const n of names){const A=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,blankrows:false,defval:""});
+    for(let h=0;h<Math.min(A.length,15);h++){const c=findCols(A[h]||[]);if(c.par>=0&&c.res>=0&&(c.m>=0||c.fecha>=0)){pick={n,A,h,c};break;}}
+    if(pick)break;}
+  if(!pick){const n=names[0],A=XLSX.utils.sheet_to_json(wb.Sheets[n],{header:1,blankrows:false,defval:""});pick={n,A,h:0,c:{y:0,m:1,fecha:-1,sede:3,pt:4,par:6,res:7}};}
+  const{A,h,c}=pick;const S={},P={},Q={},ix=(d,v)=>(v in d)?d[v]:(d[v]=Object.keys(d).length);
+  const rows=[];let skip=0;
+  for(let r=h+1;r<A.length;r++){const row=A[r];if(!row)continue;
+    const res=row[c.res],par=row[c.par];if(par===""||par==null||res===""||res==null){continue;}
+    let y=c.y>=0?toYear(row[c.y]):null,m=c.m>=0?toMonth(row[c.m]):null;
+    if((y==null||m==null)&&c.fecha>=0){const fv=row[c.fecha];let d=fv instanceof Date?fv:(typeof fv==="number"?new Date(Math.round((fv-25569)*864e5)):null);if(d&&!isNaN(d)){if(y==null)y=d.getFullYear();if(m==null)m=d.getMonth()+1;}}
+    if(y==null||m==null){skip++;continue;}
+    const sede=c.sede>=0?cleanName(row[c.sede])||"Sin sede":"Sin sede",pt=c.pt>=0?cleanName(row[c.pt])||"Sin punto":"Sin punto";
+    rows.push([y,m,ix(S,sede),ix(P,pt),ix(Q,cleanName(par)),res]);}
+  // 2) configuración de límites: hoja «Config IRCA» si existe; si no, la incluida en la página
+  let cfg=DEFAULT_CFG,cfgFile=false;const cn=wb.SheetNames.find(n=>/config/i.test(n));
+  if(cn){try{const C=XLSX.utils.sheet_to_json(wb.Sheets[cn],{header:1,range:"A4:G28"}).filter(r=>r[0]&&r[6]&&!isNaN(+r[5])).map(r=>({n:r[0],u:r[1]||"",t:String(r[2]||"max").toLowerCase(),lo:+r[3]||0,hi:+r[4]||0,p:+r[5]||0,k:r[6]}));if(C.length>=5){cfg=C;cfgFile=true;}}catch(e){}}
+  return{rows,sedes:Object.keys(S),puntos:Object.keys(P),params:Object.keys(Q),cfg,cfgFile,sheet:pick.n,skip};
+}
+function loadFile(f){if(!f)return;toast("Leyendo "+f.name+"…");
+  const rd=new FileReader();
+  rd.onload=()=>{let out;try{out=parseWorkbook(XLSX.read(rd.result,{type:"array",cellDates:true}));}catch(err){toast("No se pudo abrir «"+f.name+"». Verifique que sea un archivo de Excel o CSV.");return;}
+    if(!out.rows.length){lastReport=`El archivo «${esc(f.name)}» se abrió, pero no se encontraron filas con año, mes, parámetro y resultado. Revise el paso 2 del instructivo.`;st.mode="guia";render();toast("No se encontraron registros");return;}
+    subirABase(f.name,out).catch(e=>{console.error(e);busy(false);toast("No se pudo guardar en la base de datos. Revise la conexión e intente de nuevo.");});};
+  rd.onerror=()=>toast("No se pudo leer el archivo");rd.readAsArrayBuffer(f);}
+$("fileIn").onchange=e=>{loadFile(e.target.files[0]);e.target.value="";};
+let dragN=0;
+addEventListener("dragenter",e=>{if(e.dataTransfer&&[...e.dataTransfer.types].includes("Files")){dragN++;$("drop").hidden=false;}});
+addEventListener("dragleave",()=>{if(--dragN<=0){dragN=0;$("drop").hidden=true;}});
+addEventListener("dragover",e=>e.preventDefault());
+addEventListener("drop",e=>{e.preventDefault();dragN=0;$("drop").hidden=true;const f=e.dataTransfer&&e.dataTransfer.files[0];if(f)loadFile(f);});
+
+// ---------- Guardar en la página: los datos cargados quedan para todos ----------
+const RESET=":root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}";
+const HEADTAGS='<title>Reporte IRCA Unibán</title>\n<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&display=swap">';
+function buildPage(){
+  const data=JSON.stringify({sedes:D.sedes,puntos:D.puntos,params:D.params,rows:D.rows,cfg:D.cfg,meta:D.meta}).replace(/<\//g,"<\\/");
+  const src=id=>document.getElementById(id).textContent;
+  return '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>'+RESET+'</style></head><body>\n'+HEADTAGS+'\n<style id="appcss">'+src("appcss")+'</style>\n\n'+SHELL+'\n\n<script id="data" type="application/json">'+data+'</scr'+'ipt>\n<script id="xlsxlib">'+src("xlsxlib")+'</scr'+'ipt>\n<script id="app">'+src("app")+'</scr'+'ipt>\n\n</body></html>';
+}
+let saveNote="";
+async function saveToPage(){
+  let art=null;
+  try{art=window.claude&&window.claude.use?await window.claude.use("artifact"):null;}catch(e){art=null;}
+  if(!art){saveNote="NOVIEW";render();return;}
+  toast("Guardando los datos en la página…");
+  try{await art.publish(buildPage());saveNote="";}
+  catch(e){const c=e&&e.code;
+    if(c==="conflict")return;
+    if(c==="not_writer"||c==="not_granted"||c==="consent_required"||c==="capability_disabled"||c==="capability_removed"||c==="not_declared")
+      saveNote="Los datos se ven en esta pantalla. Para que queden guardados para todos, quien cargue el Excel necesita permiso de edición de la página.";
+    else if(c==="too_large")saveNote="El archivo es demasiado grande para guardarlo en la página; los datos se ven solo en esta pantalla.";
+    else saveNote="No se pudo guardar en la página en este momento; los datos se ven solo en esta pantalla. Intente cargar el archivo otra vez.";
+    render();toast(saveNote);}
+}
+
+// ---------- Base de datos compartida (misma de irca-uniban.lovable.app) ----------
+const SB=window.supabase.createClient("https://uqmvvoxotrxkqscjuxsf.supabase.co","sb_publishable_UkiWxusV-lJKALiVKrzplw_JRNs066O");
+let ultimaCarga=null;
+function busy(on,txt){let b=$("busy");if(!b){b=document.createElement("div");b.id="busy";b.className="callout report";$("tabs").before(b);}b.hidden=!on;if(txt)b.textContent=txt;}
+async function cargarDatos(aviso){
+  busy(true,"Cargando datos actualizados…");
+  const c=await SB.from("config_irca").select("*").order("orden");if(c.error)throw c.error;
+  let all=[],from=0;
+  for(;;){const r=await SB.from("registros").select("anio,mes,sede,punto,parametro,resultado").order("id").range(from,from+999);if(r.error)throw r.error;all=all.concat(r.data);if(r.data.length<1000)break;from+=1000;}
+  const l=await SB.from("cargas").select("*").order("created_at",{ascending:false}).limit(1);
+  ultimaCarga=l.data&&l.data[0]||null;
+  const S={},P={},Q={},ix=(d,v)=>(v in d)?d[v]:(d[v]=Object.keys(d).length);
+  const rows=all.map(r=>[r.anio,r.mes,ix(S,r.sede||"Sin sede"),ix(P,r.punto||"Sin punto"),ix(Q,r.parametro||""),r.resultado]);
+  D={sedes:Object.keys(S),puntos:Object.keys(P),params:Object.keys(Q),rows,cfg:c.data.map(x=>({n:x.nombre,u:x.unidad||"",t:x.tipo,lo:+x.lim_inf||0,hi:+x.lim_sup||0,p:+x.puntaje||0,k:x.clave}))};
+  prep();
+  srcLabel=ultimaCarga?`Última actualización: ${new Date(ultimaCarga.created_at).toLocaleString("es-CO",{dateStyle:"medium",timeStyle:"short"})} · ${ultimaCarga.archivo} · ${all.length.toLocaleString("es-CO")} registros`:`${all.length.toLocaleString("es-CO")} registros`;
+  busy(false);render();if(aviso)toast(aviso);
+}
+async function subirABase(nombre,out){
+  if(!confirm(`Se reemplazarán los datos para TODAS las personas con los ${out.rows.length.toLocaleString("es-CO")} registros de «${nombre}». ¿Continuar?`))return;
+  busy(true,"Guardando… 0 %");
+  if(out.cfgFile){const d=await SB.from("config_irca").delete().gte("id",0);if(d.error)throw d.error;
+    const i=await SB.from("config_irca").insert(out.cfg.map((c,k)=>({orden:k+1,nombre:String(c.n),unidad:c.u||null,tipo:c.t,lim_inf:c.lo,lim_sup:c.hi,puntaje:c.p,clave:String(c.k)})));if(i.error)throw i.error;}
+  const del=await SB.from("registros").delete().gte("id",0);if(del.error)throw del.error;
+  const recs=out.rows.map(r=>({anio:r[0],mes:r[1],sede:out.sedes[r[2]],punto:out.puntos[r[3]],parametro:out.params[r[4]],resultado:String(r[5] instanceof Date?"":r[5])}));
+  for(let k=0;k<recs.length;k+=500){const r=await SB.from("registros").insert(recs.slice(k,k+500));if(r.error)throw r.error;busy(true,`Guardando… ${Math.min(100,Math.round((k+500)/recs.length*100))} %`);}
+  lastReport=`Último archivo cargado: <b>${esc(nombre)}</b> · hoja «${esc(out.sheet)}» · <b>${out.rows.length.toLocaleString("es-CO")}</b> registros${out.skip?` · ${out.skip} filas sin año o mes válidos se omitieron`:""}.`;
+  const c=await SB.from("cargas").insert({archivo:nombre,registros:recs.length});if(c.error)throw c.error;
+  st.y=null;st.m=null;if(st.mode==="guia")st.mode="mes";
+  await cargarDatos("Datos guardados: todas las personas ya ven esta versión");
+}
+// tiempo real: cuando alguien carga un Excel, todas las pantallas se actualizan
+try{SB.channel("cargas-live").on("postgres_changes",{event:"INSERT",schema:"public",table:"cargas"},()=>cargarDatos("Datos actualizados por una nueva carga")).subscribe();}catch(e){}
+// respaldo: revisar cada minuto si hay una carga nueva
+setInterval(async()=>{try{const l=await SB.from("cargas").select("id").order("created_at",{ascending:false}).limit(1);const id=l.data&&l.data[0]&&l.data[0].id;if(ultimaCarga&&id&&id!==ultimaCarga.id)cargarDatos("Datos actualizados por una nueva carga");}catch(e){}},60000);
+function renderGuide(){
+  $("title").textContent="Instructivo de carga de datos";
+  $("meta").innerHTML=`<span>Para cualquier usuario: no requiere usuario, clave ni instalar nada</span>`;
+  $("src").textContent=srcLabel;
+  const claves=D.cfg.map(c=>`<code>${esc(c.n)}</code>`).join(" ");
+  $("view").innerHTML=`<div class="guide">
+  ${lastReport?`<div class="callout report">${lastReport}</div>`:""}
+  <h2>1. Antes de empezar</h2>
+  <ul>
+    <li>Para ver los datos no hay que cargar nada: la página los lee de la base de datos al abrirse.</li>
+    <li>Cargar un Excel solo es necesario cuando hay resultados nuevos (por ejemplo, un mes nuevo).</li>
+    <li>Los datos están en una <b>base de datos en línea</b>: todas las personas que abren el enlace ven siempre la misma versión, la más reciente. No hay copias descargadas que se desactualicen.</li>
+    <li>Al cargar el Excel, los datos se guardan para todos al instante y las pantallas que estén abiertas se actualizan solas. No se necesita usuario ni clave.</li>
+    <li>Sirve el mismo libro de Excel de siempre (.xlsx, .xlsm, .xls), un .ods o un .csv.</li>
+  </ul>
+  <h2>2. Cómo deben estar los datos</h2>
+  <p>Una fila por cada parámetro analizado, en una hoja con estos encabezados (la hoja «Registros monitoreo» ya los tiene). El orden de las columnas no importa y puede haber columnas adicionales.</p>
+  <div class="tblwrap"><table><thead><tr><th>Año</th><th>Mes</th><th>PTAP / Sede</th><th>Punto de medición</th><th>Parámetro</th><th>Resultado</th></tr></thead><tbody>
+    <tr><td>2026</td><td>9</td><td>Planta Snacks</td><td>Salida Tanque Almacenamiento #01</td><td>Cloro residual</td><td>1,6</td></tr>
+    <tr><td>2026</td><td>9</td><td>Planta Snacks</td><td>Salida Tanque Almacenamiento #01</td><td>Coliformes totales</td><td>&lt;1</td></tr>
+    <tr><td>2026</td><td>Septiembre</td><td>Zona Industrial</td><td>Salida PTAP</td><td>pH (6.5 - 9.0)</td><td>7,58</td></tr>
+  </tbody></table></div>
+  <ul style="margin-top:12px">
+    <li><b>Año:</b> número de 4 cifras (2026). <b>Mes:</b> número 1 a 12 o el nombre (Septiembre, sep). Si no hay columnas de año y mes, se toma una columna «Fecha».</li>
+    <li><b>Sede:</b> escriba el nombre de la sede. Las variantes se unen solas: «Planta de Snacks», «planta snacks» y «Planta  Snacks» aparecen como una sola sede. Lo mismo pasa con los puntos de muestreo.</li>
+    <li><b>Resultado:</b> número con coma o punto (1,6 o 1.6). Si está bajo el límite de detección escriba «&lt;» y el valor (<code>&lt;0,1</code>); cuenta como 0.</li>
+    <li><b>Parámetro:</b> use nombres como estos para que entren al cálculo del IRCA (basta con que se parezcan, por ejemplo «Cloro residual» o «Turbiedad NTU»): ${claves}. Otros parámetros se guardan pero no suman al IRCA.</li>
+    <li>Los límites y puntajes se toman de la hoja «Config IRCA» del mismo archivo. Si el archivo no la tiene, se usan los de la Resolución 2115 incluidos en la página.</li>
+  </ul>
+  <h2>3. Pasos para cargar</h2>
+  <ol class="steps">
+    <li>Guarde el Excel con los resultados nuevos (no hace falta cerrarlo).</li>
+    <li>En esta página pulse <b>«Cargar Excel actualizado»</b> y elija el archivo. También puede <b>arrastrar el archivo</b> y soltarlo en cualquier parte de la página.</li>
+    <li>Confirme el reemplazo y espere el mensaje «Datos guardados». Arriba, a la derecha, verá la fecha de la última actualización, el archivo y cuántos registros hay.</li>
+    <li>En <b>Vista</b> elija «Reporte mensual» (un mes, por punto de muestreo) o «Comportamiento anual» (los 12 meses por parámetro). Luego elija <b>Año</b>, <b>Mes</b> y la <b>sede</b> en las pestañas.</li>
+  </ol>
+  <h2>4. Si algo no se ve</h2>
+  <ul>
+    <li><b>Falta un mes:</b> revise que las filas de ese mes tengan año, mes, parámetro y resultado llenos.</li>
+    <li><b>Una sede aparece dos veces:</b> los nombres son demasiado distintos (por ejemplo «Snacks» y «Planta Snacks»). Corrija el nombre en el Excel y vuelva a cargar.</li>
+    <li><b>Un parámetro no aparece:</b> su nombre no contiene ninguna de las palabras del paso 2.</li>
+    <li><b>Un valor se ve muy alto:</b> revise si en el Excel quedó sin coma decimal (por ejemplo 165 en vez de 0,165).</li>
+  </ul>
+  <div class="callout"><b>Para que otra persona use la página:</b> basta con enviarle el enlace. Puede ver todo y cargar el Excel sin usuario ni clave; lo que cargue queda guardado para todos.</div>
+  </div>`;
+}
+cargarDatos().catch(e=>{console.error(e);busy(true,"No se pudieron leer los datos. Revise su conexión a internet y recargue la página.");});
+})();
+</script>
