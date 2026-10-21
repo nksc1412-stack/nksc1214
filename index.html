@@ -351,11 +351,11 @@ function renderSede(s){
         <h4>Parámetros que no cumplen</h4>
         ${ev.bad.length?`<ul>${ev.bad.map(o=>`<li>${bullet(o)}</li>`).join("")}</ul>`:`<p class="okmsg">Todos los parámetros analizados cumplen.</p>`}
         <h4>Conclusión</h4><p class="concl">${conclusion(ev,s,p.name)}</p>
-        <button class="btn copy" type="button" data-ix="${ix}">Copiar texto para correo</button>
+        <button class="btn copy" type="button" data-ix="${ix}">Copiar para correo (con tabla)</button>
       </div><div>${paramTable(ev)}</div></div></article>`;});
   $("view").innerHTML=h;
   $("view").querySelectorAll(".copy").forEach(b=>b.onclick=()=>{const p=C.pts[+b.dataset.ix];const t=emailText(p.ev,s,p.name);
-    navigator.clipboard.writeText(t).then(()=>toast("Texto copiado: péguelo en el correo"),()=>{fallbackCopy(t);});});
+    copyRich(emailHTML(p.ev,s,p.name),t);});
 }
 
 // ---------- Vista anual: comportamiento por sede, mes a mes y por parámetro ----------
@@ -465,6 +465,34 @@ function paramChart(p,small){
   return g+"</svg>"+`<div class="legend"><span class="chip lv0">● Cumple</span><span class="chip lv3">● No cumple</span><span class="chip lvx">- - - mes sin dato</span></div>`;
 }
 $("seg").querySelectorAll("button").forEach(b=>b.onclick=()=>{st.mode=b.dataset.mode;render();});
+// ---------- Correo con formato (tabla con estilos que se conserva al pegar en Outlook/Gmail) ----------
+function emailHTML(ev,sede,punto){
+  const F='font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#17312e;';
+  const mes=MESES[st.m-1].toLowerCase(), k=lvl(ev.irca);
+  const colors=[["#1f8a5b","#dff3e8"],["#8a6a00","#fbf1c9"],["#a85400","#fde6cd"],["#c0392b","#f9dcd8"],["#7d1a1a","#f1cccc"]];
+  const chipH=k<0?"":`<span style="background:${colors[k][1]};color:${colors[k][0]};font-weight:bold;padding:2px 8px;border-radius:10px;">${LEVELS[k].name.toUpperCase()}</span>`;
+  let h=`<div style="${F}"><p style="margin:0 0 10px;">Mediante el presente correo, comparto los resultados del Índice de Riesgo de la Calidad del Agua para Consumo Humano (IRCA) correspondientes al mes de <b>${mes} de ${st.y}</b>, para la sede <b>${esc(sede)}</b>, en el punto de muestreo <b>${esc(punto)}</b>, con base en los análisis realizados.</p>`;
+  h+=`<p style="margin:0 0 6px;"><b>Resultado IRCA: ${ev.irca==null?"—":fmt(ev.irca,1)} %</b> &nbsp;${chipH}</p>`;
+  if(ev.bad.length){h+=`<p style="margin:10px 0 4px;"><b>Parámetros que no cumplen:</b></p><ul style="margin:0 0 10px 18px;padding:0;">${ev.bad.map(o=>`<li style="margin-bottom:4px;">${bullet(o)}</li>`).join("")}</ul>`;}
+  else h+=`<p style="margin:10px 0;">Todos los parámetros analizados cumplen con la Resolución 2115 de 2007.</p>`;
+  h+=`<p style="margin:10px 0 4px;"><b>Conclusión:</b></p><p style="margin:0 0 12px;">${conclusion(ev,sede,punto)}</p>`;
+  const th=`style="background:#00766c;color:#ffffff;font-weight:bold;padding:6px 8px;border:1px solid #00766c;text-align:center;${F}color:#ffffff;"`;
+  const td=(a,x="")=>`<td style="padding:5px 8px;border:1px solid #cfdcd8;text-align:${a};${F}${x}">`;
+  h+=`<table cellpadding="0" cellspacing="0" style="border-collapse:collapse;${F}"><thead><tr><th ${th}>Parámetro</th><th ${th}>Unidad</th><th ${th}>Resultado</th><th ${th}>Límite</th><th ${th}>Estado</th><th ${th}>Puntaje asignado</th><th ${th}>Puntaje de riesgo</th></tr></thead><tbody>`;
+  ev.par.filter(o=>o.n).forEach((o,i)=>{const b=o.st==="NO CUMPLE",bg=b?"background:#fdeceb;":(i%2?"background:#f4f9f7;":"background:#ffffff;");
+    h+=`<tr>${td("left",bg)}${esc(o.c.n)}</td>${td("center",bg+"color:#5d6f6c;")}${esc(o.c.u)}</td>${td("center",bg+"font-weight:bold;")}${resTxt(o)}</td>${td("center",bg)}${lim(o.c)}</td>${td("center",bg+(b?"color:#c0392b;font-weight:bold;":"color:#1f8a5b;font-weight:bold;"))}${b?"No cumple":"Cumple"}</td>${td("center",bg)}${fmt(o.c.p)}</td>${td("center",bg)}${b?fmt(o.c.p):0}</td></tr>`;});
+  h+=`<tr>${td("left","background:#eaf5f1;font-weight:bold;")}Totales</td>${td("center","background:#eaf5f1;")}</td>${td("center","background:#eaf5f1;")}</td>${td("center","background:#eaf5f1;")}</td>${td("center","background:#eaf5f1;font-weight:bold;")}Σ puntajes</td>${td("center","background:#eaf5f1;font-weight:bold;")}${fmt(ev.pa)}</td>${td("center","background:#eaf5f1;font-weight:bold;")}${fmt(ev.pi)}</td></tr></tbody></table>`;
+  h+=`<p style="margin:8px 0 0;font-size:9pt;color:#5d6f6c;">Límites y puntajes según la Resolución 2115 de 2007. Niveles IRCA: 0–5 sin riesgo · 5,1–14 bajo · 14,1–35 medio · 35,1–80 alto · 80,1–100 inviable sanitariamente.</p></div>`;
+  return h;
+}
+function copyRich(html,plain){
+  const ok=()=>toast("Copiado con formato: péguelo en el correo");
+  const viaSel=()=>{const d=document.createElement("div");d.contentEditable="true";d.style.cssText="position:fixed;left:-9999px;top:0;";d.innerHTML=html;document.body.appendChild(d);
+    const r=document.createRange();r.selectNodeContents(d);const s=getSelection();s.removeAllRanges();s.addRange(r);let done=false;try{done=document.execCommand("copy");}catch(e){}s.removeAllRanges();d.remove();
+    if(done)ok();else fallbackCopy(plain);};
+  try{if(navigator.clipboard&&window.ClipboardItem){navigator.clipboard.write([new ClipboardItem({"text/html":new Blob([html],{type:"text/html"}),"text/plain":new Blob([plain],{type:"text/plain"})})]).then(ok,viaSel);return;}}catch(e){}
+  viaSel();
+}
 function fallbackCopy(t){const ta=document.createElement("textarea");ta.value=t;document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand("copy");}catch(e){}ta.remove();toast(ok?"Texto copiado: péguelo en el correo":"No se pudo copiar automáticamente");}
 function toast(m){const t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(t._h);t._h=setTimeout(()=>t.hidden=true,2600);}
 
