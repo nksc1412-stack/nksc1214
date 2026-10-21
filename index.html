@@ -95,6 +95,10 @@ td{padding:5px 6px;border-bottom:1px solid var(--line);text-align:center;white-s
 td:first-child{text-align:left;white-space:normal}
 tr.bad td{background:var(--bad-row)}
 tr.bad td.st{color:var(--high);font-weight:800}
+tr.warn td{background:var(--low-bg)}
+tr.warn td.st{color:var(--mid);font-weight:800}
+td.warnc{background:var(--low-bg);color:var(--mid);font-weight:800}
+.warnmsg{color:var(--mid)}
 td.st{font-weight:700}
 tr.tot td{font-weight:800;background:var(--mint)}
 .muted{color:var(--muted)}
@@ -247,10 +251,10 @@ function evalSet(rows){
   out.forEach(o=>{const c=o.c;if(!o.n){o.st="Sin dato";return;}
     o.avg=Math.round(o.sum/o.n*1000)/1000;
     const bad=c.t==="rango"?(o.avg<c.lo||o.avg>c.hi):(o.avg>c.hi);
-    o.st=bad?"NO CUMPLE":"CUMPLE"; o.low=c.t==="rango"&&o.avg<c.lo;
+    o.st=bad?(c.p>0?"NO CUMPLE":"PREVENTIVO"):"CUMPLE"; o.low=c.t==="rango"&&o.avg<c.lo;
     pa+=c.p; if(bad)pi+=c.p;});
   const irca=pa>0?Math.round(1000*pi/pa)/10:null;
-  return{par:out,pa,pi,irca,an:out.filter(o=>o.n).length,bad:out.filter(o=>o.st==="NO CUMPLE")};
+  return{par:out,pa,pi,irca,an:out.filter(o=>o.n).length,bad:out.filter(o=>o.st==="NO CUMPLE"),warn:out.filter(o=>o.st==="PREVENTIVO")};
 }
 const lim=c=>c.t==="rango"?`${fmt(c.lo)} – ${fmt(c.hi)}`:(c.hi===0?"0 (ausencia)":`≤ ${fmt(c.hi)}`);
 const resTxt=o=>o.avg>0?fmt(o.avg):(o.ld>0?"<"+fmt(o.ld):"<1");
@@ -262,7 +266,8 @@ function bullet(o){
                           :`se registró un valor de <b>${fmt(o.avg)} ${esc(u)}</b>, superior al máximo permitido (rango ${lim(c)} ${esc(u)})`;
   else if(c.hi===0) t=`se registró un valor de <b>${resTxt(o)} ${esc(u)}</b>; la norma exige ausencia (0 ${esc(u)})`;
   else t=`se obtuvo un valor de <b>${fmt(o.avg)} ${esc(u)}</b>, que supera el valor máximo permitido (≤ ${fmt(c.hi)} ${esc(u)})`;
-  return `<b>${esc(c.n)}:</b> ${t}, por lo que <b>no cumple</b> con la Resolución 2115 de 2007${c.p===0?" (parámetro sin puntaje de riesgo: no suma al IRCA)":""}.`;
+  if(o.st==="PREVENTIVO") return `<b>${esc(c.n)}:</b> ${t}. No suma al IRCA (puntaje de riesgo 0), pero <b>requiere seguimiento preventivo</b>.`;
+  return `<b>${esc(c.n)}:</b> ${t}, por lo que <b>no cumple</b> con la Resolución 2115 de 2007.`;
 }
 function conclusion(ev,sede,punto){
   const who=punto?`Para el punto de muestreo <b>${esc(punto)}</b>`:`Para la sede <b>${esc(sede)}</b>`;
@@ -270,13 +275,15 @@ function conclusion(ev,sede,punto){
   const k=lvl(ev.irca);
   let s=`${who}, el agua presenta un <b>IRCA de ${fmt(ev.irca,1)}</b>, que corresponde a un nivel ${k===0?"":"de "}<b>${LEVELS[k].name.toUpperCase()}</b>. ${LEVELS[k].txt}`;
   if(ev.bad.length) s+=` Se recomienda realizar seguimiento y control a los parámetros que presentan incumplimiento, especialmente <b>${ev.bad.map(o=>o.c.n.toLowerCase()).join(", ").replace(/, ([^,]*)$/," y $1")}</b>.`;
-  else s+=" Todos los parámetros analizados cumplen con los valores máximos aceptables.";
+  else if(!ev.warn.length) s+=" Todos los parámetros analizados cumplen con los valores máximos aceptables.";
+  else s+=" Los parámetros que suman al IRCA cumplen con los valores máximos aceptables.";
+  if(ev.warn.length) s+=` Como medida preventiva, se recomienda vigilar <b>${ev.warn.map(o=>o.c.n.toLowerCase()).join(", ").replace(/, ([^,]*)$/," y $1")}</b>, que superan el valor de referencia aunque no suman al IRCA.`;
   return s;
 }
 function paramTable(ev){
   let h='<div class="tblwrap"><table><thead><tr><th>Parámetro</th><th>Unidad</th><th>Resultado</th><th>Límite</th><th>Estado</th><th>Puntaje asignado</th><th>Puntaje de riesgo</th></tr></thead><tbody>';
-  ev.par.filter(o=>o.n).forEach(o=>{const bad=o.st==="NO CUMPLE";
-    h+=`<tr class="${bad?"bad":""}"><td>${esc(o.c.n)}</td><td class="muted">${esc(o.c.u)}</td><td><b>${resTxt(o)}</b></td><td>${lim(o.c)}</td><td class="st">${bad?"No cumple":"Cumple"}</td><td>${fmt(o.c.p)}</td><td>${bad?fmt(o.c.p):0}</td></tr>`;});
+  ev.par.filter(o=>o.n).forEach(o=>{const bad=o.st==="NO CUMPLE",wr=o.st==="PREVENTIVO";
+    h+=`<tr class="${bad?"bad":wr?"warn":""}"><td>${esc(o.c.n)}</td><td class="muted">${esc(o.c.u)}</td><td><b>${resTxt(o)}</b></td><td>${lim(o.c)}</td><td class="st">${bad?"No cumple":wr?"Seguimiento preventivo":"Cumple"}</td><td>${fmt(o.c.p)}</td><td>${bad?fmt(o.c.p):0}</td></tr>`;});
   h+=`<tr class="tot"><td>Totales</td><td></td><td></td><td></td><td>Σ puntajes</td><td>${fmt(ev.pa)}</td><td>${fmt(ev.pi)}</td></tr>`;
   {const k=lvl(ev.irca),sol=["#1f8a5b","#d4a106","#e07b12","#c0392b","#7d1a1a"],bg=k<0?"var(--track)":sol[k],fg=k<0||k===1?"#17312e":"#fff";
    h+=`<tr><td colspan="4" style="background:${bg};color:${fg};font-weight:800">RESULTADO IRCA</td><td colspan="3" style="background:${bg};color:${fg};font-weight:800">${ev.irca==null?"Sin IRCA":fmt(ev.irca,1)+" % · "+LEVELS[k].name}</td></tr>`;}
@@ -288,9 +295,10 @@ function emailText(ev,sede,punto){
   const mes=MESES[st.m-1].toLowerCase();
   let t=`Mediante el presente correo, comparto los resultados del Índice de Riesgo de la Calidad del Agua para Consumo Humano (IRCA) correspondientes al mes de ${mes} de ${st.y}, para la sede ${sede}, en el punto de muestreo ${punto}, con base en los análisis realizados.\n\n`;
   ev.bad.forEach(o=>t+="• "+strip(bullet(o))+"\n");
-  if(!ev.bad.length) t+="• Todos los parámetros analizados cumplen con la Resolución 2115 de 2007.\n";
+  if(!ev.bad.length) t+="• Los parámetros que suman al IRCA cumplen con la Resolución 2115 de 2007.\n";
+  if(ev.warn.length){t+="\nSeguimiento preventivo (no suman al IRCA):\n";ev.warn.forEach(o=>t+="• "+strip(bullet(o))+"\n");}
   t+="\nConclusión:\n\n"+strip(conclusion(ev,sede,punto))+"\n\nParámetro | Unidad | Resultado | Límite | Estado | Puntaje asignado | Puntaje de riesgo\n";
-  ev.par.filter(o=>o.n).forEach(o=>{const b=o.st==="NO CUMPLE";t+=`${o.c.n} | ${o.c.u} | ${resTxt(o)} | ${lim(o.c)} | ${b?"No cumple":"Cumple"} | ${fmt(o.c.p)} | ${b?fmt(o.c.p):0}\n`;});
+  ev.par.filter(o=>o.n).forEach(o=>{const b=o.st==="NO CUMPLE";t+=`${o.c.n} | ${o.c.u} | ${resTxt(o)} | ${lim(o.c)} | ${b?"No cumple":o.st==="PREVENTIVO"?"Seguimiento preventivo":"Cumple"} | ${fmt(o.c.p)} | ${b?fmt(o.c.p):0}\n`;});
   t+=`Totales | | | | Σ puntajes | ${fmt(ev.pa)} | ${fmt(ev.pi)}\n`;
   return t;
 }
@@ -339,6 +347,7 @@ function renderSede(s){
     <div class="prow"><div><div class="k">Puntos de muestreo</div><div class="s">con resultados en el mes</div></div><div class="v">${C.pts.length}</div></div>
     <div class="prow"><div><div class="k">Parámetros analizados</div><div class="s">promedio de todos los puntos</div></div><div class="v">${A.an}</div></div>
     <div class="prow"><div><div class="k">Parámetros que no cumplen</div><div class="s">${A.bad.length?A.bad.map(o=>esc(o.c.n)).join(", "):"ninguno"}</div></div><div class="v ${A.bad.length?"warn":""}">${A.bad.length}</div></div>
+    <div class="prow"><div><div class="k">Seguimiento preventivo</div><div class="s">${A.warn.length?A.warn.map(o=>esc(o.c.n)).join(", ")+" · no suman al IRCA":"ninguno"}</div></div><div class="v ${A.warn.length?"warn":""}">${A.warn.length}</div></div>
     <div class="prow"><div><div class="k">Puntaje de riesgo</div><div class="s">no cumple / analizado</div></div><div class="v">${fmt(A.pi)}<span class="s"> / ${fmt(A.pa)}</span></div></div>
   </div></section>`;
   h+=`<h2>IRCA por punto de muestreo · ${esc(s)}</h2><div class="bars">`;
@@ -352,7 +361,8 @@ function renderSede(s){
       <div class="pscore"><div class="num">${ev.irca==null?"—":fmt(ev.irca,1)}</div>${chip(ev.irca)}</div></div>
       <div class="pbody"><div>
         <h4>Parámetros que no cumplen</h4>
-        ${ev.bad.length?`<ul>${ev.bad.map(o=>`<li>${bullet(o)}</li>`).join("")}</ul>`:`<p class="okmsg">Todos los parámetros analizados cumplen.</p>`}
+        ${ev.bad.length?`<ul>${ev.bad.map(o=>`<li>${bullet(o)}</li>`).join("")}</ul>`:`<p class="okmsg">Todos los parámetros que suman al IRCA cumplen.</p>`}
+        ${ev.warn.length?`<h4 class="warnmsg">Seguimiento preventivo (no suman al IRCA)</h4><ul>${ev.warn.map(o=>`<li>${bullet(o)}</li>`).join("")}</ul>`:""}
         <h4>Conclusión</h4><p class="concl">${conclusion(ev,s,p.name)}</p>
         <button class="btn copy" type="button" data-ix="${ix}">Copiar para correo (con tabla)</button>
       </div><div>${paramTable(ev)}</div></div></article>`;});
@@ -392,7 +402,7 @@ function renderYearSede(s,YS){
   const okM=con.filter(i=>lvl(ms[i].irca)<=1).length, hiM=con.filter(i=>lvl(ms[i].irca)>=2).length;
   // parámetros con dato en el año
   const P=D.cfg.map((c,j)=>{const cells=ms.map(e=>e&&e.par[j].n?e.par[j]:null);const d=cells.filter(o=>o);
-    return{j,c,cells,n:d.length,bad:d.filter(o=>o.st==="NO CUMPLE").length};}).filter(p=>p.n);
+    return{j,c,cells,n:d.length,bad:d.filter(o=>o.st==="NO CUMPLE").length,wn:d.filter(o=>o.st==="PREVENTIVO").length};}).filter(p=>p.n);
   const top=P.slice().sort((a,b)=>b.bad-a.bad)[0];
   if(!st.pars)st.pars=[];st.pars=st.pars.filter(j=>P.some(p=>p.j===j));if(!st.pars.length){const cl=P.find(p=>/cloro/i.test(p.c.n));if(cl||P[0])st.pars=[(cl||P[0]).j];}
   let h=`<section class="hero"><div>
@@ -411,23 +421,23 @@ function renderYearSede(s,YS){
     h+=`<div class="mcol" title="${MESES[i]}: ${v==null?(e?"sin IRCA":"sin muestreo"):fmt(v,1)+" · "+LEVELS[kk].name}"><div class="mv" style="color:${kk<0?"var(--faint)":LEVELS[kk].color}">${v==null?"—":fmt(v,1)}</div><div class="mb"><i style="height:${v==null?0:Math.max(v,3)}%;background:${kk<0?"transparent":LEVELS[kk].color}"></i></div><div class="mn">${MA[i]}</div><div class="ml" style="color:${kk<0?"var(--faint)":LEVELS[kk].color}">${kk<0?(e?"Sin IRCA":"Sin dato"):LEVELS[kk].name.replace("Riesgo ","").replace(" sanitariamente","")}</div></div>`;});
   h+=`</div><div class="legend">${LEVELS.map((l,i)=>`<span class="chip lv${i}">${l.name}</span>`).join("")}</div>`;
   // parámetro seleccionado
-  h+=`<h2>Comportamiento por parámetro</h2><div class="pcard"><div class="phdr"><div class="field"><label>Parámetros (elija uno o varios)</label><div class="pick"><button type="button" class="btn" data-pick="todos">Todos</button><button type="button" class="btn" data-pick="malos">Solo los que no cumplen</button><button type="button" class="btn" data-pick="ninguno">Ninguno</button></div></div><div id="parChip"></div></div><div class="pchips" id="pchips">${P.map(p=>`<button type="button" class="pchip ${p.bad?"hasbad":""}" data-j="${p.j}" aria-pressed="false">${esc(p.c.n)}<span>${p.bad?p.bad+"/"+p.n+" no cumple":"cumple"}</span></button>`).join("")}</div><div id="parView"></div></div>`;
+  h+=`<h2>Comportamiento por parámetro</h2><div class="pcard"><div class="phdr"><div class="field"><label>Parámetros (elija uno o varios)</label><div class="pick"><button type="button" class="btn" data-pick="todos">Todos</button><button type="button" class="btn" data-pick="malos">Solo con incumplimiento o seguimiento</button><button type="button" class="btn" data-pick="ninguno">Ninguno</button></div></div><div id="parChip"></div></div><div class="pchips" id="pchips">${P.map(p=>`<button type="button" class="pchip ${p.bad?"hasbad":""}" data-j="${p.j}" aria-pressed="false">${esc(p.c.n)}<span>${p.bad?p.bad+"/"+p.n+" no cumple":"cumple"}</span></button>`).join("")}</div><div id="parView"></div></div>`;
   // tabla anual
   h+=`<h2>Todos los parámetros, mes a mes</h2><div class="tblwrap"><table class="heat"><thead><tr><th>Parámetro</th><th>Límite</th>${MA.map(m=>`<th>${m}</th>`).join("")}<th>No cumple</th></tr></thead><tbody>`;
-  P.forEach(p=>{h+=`<tr class="prow2 ${st.pars.includes(p.j)?"sel":""}" data-j="${p.j}"><td>${esc(p.c.n)} <span class="muted">(${esc(p.c.u)})</span></td><td>${lim(p.c)}</td>${p.cells.map(o=>o?`<td class="${o.st==="NO CUMPLE"?"badc":""}">${resTxt(o)}</td>`:'<td class="nd">—</td>').join("")}<td class="${p.bad?"badc":""}">${p.bad} de ${p.n}</td></tr>`;});
+  P.forEach(p=>{h+=`<tr class="prow2 ${st.pars.includes(p.j)?"sel":""}" data-j="${p.j}"><td>${esc(p.c.n)} <span class="muted">(${esc(p.c.u)})</span></td><td>${lim(p.c)}</td>${p.cells.map(o=>o?`<td class="${o.st==="NO CUMPLE"?"badc":o.st==="PREVENTIVO"?"warnc":""}">${resTxt(o)}</td>`:'<td class="nd">—</td>').join("")}<td class="${p.bad?"badc":""}">${p.bad} de ${p.n}</td></tr>`;});
   h+=`<tr class="tot"><td>IRCA del mes (%)</td><td></td>${ms.map(e=>`<td>${e&&e.irca!=null?fmt(e.irca,1):"—"}</td>`).join("")}<td>${YS.avg==null?"—":"Prom. "+fmt(YS.avg,1)}</td></tr>`;
   h+=`<tr><td><b>Nivel de riesgo</b></td><td></td>${ms.map(e=>`<td>${e?chip(e.irca).replace("Riesgo ","").replace(" sanitariamente",""):'<span class="muted">—</span>'}</td>`).join("")}<td>${chip(YS.avg)}</td></tr>`;
   h+=`</tbody></table></div><p class="psum">Cada valor es el promedio de todos los puntos de muestreo de la sede en ese mes. Las celdas en rojo no cumplen la Resolución 2115. Toque un parámetro para agregarlo o quitarlo de las gráficas.</p>`;
   $("view").innerHTML=h;
   const draw=()=>{const sel=P.filter(p=>st.pars.includes(p.j));
-    $("parView").innerHTML=sel.length?sel.map(p=>`<section class="pblock"><div class="ptitle"><h4>${esc(p.c.n)} <span class="muted">(${esc(p.c.u)})</span></h4>${p.bad?`<span class="chip lv3">No cumple ${p.bad} de ${p.n} meses</span>`:`<span class="chip lv0">Cumple los ${p.n} meses</span>`}</div><div class="chartwrap">${paramChart(p,sel.length>1)}</div>${paramSummary(p,s)}</section>`).join(""):'<p class="psum">Elija uno o varios parámetros para ver su gráfica.</p>';
+    $("parView").innerHTML=sel.length?sel.map(p=>`<section class="pblock"><div class="ptitle"><h4>${esc(p.c.n)} <span class="muted">(${esc(p.c.u)})</span></h4>${p.bad?`<span class="chip lv3">No cumple ${p.bad} de ${p.n} meses</span>`:p.wn?`<span class="chip lv2">Seguimiento preventivo ${p.wn} de ${p.n} meses</span>`:`<span class="chip lv0">Cumple los ${p.n} meses</span>`}</div><div class="chartwrap">${paramChart(p,sel.length>1)}</div>${paramSummary(p,s)}</section>`).join(""):'<p class="psum">Elija uno o varios parámetros para ver su gráfica.</p>';
     const nb=sel.filter(p=>p.bad).length;
     $("parChip").innerHTML=sel.length?`<span class="chip lvx">${sel.length} seleccionado${sel.length>1?"s":""}</span>${nb?` <span class="chip lv3">${nb} con incumplimientos</span>`:""}`:"";
     $("pchips").querySelectorAll(".pchip").forEach(b=>b.setAttribute("aria-pressed",st.pars.includes(+b.dataset.j)));
     $("view").querySelectorAll("tr.prow2").forEach(r=>r.classList.toggle("sel",st.pars.includes(+r.dataset.j)));};
   const toggle=j=>{st.pars=st.pars.includes(j)?st.pars.filter(x=>x!==j):st.pars.concat(j);draw();};
   $("pchips").querySelectorAll(".pchip").forEach(b=>b.onclick=()=>toggle(+b.dataset.j));
-  $("view").querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{const k=b.dataset.pick;st.pars=k==="todos"?P.map(p=>p.j):k==="malos"?P.filter(p=>p.bad).map(p=>p.j):[];draw();});
+  $("view").querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{const k=b.dataset.pick;st.pars=k==="todos"?P.map(p=>p.j):k==="malos"?P.filter(p=>p.bad||p.wn).map(p=>p.j):[];draw();});
   $("view").querySelectorAll("tr.prow2").forEach(r=>r.onclick=()=>{toggle(+r.dataset.j);$("pchips").scrollIntoView({behavior:"smooth",block:"center"});});
   draw();
 }
@@ -436,9 +446,10 @@ function paramSummary(p,s){
   const badM=d.filter(x=>x.o.st==="NO CUMPLE").map(x=>MESES[x.i].toLowerCase());
   const mn=d.reduce((a,b)=>b.v<a.v?b:a),mx=d.reduce((a,b)=>b.v>a.v?b:a),avg=Math.round(d.reduce((a,b)=>a+b.v,0)/d.length*1000)/1000;
   let t=`<b>${esc(c.n)}</b> en ${esc(s)} durante ${st.y}: se midió en <b>${d.length} mes${d.length>1?"es":""}</b> y el límite permitido es <b>${lim(c)} ${esc(c.u)}</b>. `;
-  t+=badM.length?`No cumplió en <b>${badM.length}</b> (${lista(badM)}) y cumplió en ${d.length-badM.length}. `:`Cumplió en todos los meses medidos. `;
+  const wM=d.filter(x=>x.o.st==="PREVENTIVO").map(x=>MESES[x.i].toLowerCase());
+  t+=badM.length?`No cumplió en <b>${badM.length}</b> (${lista(badM)}) y cumplió en ${d.length-badM.length}. `:wM.length?`Superó el valor de referencia en <b>${wM.length}</b> (${lista(wM)}): requiere seguimiento preventivo. `:`Cumplió en todos los meses medidos. `;
   t+=`Promedio del año <b>${fmt(avg,2)}</b>, mínimo ${resTxt(mn.o)} en ${MESES[mn.i].toLowerCase()} y máximo ${resTxt(mx.o)} en ${MESES[mx.i].toLowerCase()}.`;
-  if(c.p===0)t+=" Este parámetro no tiene puntaje de riesgo, por lo que no suma al IRCA.";
+  if(c.p===0)t+=" Este parámetro no tiene puntaje de riesgo: no suma al IRCA, pero sus resultados son importantes para el seguimiento preventivo.";
   return `<p class="psum">${t}</p>`;
 }
 function niceStep(r){const e=Math.pow(10,Math.floor(Math.log10(r))),f=r/e;return (f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*e;}
@@ -463,9 +474,9 @@ function paramChart(p,small){
   p.cells.forEach((o,i)=>{g+=`<text x="${x(i)}" y="${H-10}" text-anchor="middle">${MA[i]}</text>`;
     if(!o){if(i>first&&i<last)g+=`<text x="${x(i)}" y="${y(0)+18}" text-anchor="middle" style="font-size:10px;fill:var(--faint)">sin dato</text>`;return;}
     const bad=o.st==="NO CUMPLE",Y=y(o.avg),ly=Y<pt+16?Y+18:Y-10;
-    g+=`<circle cx="${x(i)}" cy="${Y}" r="5.5" fill="${bad?"var(--high)":"var(--ok)"}" stroke="var(--bg)" stroke-width="2"><title>${MESES[i]}: ${resTxt(o)} ${u} · ${bad?"No cumple":"Cumple"}</title></circle><text class="vl" x="${x(i)}" y="${ly}" text-anchor="middle" ${bad?'style="fill:var(--high)"':'style="fill:var(--ok)"'}>${resTxt(o)}</text>`;});
+    g+=`<circle cx="${x(i)}" cy="${Y}" r="5.5" fill="${bad?"var(--high)":o.st==="PREVENTIVO"?"var(--mid)":"var(--ok)"}" stroke="var(--bg)" stroke-width="2"><title>${MESES[i]}: ${resTxt(o)} ${u} · ${bad?"No cumple":o.st==="PREVENTIVO"?"Seguimiento preventivo":"Cumple"}</title></circle><text class="vl" x="${x(i)}" y="${ly}" text-anchor="middle" ${bad?'style="fill:var(--high)"':o.st==="PREVENTIVO"?'style="fill:var(--mid)"':'style="fill:var(--ok)"'}>${resTxt(o)}</text>`;});
   g+=`<g transform="translate(${pl},${H-2})"></g>`;
-  return g+"</svg>"+`<div class="legend"><span class="chip lv0">● Cumple</span><span class="chip lv3">● No cumple</span><span class="chip lvx">- - - mes sin dato</span></div>`;
+  return g+"</svg>"+`<div class="legend"><span class="chip lv0">● Cumple</span><span class="chip lv3">● No cumple</span><span class="chip lv2">● Seguimiento preventivo</span><span class="chip lvx">- - - mes sin dato</span></div>`;
 }
 $("seg").querySelectorAll("button").forEach(b=>b.onclick=()=>{st.mode=b.dataset.mode;render();});
 // ---------- Correo con formato (tabla con estilos que se conserva al pegar en Outlook/Gmail) ----------
@@ -477,13 +488,14 @@ function emailHTML(ev,sede,punto){
   const chipH=k<0?"":`<span style="background:${colors[k][1]};color:${colors[k][0]};font-weight:bold;padding:2px 8px;border-radius:10px;">${LEVELS[k].name.toUpperCase()}</span>`;
   let h=`<div style="${F}"><p style="margin:0 0 10px;">Mediante el presente correo, comparto los resultados del Índice de Riesgo de la Calidad del Agua para Consumo Humano (IRCA) correspondientes al mes de <b>${mes} de ${st.y}</b>, para la sede <b>${esc(sede)}</b>, en el punto de muestreo <b>${esc(punto)}</b>, con base en los análisis realizados.</p>`;
   if(ev.bad.length){h+=`<p style="margin:10px 0 4px;"><b>Parámetros que no cumplen:</b></p><ul style="margin:0 0 10px 18px;padding:0;">${ev.bad.map(o=>`<li style="margin-bottom:4px;">${bullet(o)}</li>`).join("")}</ul>`;}
-  else h+=`<p style="margin:10px 0;">Todos los parámetros analizados cumplen con la Resolución 2115 de 2007.</p>`;
+  else h+=`<p style="margin:10px 0;">Los parámetros que suman al IRCA cumplen con la Resolución 2115 de 2007.</p>`;
+  if(ev.warn.length){h+=`<div style="background:#fff4d6;border-left:4px solid #e07b12;padding:8px 12px;margin:8px 0 10px;"><p style="margin:0 0 4px;color:#a85400;"><b>Seguimiento preventivo</b> (no suman al IRCA, pero superan el valor de referencia):</p><ul style="margin:0 0 0 18px;padding:0;">${ev.warn.map(o=>`<li style="margin-bottom:4px;">${bullet(o)}</li>`).join("")}</ul></div>`;}
   h+=`<p style="margin:10px 0 4px;"><b>Conclusión:</b></p><p style="margin:0 0 12px;">${conclusion(ev,sede,punto)}</p>`;
   const th=`style="background:#00766c;color:#ffffff;font-weight:bold;padding:6px 8px;border:1px solid #00766c;text-align:center;${F}color:#ffffff;"`;
   const td=(a,x="")=>`<td style="padding:5px 8px;border:1px solid #cfdcd8;text-align:${a};${F}${x}">`;
   h+=`<table cellpadding="0" cellspacing="0" style="border-collapse:collapse;${F}"><thead><tr><th ${th}>Parámetro</th><th ${th}>Unidad</th><th ${th}>Resultado</th><th ${th}>Límite</th><th ${th}>Estado</th><th ${th}>Puntaje asignado</th><th ${th}>Puntaje de riesgo</th></tr></thead><tbody>`;
-  ev.par.filter(o=>o.n).forEach((o,i)=>{const b=o.st==="NO CUMPLE",bg=b?"background:#fdeceb;":(i%2?"background:#f4f9f7;":"background:#ffffff;");
-    h+=`<tr>${td("left",bg)}${esc(o.c.n)}</td>${td("center",bg+"color:#5d6f6c;")}${esc(o.c.u)}</td>${td("center",bg+"font-weight:bold;")}${resTxt(o)}</td>${td("center",bg)}${lim(o.c)}</td>${td("center",bg+(b?"color:#c0392b;font-weight:bold;":"color:#1f8a5b;font-weight:bold;"))}${b?"No cumple":"Cumple"}</td>${td("center",bg)}${fmt(o.c.p)}</td>${td("center",bg)}${b?fmt(o.c.p):0}</td></tr>`;});
+  ev.par.filter(o=>o.n).forEach((o,i)=>{const b=o.st==="NO CUMPLE",w=o.st==="PREVENTIVO",bg=b?"background:#fdeceb;":w?"background:#fff4d6;":(i%2?"background:#f4f9f7;":"background:#ffffff;");
+    h+=`<tr>${td("left",bg)}${esc(o.c.n)}</td>${td("center",bg+"color:#5d6f6c;")}${esc(o.c.u)}</td>${td("center",bg+"font-weight:bold;")}${resTxt(o)}</td>${td("center",bg)}${lim(o.c)}</td>${td("center",bg+(b?"color:#c0392b;font-weight:bold;":w?"color:#a85400;font-weight:bold;":"color:#1f8a5b;font-weight:bold;"))}${b?"No cumple":w?"Seguimiento preventivo":"Cumple"}</td>${td("center",bg)}${fmt(o.c.p)}</td>${td("center",bg)}${b?fmt(o.c.p):0}</td></tr>`;});
   h+=`<tr>${td("left","background:#eaf5f1;font-weight:bold;")}Totales</td>${td("center","background:#eaf5f1;")}</td>${td("center","background:#eaf5f1;")}</td>${td("center","background:#eaf5f1;")}</td>${td("center","background:#eaf5f1;font-weight:bold;")}Σ puntajes</td>${td("center","background:#eaf5f1;font-weight:bold;")}${fmt(ev.pa)}</td>${td("center","background:#eaf5f1;font-weight:bold;")}${fmt(ev.pi)}</td></tr>`;
   const bgI=k<0?"#e6f2ee":solid[k],fgI=k<0?"#17312e":(k===1?"#17312e":"#ffffff");
   h+=`<tr><td colspan="4" style="padding:8px;border:1px solid ${bgI};background:${bgI};color:${fgI};font-weight:bold;font-size:12pt;font-family:Calibri,Arial,sans-serif;">RESULTADO IRCA = 100 × ${fmt(ev.pi)} ÷ ${fmt(ev.pa)}</td><td colspan="3" style="padding:8px;border:1px solid ${bgI};background:${bgI};color:${fgI};font-weight:bold;font-size:12pt;text-align:center;font-family:Calibri,Arial,sans-serif;">${ev.irca==null?"Sin IRCA":fmt(ev.irca,1)+" % · "+LEVELS[k].name.toUpperCase()}</td></tr></tbody></table>`;
