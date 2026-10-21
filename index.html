@@ -277,7 +277,10 @@ function paramTable(ev){
   let h='<div class="tblwrap"><table><thead><tr><th>Parámetro</th><th>Unidad</th><th>Resultado</th><th>Límite</th><th>Estado</th><th>Puntaje asignado</th><th>Puntaje de riesgo</th></tr></thead><tbody>';
   ev.par.filter(o=>o.n).forEach(o=>{const bad=o.st==="NO CUMPLE";
     h+=`<tr class="${bad?"bad":""}"><td>${esc(o.c.n)}</td><td class="muted">${esc(o.c.u)}</td><td><b>${resTxt(o)}</b></td><td>${lim(o.c)}</td><td class="st">${bad?"No cumple":"Cumple"}</td><td>${fmt(o.c.p)}</td><td>${bad?fmt(o.c.p):0}</td></tr>`;});
-  h+=`<tr class="tot"><td>Totales</td><td></td><td></td><td></td><td>Σ puntajes</td><td>${fmt(ev.pa)}</td><td>${fmt(ev.pi)}</td></tr></tbody></table></div>`;
+  h+=`<tr class="tot"><td>Totales</td><td></td><td></td><td></td><td>Σ puntajes</td><td>${fmt(ev.pa)}</td><td>${fmt(ev.pi)}</td></tr>`;
+  {const k=lvl(ev.irca),sol=["#1f8a5b","#d4a106","#e07b12","#c0392b","#7d1a1a"],bg=k<0?"var(--track)":sol[k],fg=k<0||k===1?"#17312e":"#fff";
+   h+=`<tr><td colspan="4" style="background:${bg};color:${fg};font-weight:800">RESULTADO IRCA</td><td colspan="3" style="background:${bg};color:${fg};font-weight:800">${ev.irca==null?"Sin IRCA":fmt(ev.irca,1)+" % · "+LEVELS[k].name}</td></tr>`;}
+  h+=`</tbody></table></div>`;
   return h;
 }
 function emailText(ev,sede,punto){
@@ -470,9 +473,9 @@ function emailHTML(ev,sede,punto){
   const F='font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#17312e;';
   const mes=MESES[st.m-1].toLowerCase(), k=lvl(ev.irca);
   const colors=[["#1f8a5b","#dff3e8"],["#8a6a00","#fbf1c9"],["#a85400","#fde6cd"],["#c0392b","#f9dcd8"],["#7d1a1a","#f1cccc"]];
+  const solid=["#1f8a5b","#d4a106","#e07b12","#c0392b","#7d1a1a"];
   const chipH=k<0?"":`<span style="background:${colors[k][1]};color:${colors[k][0]};font-weight:bold;padding:2px 8px;border-radius:10px;">${LEVELS[k].name.toUpperCase()}</span>`;
   let h=`<div style="${F}"><p style="margin:0 0 10px;">Mediante el presente correo, comparto los resultados del Índice de Riesgo de la Calidad del Agua para Consumo Humano (IRCA) correspondientes al mes de <b>${mes} de ${st.y}</b>, para la sede <b>${esc(sede)}</b>, en el punto de muestreo <b>${esc(punto)}</b>, con base en los análisis realizados.</p>`;
-  h+=`<p style="margin:0 0 6px;"><b>Resultado IRCA: ${ev.irca==null?"—":fmt(ev.irca,1)} %</b> &nbsp;${chipH}</p>`;
   if(ev.bad.length){h+=`<p style="margin:10px 0 4px;"><b>Parámetros que no cumplen:</b></p><ul style="margin:0 0 10px 18px;padding:0;">${ev.bad.map(o=>`<li style="margin-bottom:4px;">${bullet(o)}</li>`).join("")}</ul>`;}
   else h+=`<p style="margin:10px 0;">Todos los parámetros analizados cumplen con la Resolución 2115 de 2007.</p>`;
   h+=`<p style="margin:10px 0 4px;"><b>Conclusión:</b></p><p style="margin:0 0 12px;">${conclusion(ev,sede,punto)}</p>`;
@@ -481,8 +484,11 @@ function emailHTML(ev,sede,punto){
   h+=`<table cellpadding="0" cellspacing="0" style="border-collapse:collapse;${F}"><thead><tr><th ${th}>Parámetro</th><th ${th}>Unidad</th><th ${th}>Resultado</th><th ${th}>Límite</th><th ${th}>Estado</th><th ${th}>Puntaje asignado</th><th ${th}>Puntaje de riesgo</th></tr></thead><tbody>`;
   ev.par.filter(o=>o.n).forEach((o,i)=>{const b=o.st==="NO CUMPLE",bg=b?"background:#fdeceb;":(i%2?"background:#f4f9f7;":"background:#ffffff;");
     h+=`<tr>${td("left",bg)}${esc(o.c.n)}</td>${td("center",bg+"color:#5d6f6c;")}${esc(o.c.u)}</td>${td("center",bg+"font-weight:bold;")}${resTxt(o)}</td>${td("center",bg)}${lim(o.c)}</td>${td("center",bg+(b?"color:#c0392b;font-weight:bold;":"color:#1f8a5b;font-weight:bold;"))}${b?"No cumple":"Cumple"}</td>${td("center",bg)}${fmt(o.c.p)}</td>${td("center",bg)}${b?fmt(o.c.p):0}</td></tr>`;});
-  h+=`<tr>${td("left","background:#eaf5f1;font-weight:bold;")}Totales</td>${td("center","background:#eaf5f1;")}</td>${td("center","background:#eaf5f1;")}</td>${td("center","background:#eaf5f1;")}</td>${td("center","background:#eaf5f1;font-weight:bold;")}Σ puntajes</td>${td("center","background:#eaf5f1;font-weight:bold;")}${fmt(ev.pa)}</td>${td("center","background:#eaf5f1;font-weight:bold;")}${fmt(ev.pi)}</td></tr></tbody></table>`;
-  h+=`<p style="margin:8px 0 0;font-size:9pt;color:#5d6f6c;">Límites y puntajes según la Resolución 2115 de 2007. Niveles IRCA: 0–5 sin riesgo · 5,1–14 bajo · 14,1–35 medio · 35,1–80 alto · 80,1–100 inviable sanitariamente.</p></div>`;
+  h+=`<tr>${td("left","background:#eaf5f1;font-weight:bold;")}Totales</td>${td("center","background:#eaf5f1;")}</td>${td("center","background:#eaf5f1;")}</td>${td("center","background:#eaf5f1;")}</td>${td("center","background:#eaf5f1;font-weight:bold;")}Σ puntajes</td>${td("center","background:#eaf5f1;font-weight:bold;")}${fmt(ev.pa)}</td>${td("center","background:#eaf5f1;font-weight:bold;")}${fmt(ev.pi)}</td></tr>`;
+  const bgI=k<0?"#e6f2ee":solid[k],fgI=k<0?"#17312e":(k===1?"#17312e":"#ffffff");
+  h+=`<tr><td colspan="4" style="padding:8px;border:1px solid ${bgI};background:${bgI};color:${fgI};font-weight:bold;font-size:12pt;font-family:Calibri,Arial,sans-serif;">RESULTADO IRCA = 100 × ${fmt(ev.pi)} ÷ ${fmt(ev.pa)}</td><td colspan="3" style="padding:8px;border:1px solid ${bgI};background:${bgI};color:${fgI};font-weight:bold;font-size:12pt;text-align:center;font-family:Calibri,Arial,sans-serif;">${ev.irca==null?"Sin IRCA":fmt(ev.irca,1)+" % · "+LEVELS[k].name.toUpperCase()}</td></tr></tbody></table>`;
+  h+=`<p style="margin:8px 0 0;font-family:Calibri,Arial,sans-serif;font-size:9pt;">${LEVELS.map((L,i)=>`<span style="background:${solid[i]};color:${i===1?"#17312e":"#ffffff"};font-weight:bold;padding:2px 8px;margin-right:4px;">${L.name} ${["0–5","5,1–14","14,1–35","35,1–80","80,1–100"][i]}</span>`).join(" ")}</p>`;
+  h+=`<p style="margin:6px 0 0;font-size:9pt;color:#5d6f6c;">Límites y puntajes según la Resolución 2115 de 2007.</p></div>`;
   return h;
 }
 function copyRich(html,plain){
