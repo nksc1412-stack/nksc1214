@@ -1,0 +1,1022 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Consumo de agua Unibán · Reporte Corpourabá</title>
+<meta name="description" content="Seguimiento del consumo de agua de los pozos profundos de Unibán y reporte mensual a Corpourabá.">
+<style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Poppins:wght@500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap">
+<style>
+/* Layout: glass sidebar + aqua canvas with soft water photo; white glass cards; faucet photo hero on Inicio, slim photo headers elsewhere. Single light look (aqua/mint) by choice. */
+:root{
+  color-scheme:light;
+  --bg:#eef8f7; --bg2:#e2f2f2; --glass:rgba(255,255,255,.82); --solid:#ffffff; --sunk:#f2f9f8; --line:#d9ece8;
+  --fg:#173a33; --muted:#668781;
+  --green:#1f8f6c; --green-d:#16745a; --mint:#cdeee0; --mint-2:#e3f6ee; --leaf:#5bbf7d;
+  --blue:#45a2e3; --blue-d:#2b84c2; --blue-soft:#dff0fb; --aqua:#bfe7ef;
+  --ok:#22865a; --ok-soft:#d8f3e5; --warn:#b26c00; --warn-soft:#fdefd3; --bad:#cf3f36; --bad-soft:#fde3e0;
+  --amber:#f0a14a; --violet:#8b6fe0; --violet-soft:#efe9fd;
+  --shadow:0 10px 30px rgba(30,110,100,.08);
+  --display:"Poppins",system-ui,sans-serif; --body:"Nunito Sans",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:linear-gradient(160deg,var(--bg),var(--bg2));color:var(--fg);font-family:var(--body);font-size:14.5px;line-height:1.5}
+.pagebg{position:fixed;left:0;right:0;bottom:0;height:42vh;z-index:-2;pointer-events:none}
+.pagebg svg{width:100%;height:100%;display:block}
+.pageveil{display:none}
+.deco{position:fixed;z-index:-1;pointer-events:none}
+.deco.br{right:-10px;bottom:-10px;width:190px}
+.deco.tr{right:10px;top:70px;width:70px;opacity:.8}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.2;text-wrap:balance}
+button{font:inherit;cursor:pointer;color:inherit}
+a{color:var(--green)}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.num{font-variant-numeric:tabular-nums}
+
+.app{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
+aside{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:20px;padding:20px 14px;background:var(--glass);backdrop-filter:blur(14px);border-right:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:8px;padding:2px 8px}
+.brand svg{width:34px;height:34px;flex:none}
+.brand b{font-family:var(--display);font-size:1.55rem;font-weight:600;color:var(--green-d);letter-spacing:-.01em}
+nav{display:flex;flex-direction:column;gap:3px}
+.nav{display:flex;align-items:center;gap:11px;border:0;background:none;padding:10px 12px;border-radius:12px;font-weight:600;font-size:.9rem;text-align:left;white-space:nowrap;color:#2c4f47}
+.nav svg{width:18px;height:18px;flex:none;color:var(--green)}
+.nav:hover{background:var(--mint-2)}
+.nav.on{background:linear-gradient(90deg,var(--mint),#d9f3e8);color:var(--green-d)}
+.nav .badge{margin-left:auto;font-size:.68rem;background:var(--bad);color:#fff;border-radius:99px;padding:1px 7px}
+.asideart{margin-top:auto;height:110px;position:relative}
+.asideart svg{position:absolute;left:-14px;right:-14px;bottom:0;width:calc(100% + 28px);height:100%}
+.me{display:flex;align-items:center;gap:10px;padding:12px 6px 0;border-top:1px solid var(--line)}
+.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--green));color:#fff;display:grid;place-items:center;font-weight:700;font-size:.8rem;flex:none}
+.me b{display:block;font-size:.86rem}
+.me span{font-size:.74rem;color:var(--muted)}
+
+main{min-width:0;padding-inline:26px;padding-block:18px 48px;display:flex;flex-direction:column;gap:16px}
+.top{display:flex;flex-wrap:wrap;gap:12px;justify-content:flex-end;align-items:center;min-height:42px}
+.picker{display:flex;align-items:center;gap:2px;background:var(--glass);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:12px;padding:3px;box-shadow:var(--shadow)}
+.picker button{border:0;background:none;width:30px;height:30px;border-radius:8px;font-size:1.1rem;color:var(--muted)}
+.picker button:hover:not(:disabled){background:var(--mint-2);color:var(--fg)}
+.picker button:disabled{opacity:.3;cursor:default}
+.picker .lbl{display:flex;align-items:center;gap:7px;font-weight:700;font-size:.86rem;min-width:9.5em;justify-content:center}
+.picker .lbl svg{width:16px;height:16px;color:var(--green)}
+.topme{display:flex;align-items:center;gap:8px;font-size:.82rem}
+.topme .avatar{width:32px;height:32px;font-size:.72rem}
+.topme b{display:block;font-size:.84rem;line-height:1.1}
+.topme span{color:var(--muted);font-size:.72rem}
+
+.view{display:flex;flex-direction:column;gap:16px}
+.card{background:var(--glass);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.9);border-radius:18px;box-shadow:var(--shadow);padding:18px}
+.card h3{font-size:1rem;font-weight:600}
+.cardhead{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:flex-end;margin-bottom:14px}
+.sub{color:var(--muted);font-size:.84rem;margin:2px 0 0}
+
+/* hero (Inicio) */
+.hero{position:relative;border-radius:22px;overflow:hidden;min-height:210px;box-shadow:var(--shadow);background:#e6f6fa;display:flex;align-items:center;isolation:isolate}
+.hero>svg.scene,.pagehead>svg.scene{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
+.wv{animation:sway 9s ease-in-out infinite alternate}.wv2{animation-duration:11s;animation-direction:alternate-reverse}.wv3{animation-duration:13s}
+@keyframes sway{from{transform:translateX(0)}to{transform:translateX(-40px)}}
+.rip{transform-box:fill-box;transform-origin:center;animation:ripple 3.6s ease-out infinite;opacity:0}.rip.r1{animation-delay:1.2s}.rip.r2{animation-delay:2.4s}
+@keyframes ripple{0%{transform:scale(.3);opacity:.9}100%{transform:scale(2.4);opacity:0}}
+.bub{animation:rise 6s linear infinite}.bub.b1{animation-delay:2s}.bub.b2{animation-delay:4s}
+@keyframes rise{0%{transform:translateY(0);opacity:0}20%{opacity:.8}100%{transform:translateY(-60px);opacity:0}}
+.fall{animation:drip 3.6s ease-in infinite}
+@keyframes drip{0%{transform:translateY(-10px)}100%{transform:translateY(4px)}}
+@media (prefers-reduced-motion:reduce){.wv,.rip,.bub,.fall{animation:none}.rip{opacity:.5}}
+.hero .txt{position:relative;padding:22px 26px;max-width:min(520px,64%);display:flex;flex-direction:column;gap:6px}
+.hero h1{font-size:1.75rem;font-weight:600}
+.hero .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue-d)}
+.hero p{margin:0;color:#3d5f57;font-size:.93rem}
+.remind{margin-top:8px;display:flex;gap:10px;align-items:center;background:rgba(255,255,255,.75);border:1px solid var(--mint);border-radius:12px;padding:9px 12px;font-size:.84rem}
+.remind svg{width:24px;height:24px;color:var(--green);flex:none}
+.remind b{color:var(--green-d)}
+.pagehead{position:relative;isolation:isolate;border-radius:18px;overflow:hidden;box-shadow:var(--shadow);background:#eef9fb;padding:20px 24px;min-height:104px;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center}
+.pagehead h2{font-size:1.3rem;font-weight:600}
+.pagehead p{margin:3px 0 0;color:var(--muted);font-size:.88rem;max-width:58ch}
+@media (max-width:640px){.hero .txt{max-width:100%;padding:16px;margin:10px;background:rgba(255,255,255,.82);border-radius:16px}.pagehead>div:first-child{background:rgba(255,255,255,.82);border-radius:12px;padding:8px 10px}}
+
+/* kpis */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.kpi{display:flex;gap:12px;align-items:flex-start;padding:16px}
+.kpi .ic{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;flex:none}
+.kpi .ic svg{width:24px;height:24px}
+.kpi span{font-size:.79rem;color:var(--muted);display:block}
+.kpi b{font-family:var(--display);font-size:1.45rem;font-weight:600;display:block;line-height:1.25}
+.kpi small{font-size:.74rem;font-weight:700;color:var(--muted);display:block}
+.kpi small.up{color:var(--bad)} .kpi small.down{color:var(--ok)} .kpi small.okc{color:var(--ok)}
+.ic.blue{background:var(--blue-soft);color:var(--blue)} .ic.green{background:var(--ok-soft);color:var(--green)}
+.ic.violet{background:var(--violet-soft);color:var(--violet)} .ic.amber{background:var(--warn-soft);color:var(--amber)}
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.grid2{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);gap:16px;align-items:stretch}
+.grid2.even{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+#tBody .note{max-width:16em}
+.grid2.even table{min-width:560px}
+@media (max-width:1050px){.grid2,.grid2.even{grid-template-columns:minmax(0,1fr)}}
+.care{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:10px;background:linear-gradient(160deg,rgba(255,255,255,.95),rgba(223,244,236,.9))}
+.care h3{font-size:1.15rem;color:var(--green-d);line-height:1.35}
+.care h3 span{display:block;color:var(--blue-d);font-weight:500}
+.care p{margin:0;font-size:.88rem;color:#3d5f57;max-width:30ch}
+.care .leafs{position:absolute;right:-6px;top:-6px;width:120px}
+.care .facts{display:grid;gap:8px;margin-top:4px}
+.care .fact{display:flex;gap:10px;align-items:center;font-size:.84rem}
+.care .fact i{width:30px;height:30px;border-radius:9px;background:var(--blue-soft);display:grid;place-items:center;color:var(--blue);font-style:normal;flex:none}
+.care .fact i svg{width:16px;height:16px}
+
+.btn{border:0;border-radius:11px;padding:10px 16px;font-weight:700;background:var(--green);color:#fff;display:inline-flex;align-items:center;gap:8px;font-size:.88rem;justify-content:center;text-decoration:none;box-shadow:0 4px 12px rgba(31,143,108,.22)}
+.btn:hover{background:var(--green-d)}
+.btn.ghost{background:var(--solid);color:var(--fg);border:1px solid var(--line);box-shadow:none}
+.btn.ghost:hover{background:var(--mint-2)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn svg{width:16px;height:16px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+.pill{display:inline-block;font-size:.74rem;font-weight:700;padding:3px 11px;border-radius:99px;white-space:nowrap}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)} .pill.info{background:var(--blue-soft);color:var(--blue-d)}
+.pill.neutral{background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
+
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0}
+.f label,.f>span{font-size:.72rem;color:var(--muted);font-weight:700}
+select,input,textarea{font:inherit;color:var(--fg);background:var(--solid);border:1px solid var(--line);border-radius:10px;padding:8px 11px;min-width:0}
+textarea{min-height:60px;resize:vertical;width:100%}
+
+/* charts */
+.chart{overflow-x:auto}
+.chart svg{display:block;width:100%;height:auto;min-width:560px}
+.chart text{fill:var(--muted);font-family:var(--body);font-size:11px}
+.chart text.v{fill:var(--fg);font-weight:700;font-size:10.5px}
+.chart .grid{stroke:var(--line)}
+.chart .bar{fill:url(#gBlue)} .chart .bar.over{fill:url(#gAmber)} .chart .ghost{fill:var(--mint);opacity:.85}
+.chart .cap{stroke:var(--bad);stroke-width:1.5;stroke-dasharray:6 4;fill:none}
+.chart .avg{stroke:var(--green);stroke-width:2;fill:none}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.8rem;color:var(--muted);margin-top:10px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.donutwrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+.donutwrap svg{width:min(230px,100%);height:auto}
+.donutwrap text{font-family:var(--body)}
+.dlegend{width:100%;display:flex;flex-direction:column;gap:6px;font-size:.82rem}
+.dlegend div{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:8px;align-items:center}
+.dlegend i{width:10px;height:10px;border-radius:3px}
+.dlegend span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dlegend b{font-variant-numeric:tabular-nums;font-size:.8rem}
+.ycards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.yc{background:var(--solid);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.yc span{font-size:.74rem;color:var(--muted);display:block}
+.yc b{font-family:var(--display);font-size:1.25rem;font-weight:600;display:block}
+.yc small{font-size:.74rem;font-weight:700}
+
+/* tables */
+.tbl{overflow-x:auto}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.86rem;min-width:640px}
+th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:.74rem;color:#3d5f57;font-weight:700;background:rgba(223,240,238,.6);white-space:nowrap}
+th:first-child{border-radius:10px 0 0 10px} th:last-child{border-radius:0 10px 10px 0}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:rgba(223,240,238,.3)}
+td.r,th.r{text-align:right}
+td b{font-weight:700}
+.use{display:flex;align-items:center;gap:8px;min-width:120px}
+.use .tr{flex:1;height:7px;border-radius:99px;background:var(--sunk);overflow:hidden}
+.use .tr i{display:block;height:100%;border-radius:99px;background:var(--blue)}
+.use .tr i.over{background:var(--amber)}
+.use span{font-size:.78rem;font-weight:700;min-width:3.2em;text-align:right}
+.heat td:first-child{white-space:nowrap}
+.heat td.c{text-align:right;font-variant-numeric:tabular-nums;font-size:.8rem;padding:8px 7px}
+.heat td.c.over{color:var(--warn);font-weight:700}
+.heat td.c.nil{color:#c3d9d4}
+.heat tbody tr{cursor:pointer}
+.heat tr.sel td:first-child{color:var(--blue-d);font-weight:700}
+.heat tfoot td{font-weight:700;border-top:2px solid var(--line);border-bottom:0}
+.icb{border:0;background:none;width:32px;height:32px;border-radius:9px;display:inline-grid;place-items:center;color:var(--blue)}
+.icb:hover{background:var(--blue-soft)}
+.icb.g{color:var(--green)} .icb.g:hover{background:var(--mint-2)}
+.icb.r{color:var(--bad)} .icb.r:hover{background:var(--bad-soft)}
+.icb svg{width:17px;height:17px}
+.icb:disabled{opacity:.35;cursor:default;background:none}
+.act{display:flex;gap:2px;justify-content:flex-end}
+.thumbs{display:flex;gap:6px;align-items:center}
+.tmb{width:58px;height:40px;border-radius:8px;overflow:hidden;border:1px solid var(--line);background:var(--sunk);padding:0;display:grid;place-items:center;cursor:zoom-in;flex:none}
+.tmb img{width:100%;height:100%;object-fit:cover;display:block}
+.tmb .pdf{font-weight:700;color:var(--blue-d);font-size:.72rem}
+.more{font-size:.75rem;color:var(--muted);font-weight:700}
+
+/* checklist */
+.alert{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px;align-items:center}
+.alert .big{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;font-family:var(--display);font-size:1.9rem;font-weight:700}
+.alert.pending .big{background:var(--warn-soft);color:var(--warn)} .alert.late .big{background:var(--bad-soft);color:var(--bad)} .alert.done .big{background:var(--ok-soft);color:var(--ok)}
+.alert h3{font-size:1.08rem}
+.alert p{margin:3px 0 0;font-size:.88rem;color:var(--muted)}
+@media (max-width:700px){.alert{grid-template-columns:auto minmax(0,1fr)}.alert .btns{grid-column:1/-1}}
+.meter{height:8px;border-radius:99px;background:var(--sunk);overflow:hidden;margin-top:10px}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:99px;transition:width .4s}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:900px){.cols{grid-template-columns:minmax(0,1fr)}}
+.slist{display:flex;flex-direction:column;gap:8px}
+.si{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 12px;border-radius:12px;background:var(--solid);border:1px solid var(--line)}
+.si .dot{width:34px;height:34px;border-radius:10px;display:grid;place-items:center}
+.si .dot svg{width:18px;height:18px}
+.si.p .dot{background:var(--warn-soft);color:var(--amber)}
+.si.d .dot{background:var(--ok-soft);color:var(--ok)}
+.si b{display:block;font-size:.9rem}
+.si small{color:var(--muted);font-size:.77rem;display:block}
+
+/* registro panel */
+.panel{border:1px solid var(--mint);background:linear-gradient(180deg,rgba(255,255,255,.96),rgba(236,249,244,.95))}
+.form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.form .w2{grid-column:span 2}.form .w4{grid-column:1/-1}
+@media (max-width:900px){.form{grid-template-columns:1fr 1fr}.form .w2{grid-column:1/-1}}
+@media (max-width:460px){.form{grid-template-columns:1fr}}
+.drop{border:2px dashed var(--aqua);border-radius:14px;padding:18px;text-align:center;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;background:rgba(240,250,252,.8)}
+.drop:hover,.drop.over{border-color:var(--blue);color:var(--blue-d)}
+.drop svg{width:32px;height:32px;color:var(--blue)}
+.drop b{color:var(--blue-d)}
+.drop input{display:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--solid);border-radius:10px;padding:5px 8px;font-size:.8rem;max-width:100%}
+.chip img{width:34px;height:34px;object-fit:cover;border-radius:6px}
+.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:14em}
+.chip button{border:0;background:none;color:var(--bad);font-weight:700;padding:0 4px}
+.err{color:var(--bad);font-size:.85rem}
+.okmsg{color:var(--ok);font-size:.88rem;font-weight:700}
+.note{font-size:.8rem;color:var(--muted)}
+.empty{padding:26px 16px;text-align:center;color:var(--muted);display:flex;flex-direction:column;gap:4px;align-items:center}
+.empty svg{width:54px;height:54px}
+.pager{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:12px}
+.pgb{display:flex;gap:6px;align-items:center}
+.pgb button{border:1px solid var(--line);background:var(--solid);border-radius:8px;min-width:30px;height:30px;font-weight:700;font-size:.8rem}
+.pgb button.on{background:var(--green);color:#fff;border-color:var(--green)}
+.pgb button:disabled{opacity:.4;cursor:default}
+.search{position:relative}
+.search input{padding-left:32px;width:220px;max-width:100%}
+.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted)}
+
+.lightbox{position:fixed;inset:0;background:rgba(10,40,36,.85);display:grid;place-items:center;padding:24px;z-index:40}
+.lightbox figure{margin:0;display:flex;flex-direction:column;gap:10px;align-items:center}
+.lightbox img{max-width:100%;max-height:82vh;border-radius:12px}
+.lightbox figcaption{color:#fff;font-size:.9rem}
+.lightbox button{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:14px;background:#fff;color:#111;border:0;border-radius:8px;padding:7px 14px;font-weight:700}
+
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.bob{animation:bob 3.4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.bob{animation:none}*{transition:none!important}}
+
+@media (max-width:820px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  aside{position:sticky;top:env(safe-area-inset-top,0px);height:auto;z-index:10;flex-direction:row;align-items:center;gap:10px;padding:10px 16px;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
+  .asideart,.me,.deco{display:none}
+  .brand b{font-size:1.15rem} .brand svg{width:26px;height:26px}
+  nav{flex-direction:row}
+  .nav{padding:8px 10px}
+  main{padding-inline:16px}
+  .topme{display:none}
+}
+@media (max-width:480px){.kpis{gap:10px}.kpi{flex-direction:column;gap:8px;padding:14px}.kpi b{font-size:1.15rem}}
+/* ===== diseño v7: foto del pozo + estilo panel ===== */
+.brand{gap:10px}
+.brand svg{width:48px;height:48px}
+.brand .bt b{display:block;font-family:var(--display);font-size:1.85rem;font-weight:700;color:#14614a;line-height:1}
+.brand .bt small{display:block;font-size:.78rem;color:#1f6f8f;line-height:1.2;margin-top:3px}
+aside{gap:24px;background:rgba(255,255,255,.9)}
+.nav{padding:12px 14px;font-size:.95rem;font-weight:500;gap:14px;color:#29453f}
+.nav svg{width:22px;height:22px;color:#2a5c53}
+.nav.on{background:linear-gradient(90deg,#d3f1e3,#e4f7ee);color:#13563f;font-weight:700}
+.nav.on svg{color:#13563f}
+.sideart{margin:auto -14px 0;position:relative;display:flex;flex-direction:column}
+.sideimg{height:260px;background:var(--side) center/cover;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 22%,#000 78%,transparent);mask-image:linear-gradient(180deg,transparent 0,#000 22%,#000 78%,transparent)}
+.hand{font-family:"Caveat",cursive;color:#1d5d8c;margin:0;line-height:1.05}
+.sideart .hand{font-size:1.35rem;padding:0 20px 6px}
+.top{justify-content:flex-end;gap:14px}
+.ghlink{margin-right:auto;font-size:.82rem;font-weight:700;color:#1f6fae;background:#e4f2fb;border:1px solid #cfe6f6;border-radius:12px;padding:8px 12px;text-decoration:none}
+.picker{background:#fff;border-radius:14px}
+.topme{padding-left:14px;border-left:1px solid var(--line)}
+.topme .avatar,.me .avatar{background:#13614a}
+/* hero */
+.hero{min-height:300px;background:#eaf6fb var(--pozo) right center/cover no-repeat;border:1px solid #fff;align-items:center}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(255,255,255,.97) 0%,rgba(255,255,255,.9) 36%,rgba(255,255,255,.35) 54%,rgba(255,255,255,0) 66%)}
+.hero .txt{max-width:min(560px,60%);padding:26px 34px;gap:12px}
+.hero .eyebrow{align-self:flex-start;background:#e2f1fb;color:#1f6fae;border-radius:99px;padding:6px 14px;font-size:.7rem;letter-spacing:.1em}
+.hero .eyebrow i{font-style:normal;margin:0 6px;color:#7bb3da}
+.hero h1{font-size:clamp(2rem,4.2vw,3rem);font-weight:700;color:#123a35;letter-spacing:-.02em}
+.hero p{font-size:1rem;color:#3c5752;max-width:44ch}
+.remind{all:unset;box-sizing:border-box;cursor:pointer;margin-top:6px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:rgba(255,255,255,.92);border:1px solid #cfe9df;border-radius:14px;padding:12px 14px;font-size:.88rem;color:#24433d;box-shadow:0 6px 18px rgba(30,110,100,.08)}
+.remind:hover{border-color:var(--green)}
+.remind:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.remind svg{width:28px;height:28px;color:#1f8f6c}
+.remind .chev{width:18px;height:18px;color:#24433d}
+.remind b{color:#13563f}
+.heroq{position:absolute;right:22px;top:18px;font-size:1.7rem;text-align:right;transform:rotate(-6deg);background:rgba(255,255,255,.78);backdrop-filter:blur(4px);border-radius:16px;padding:8px 14px 6px;box-shadow:0 6px 18px rgba(20,80,90,.12)}
+.heroq svg{display:block;width:110px;margin:2px 0 0 auto}
+/* KPI */
+.kpis{gap:16px}
+.kpi2{display:flex;flex-direction:column;gap:2px;padding:18px 18px 16px;position:relative;overflow:hidden;min-height:200px}
+.kpi2 .kh{display:flex;align-items:center;gap:12px;font-size:.88rem;color:#2c4a44;margin-bottom:6px}
+.kpi2 .ic{width:50px;height:50px;border-radius:50%;display:grid;place-items:center;flex:none}
+.kpi2 .ic svg{width:26px;height:26px}
+.kpi2 .big{font-family:var(--display);font-size:clamp(1.8rem,3vw,2.5rem);font-weight:700;color:#123a35;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi2 .pc{font-weight:800;font-size:1rem}
+.kpi2 .pc.up{color:#d9443a}.kpi2 .pc.down,.kpi2 .pc.g{color:#1f9a5e}.kpi2 .pc.v{color:#7d5bd6}.kpi2 .pc.a{color:#e08a16}
+.kpi2 .lab{font-size:.86rem;color:#4d6863}
+.kpi2 .viz{margin-top:auto;padding-top:10px}
+.kpi2 .bar{height:9px;border-radius:99px;background:#eef3f2;overflow:hidden}
+.kpi2 .bar i{display:block;height:100%;border-radius:99px}
+.kpi2 svg.spark{width:100%;height:46px;display:block}
+/* chart + estado */
+.grid2.home{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)}
+@media (max-width:1050px){.grid2.home{grid-template-columns:minmax(0,1fr)}}
+.ttl{display:flex;gap:12px;align-items:center}
+.ticon{width:42px;height:42px;border-radius:50%;background:#e2f1fb;color:#3a9be0;display:grid;place-items:center;flex:none}
+.ticon.g{background:#dcf3e7;color:#1f8f6c}
+.ticon svg{width:22px;height:22px}
+.ttl h3{font-size:1.12rem}
+.seg{display:flex;background:#eef5f3;border-radius:99px;padding:3px}
+.seg button{border:0;background:none;border-radius:99px;padding:6px 16px;font-weight:700;font-size:.82rem;color:#4d6863}
+.seg button.on{background:#13614a;color:#fff}
+.chart .bar{fill:url(#gBG)}
+.estado{font-size:.86rem}
+.estado .eh,.estado .er{display:grid;grid-template-columns:minmax(0,1fr) 7.6em 5.6em;gap:8px;align-items:center}
+.estado .eh{color:var(--muted);font-size:.78rem;padding:0 4px 8px;border-bottom:1px solid var(--line)}
+.estado .er{padding:7px 4px;border-bottom:1px solid #edf4f2}
+.estado .er:last-child{border-bottom:0}
+.estado .er span:first-child{display:flex;align-items:center;gap:8px;font-weight:600;color:#24433d;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.estado .er .d{width:8px;height:8px;border-radius:50%;flex:none}
+.estado .st{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;font-weight:700;padding:3px 10px;border-radius:99px;justify-self:start}
+.estado .st.ok{background:#d9f3e5;color:#1d7d4f}.estado .st.p{background:#fdecd2;color:#b56b00}.estado .st.x{background:#fde0dd;color:#c9372d}
+.estado .fe{color:#5e7772;font-size:.8rem;font-variant-numeric:tabular-nums}
+/* próximos pasos */
+.nextsteps{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:18px;align-items:center;background:linear-gradient(90deg,rgba(226,244,236,.9),rgba(255,255,255,.92) 30%,rgba(255,255,255,.92) 70%,rgba(226,241,251,.9))}
+.nsicon{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#2fa36b,#8fd8a8);color:#fff;display:grid;place-items:center}
+.nsicon svg{width:30px;height:30px}
+.nsbody h3{font-size:1.02rem;margin-bottom:10px}
+.nsgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+.ns{all:unset;box-sizing:border-box;display:flex;gap:12px;align-items:flex-start;padding:4px 16px;border-left:1px solid var(--line)}
+.ns:first-child{border-left:0;padding-left:0}
+button.ns{cursor:pointer} button.ns:hover b{color:var(--green)}
+button.ns:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.ns i{width:44px;height:44px;border-radius:50%;background:#dcf3e7;color:#1f8f6c;display:grid;place-items:center;flex:none}
+.ns i svg{width:22px;height:22px}
+.ns b{display:block;font-size:.86rem;color:#173a33}
+.ns small{display:block;font-size:.8rem;color:#5e7772;margin-top:2px}
+.nsq{font-size:1.45rem;text-align:center;transform:rotate(-6deg)}
+@media (max-width:1100px){.nextsteps{grid-template-columns:auto minmax(0,1fr)}.nsq{display:none}}
+@media (max-width:760px){.nsgrid{grid-template-columns:1fr;gap:12px}.ns{border-left:0;padding:0}.nextsteps{grid-template-columns:1fr}}
+/* cabeceras de pestañas con la foto */
+.pagehead{background:#eaf6fb var(--pozo) right 40%/cover no-repeat;min-height:118px;border:1px solid #fff}
+.pagehead::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(255,255,255,.97) 0%,rgba(255,255,255,.93) 45%,rgba(255,255,255,.2) 72%,rgba(255,255,255,0) 85%)}
+.pagehead h2{font-size:1.45rem;font-weight:700;color:#123a35}
+@media (max-width:640px){
+  .hero{background-position:70% center;min-height:0}
+  .hero::before{background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.82))}
+  .hero .txt{max-width:100%;padding:20px;margin:0;background:none}
+  .heroq{display:none}
+  .pagehead::before{background:rgba(255,255,255,.88)}
+  .pagehead>div:first-child{background:none;padding:0}
+  .ghlink{margin-right:0}
+}
+@media (max-width:820px){.sideart{display:none}.brand .bt small{display:none}.brand .bt b{font-size:1.2rem}.brand svg{width:30px;height:30px}.topme{display:none}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gBlue" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4aa6e6"/><stop offset="1" stop-color="#8fcdf2"/></linearGradient>
+    <linearGradient id="gBG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3f9fe4"/><stop offset=".7" stop-color="#7fcbe8"/><stop offset="1" stop-color="#a6e3bf"/></linearGradient>
+    <linearGradient id="gAmber" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0a14a"/><stop offset="1" stop-color="#f8d29a"/></linearGradient>
+    <linearGradient id="gDrop" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8ed3f5"/><stop offset="1" stop-color="#3a95db"/></linearGradient>
+    <symbol id="logo" viewBox="0 0 40 40"><path d="M20 34C9 30 5 20 9 8c9 3 14 11 11 26z" fill="#3fae6b"/><path d="M20 34c11-4 15-14 11-26-9 3-14 11-11 26z" fill="#7cd08f"/><path d="M20 34V14" stroke="#fff" stroke-width="1.6" opacity=".7"/></symbol>
+    <symbol id="drop" viewBox="0 0 48 48"><path d="M24 3C24 3 9 20 9 30a15 15 0 0 0 30 0C39 20 24 3 24 3z" fill="url(#gDrop)"/><path d="M17 30a7 7 0 0 0 7 7" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".75"/></symbol>
+    <symbol id="leaf" viewBox="0 0 60 60"><path d="M6 54C6 26 24 8 56 4 54 34 36 54 6 54z" fill="#6cc583"/><path d="M6 54C22 36 34 24 50 10" stroke="#3f9e62" stroke-width="2" fill="none"/></symbol>
+  </defs>
+</svg>
+<style>:root{--pozo:url("img/pozo.jpg");--side:url("img/side.jpg")}</style>
+<div class="pagebg" aria-hidden="true"><svg viewBox="0 0 1440 300" preserveAspectRatio="none"><path d="M0 170 Q180 130 360 165 T720 160 T1080 150 T1440 165 V300 H0z" fill="#d4eff3" opacity=".7"/><path d="M0 215 Q200 185 400 212 T800 205 T1200 198 T1440 210 V300 H0z" fill="#bfe6ee" opacity=".65"/><path d="M0 255 Q240 235 480 252 T960 248 T1440 250 V300 H0z" fill="#a9dce8" opacity=".55"/></svg></div><div class="pageveil" aria-hidden="true"></div>
+
+<div class="app">
+  <aside>
+    <div class="brand"><svg aria-hidden="true"><use href="#logo"/></svg><div class="bt"><b>Unibán</b><small>Agua que impulsa<br>nuestro futuro</small></div></div>
+    <nav id="nav"></nav>
+    <div class="sideart" aria-hidden="true"><div class="sideimg"></div><p class="hand">Cuidamos el agua,<br>construimos<br>un mejor mañana</p></div>
+    <div class="me"><div class="avatar" id="meAv">··</div><div><b id="meName">Cargando…</b><span id="meRole"></span></div></div>
+  </aside>
+
+  <main>
+    <div class="top">
+      <a class="ghlink" id="ghlink" href="https://claude.ai/artifact/3ZmCQaSt5YLkzkh2ybqwgP" target="_blank" rel="noopener" hidden>Versión de consulta · Para marcar sedes y subir evidencias abre el panel del equipo →</a>
+      <div class="picker" id="monthPicker"><button id="prevP" aria-label="Mes anterior">‹</button><span class="lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span id="pLabel"></span></span><button id="nextP" aria-label="Mes siguiente">›</button></div>
+      <div class="topme"><div class="avatar" id="meAv2">··</div><div><b id="meName2"></b><span id="meRole2"></span></div></div>
+    </div>
+
+    <!-- ============ INICIO ============ -->
+    <section class="view" id="v-inicio">
+      <div class="hero">
+        <div class="txt">
+          <span class="eyebrow">Unibán <i>•</i> Concesiones de agua <i>•</i> Corpourabá</span>
+          <h1 id="hello">Hola</h1>
+          <p>Aquí puedes hacer seguimiento del consumo de agua de los pozos profundos de Unibán y reportar a Corpourabá.</p>
+          <button class="remind" data-go="checklist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg><span><b>Recuerda:</b> <span id="remText">el reporte mensual debe enviarse entre el 1 y el 5 de cada mes.</span></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg></button>
+        </div>
+        <p class="hand heroq">El agua<br>es vida, es<br>nuestro futuro<svg viewBox="0 0 120 14" aria-hidden="true"><path d="M4 10 C40 2 80 2 116 8" stroke="#2fa36b" stroke-width="3" fill="none" stroke-linecap="round"/></svg></p>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="grid2 home">
+        <div class="card">
+          <div class="cardhead"><div class="ttl"><span class="ticon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3s-6 7-6 11a6 6 0 0 0 12 0c0-4-6-11-6-11z"/></svg></span><div><h3>Consumo de agua por sede (m³)</h3><p class="sub" id="barSub"></p></div></div>
+            <div class="seg" role="group" aria-label="Periodo de la gráfica"><button id="segMes" class="on">Mes</button><button id="segAno">Año</button></div></div>
+          <div class="chart" id="barChart"></div>
+          <div class="legend" id="barLegend"></div>
+        </div>
+        <div class="card">
+          <div class="cardhead"><div class="ttl"><span class="ticon g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg></span><div><h3>Estado del reporte mensual</h3><p class="sub" id="estSub"></p></div></div></div>
+          <div class="estado"><div class="eh"><span>Sede</span><span>Estado</span><span>Fecha</span></div><div id="estList"></div></div>
+        </div>
+      </div>
+      <div class="card nextsteps">
+        <span class="nsicon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3s-6 7-6 11a6 6 0 0 0 12 0c0-4-6-11-6-11z"/></svg></span>
+        <div class="nsbody"><h3>Seguimiento y próximos pasos</h3>
+          <div class="nsgrid">
+            <button class="ns" data-go="checklist"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg></i><span><b>1. Verifica sedes pendientes</b><small id="ns1"></small></span></button>
+            <button class="ns" data-go="registros"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 18a5 5 0 0 1-.6-10A6 6 0 0 1 18 9a4 4 0 0 1 0 9"/><path d="M12 12v8M9 15l3-3 3 3"/></svg></i><span><b>2. Carga los soportes</b><small>El único requisito es la evidencia de que el reporte fue enviado.</small></span></button>
+            <div class="ns"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></i><span><b>3. No olvides</b><small>El plazo de envío es del 1 al 5 de cada mes.</small></span></div>
+          </div>
+        </div>
+        <p class="hand nsq">Juntos por<br>el uso responsable<br>del agua</p>
+      </div>
+    </section>
+
+    <!-- ============ CONSUMO POR SEDE ============ -->
+    <section class="view" id="v-consumo" hidden>
+      <div class="pagehead"><div><h2>Consumo por sede</h2><p>Consulta y compara el consumo de agua de cada sede en el mes y a lo largo del año.</p></div></div>
+      <div class="grid2 even">
+        <div class="card">
+          <div class="cardhead"><div><h3 id="tTitle">Sedes del mes</h3><p class="sub">Consumo frente a la concesión mensual de cada pozo</p></div>
+            <div class="filters"><div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="tBuscar" placeholder="Buscar sede…" aria-label="Buscar sede"></div></div></div>
+          <div class="tbl"><table><thead><tr><th>Sede</th><th class="r">Consumo (m³)</th><th>Uso de la concesión</th><th>Estado</th><th class="r">Acciones</th></tr></thead><tbody id="tBody"></tbody></table></div>
+          <p class="note" id="tFoot" style="margin:10px 0 0"></p>
+        </div>
+        <div class="card">
+          <div class="cardhead"><div><h3>Distribución del consumo</h3><p class="sub" id="dnSub"></p></div></div>
+          <div class="donutwrap" id="donut"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cardhead">
+          <div><h3 id="mTitle">Consumo mensual del año</h3><p class="sub" id="mSub"></p></div>
+          <div class="filters"><div class="f"><label for="mSede">Sede</label><select id="mSede"></select></div><div class="f"><label for="mYear">Año</label><select id="mYear"></select></div></div>
+        </div>
+        <div class="chart" id="mChart"></div>
+        <div class="legend" id="mLegend"></div>
+      </div>
+      <div class="card">
+        <div class="cardhead"><div><h3 id="heatTitle">Consumo por sede y mes (m³)</h3><p class="sub">Toca una sede para verla en la gráfica · en naranja, meses sobre la concesión</p></div></div>
+        <div class="tbl"><table class="heat" id="heat"></table></div>
+      </div>
+    </section>
+
+    <!-- ============ COMPARATIVO ============ -->
+    <section class="view" id="v-comparativo" hidden>
+      <div class="pagehead"><div><h2>Comparativo anual de consumo</h2><p>Visualiza la evolución del consumo de agua por sede en los últimos años.</p></div></div>
+      <div class="card">
+        <div class="cardhead">
+          <div><h3 id="lTitle">Consumo mensual por año (m³)</h3><p class="sub" id="lSub"></p></div>
+          <div class="filters">
+            <div class="f"><label for="cSede">Sede</label><select id="cSede"></select></div>
+            <div class="f"><label for="cFrom">Año inicial</label><select id="cFrom"></select></div>
+            <div class="f"><label for="cTo">Año final</label><select id="cTo"></select></div>
+          </div>
+        </div>
+        <div class="chart" id="lChart"></div>
+        <div class="legend" id="lLegend"></div>
+        <h3 style="margin:18px 0 10px;font-size:.95rem">Total anual (m³)</h3>
+        <div class="ycards" id="ycards"></div>
+      </div>
+      <div class="card">
+        <div class="cardhead"><div><h3>Sedes por año</h3><p class="sub" id="cTblSub"></p></div>
+          <div class="filters"><div class="f"><label for="cMetric">Medida</label><select id="cMetric"><option value="tot">Total anual</option><option value="avg">Promedio mensual</option></select></div></div></div>
+        <div class="tbl"><table class="heat" id="cHeat"></table></div>
+      </div>
+    </section>
+
+    <!-- ============ CHECKLIST ============ -->
+    <section class="view" id="v-checklist" hidden>
+      <div class="pagehead"><div><h2>Checklist mensual</h2><p>Marca el avance de cada actividad del reporte a Corpourabá y revisa qué sedes faltan.</p></div></div>
+      <div class="card alert pending" id="alert">
+        <div class="big" id="aBig">9</div>
+        <div><h3 id="aTitle"></h3><p id="aText"></p><div class="meter"><i id="aMeter" style="width:0"></i></div></div>
+        <div class="btns"><button class="btn" data-go="registros">Registrar reporte</button><a class="btn ghost" href="https://tasas.corpouraba.gov.co/" target="_blank" rel="noopener">Plataforma Corpourabá</a></div>
+      </div>
+      <div class="card">
+        <div class="cardhead"><div><h3>Actividades del mes</h3><p class="sub">Ventana de reporte: del 1 al 5 de cada mes</p></div><span class="pill info" id="stepsN"></span></div>
+        <div class="tbl"><table><thead><tr><th>#</th><th>Actividad</th><th>Responsable</th><th>Fecha límite</th><th>Estado</th><th class="r">Acción</th></tr></thead><tbody id="stepsBody"></tbody></table></div>
+        <p class="err" id="stepsErr"></p>
+      </div>
+      <div class="cols">
+        <div class="card"><div class="cardhead"><div><h3>Sedes que faltan</h3><p class="sub">Responsable y usuario en la plataforma</p></div><span class="pill warn" id="pendN"></span></div><div class="slist" id="pendList"></div></div>
+        <div class="card"><div class="cardhead"><div><h3>Sedes reportadas</h3><p class="sub">Quién lo hizo y en qué fecha</p></div><span class="pill ok" id="doneN"></span></div><div class="slist" id="doneList"></div></div>
+      </div>
+    </section>
+
+    <!-- ============ REGISTROS Y EVIDENCIAS ============ -->
+    <section class="view" id="v-registros" hidden>
+      <div class="pagehead"><div><h2>Registros y evidencias</h2><p>Carga el soporte de que el consumo se reportó a Corpourabá: la fecha y la foto, nada más.</p></div><button class="btn" id="openForm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>Cargar evidencia</button></div>
+      <div class="card panel" id="formCard" hidden>
+        <div class="cardhead"><div><h3>Nuevo registro</h3><p class="sub" id="rSub"></p></div><button class="icb" id="closeForm" aria-label="Cerrar formulario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+        <form class="form" id="rForm" novalidate>
+          <div class="f"><label for="rSede">Sede</label><select id="rSede"></select></div>
+          <div class="f"><label for="rFecha">Fecha del reporte</label><input type="date" id="rFecha"></div>
+          <div class="f"><label for="rTipo">Tipo de registro</label><select id="rTipo"></select></div>
+          <div class="f"><label for="rCons">Consumo (m³) · opcional</label><input id="rCons" inputmode="decimal" placeholder="Ej.: 2600"></div>
+          <label class="drop w2" id="rDrop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a5 5 0 0 1-.6-10A6 6 0 0 1 18 9a4 4 0 0 1 0 9"/><path d="M12 12v8M9 15l3-3 3 3"/></svg><span>Arrastra archivos aquí o <b>haz clic para seleccionar</b></span><small>JPG, PNG o PDF · máx. 20 MB</small><input type="file" id="rFile" accept="image/*,application/pdf" multiple></label>
+          <div class="f w2"><label for="rNota">Observación · opcional</label><textarea id="rNota" placeholder="Ej.: radicado de la plataforma, lectura estimada…"></textarea></div>
+          <div class="chips w4" id="rChips"></div>
+          <div class="btns w4"><button class="btn" type="submit" id="rSave">Guardar</button><button class="btn ghost" type="button" id="rCancel">Cancelar</button><span id="rMsg"></span></div>
+          <p class="note w4" id="rPerm"></p>
+        </form>
+      </div>
+      <div class="card">
+        <div class="cardhead">
+          <div><h3 id="eTitle">Registros del mes</h3><p class="sub">Cada fila es una sede reportada con sus soportes</p></div>
+          <div class="filters">
+            <div class="f"><label for="eSede">Sede</label><select id="eSede"><option value="">Todas las sedes</option></select></div>
+            <div class="f"><label for="eTipo">Tipo</label><select id="eTipo"><option value="">Todos</option></select></div>
+            <div class="f"><label for="eScope">Mostrar</label><select id="eScope"><option value="mes">Mes seleccionado</option><option value="todo">Todos los meses</option></select></div>
+          </div>
+        </div>
+        <div class="tbl"><table><thead><tr><th>Fecha</th><th>Periodo</th><th>Sede</th><th>Tipo de registro</th><th class="r">Consumo (m³)</th><th>Evidencia</th><th>Responsable</th><th class="r">Acciones</th></tr></thead><tbody id="eBody"></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- ============ HISTORIAL ============ -->
+    <section class="view" id="v-historial" hidden>
+      <div class="pagehead"><div><h2>Historial de registros y reportes</h2><p>Toda la información: quién hizo cada actividad, cuándo, y las lecturas desde 2016.</p></div>
+        <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="hBuscar" placeholder="Buscar…" aria-label="Buscar en el historial"></div></div>
+      <div class="card">
+        <div class="cardhead"><div><h3>Actividad del equipo</h3><p class="sub">Reportes, actividades del checklist y evidencias</p></div></div>
+        <div class="tbl"><table><thead><tr><th>Fecha</th><th>Periodo</th><th>Sede</th><th>Actividad</th><th>Responsable</th><th>Estado</th><th>Evidencia</th></tr></thead><tbody id="logBody"></tbody></table></div>
+      </div>
+      <div class="card">
+        <div class="cardhead">
+          <div><h3>Lecturas y consumos · data madre</h3><p class="sub">Hoja «Registro Consumos» del Excel unida a los reportes hechos aquí</p></div>
+          <div class="filters">
+            <div class="f"><label for="dSede">Sede</label><select id="dSede"><option value="">Todas</option></select></div>
+            <div class="f"><label for="dAno">Año</label><select id="dAno"><option value="">Todos</option></select></div>
+            <button class="btn ghost" id="csvBtn" hidden>Exportar CSV</button>
+          </div>
+        </div>
+        <div class="tbl"><table><thead><tr><th>Periodo</th><th>Sede</th><th class="r">Lectura actual</th><th class="r">Consumo m³</th><th class="r">Concesión m³</th><th>Uso</th><th>Fuente</th><th>Reportó</th></tr></thead><tbody id="dBody"></tbody></table></div>
+        <div class="pager"><span class="note" id="dPage"></span><div class="pgb" id="dPgb"></div></div>
+      </div>
+      <div class="card">
+        <div class="cardhead"><div><h3>Concesiones de agua</h3><p class="sub">Hoja «General» de la BD Consumos de agua</p></div></div>
+        <div class="tbl"><table><thead><tr><th>Sede</th><th>Resolución</th><th>Matrícula</th><th class="r">Concesión m³/mes</th><th>Vigencia</th></tr></thead><tbody id="conc"></tbody></table></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="lightbox" id="lb" hidden><button id="lbClose">Cerrar</button><figure><img id="lbImg" alt="Evidencia ampliada"><figcaption id="lbCap"></figcaption></figure></div>
+
+<script>
+const CONS = [[2016,1,"Astillero Casanova",11725.0,151.0,288.0],[2016,1,"Zona Industrial Zungo",121330.0,6285.0,6266.0],[2016,1,"Planta Snacks",132892.0,1929.0,4527.9],[2016,1,"Pista Planes",127353.0,1207.0,1430.8],[2016,1,"Pista Indira",14889.0,61.0,1088.0],[2016,1,"Sede Central",71320.0,2885.0,2419.0],[2016,2,"Astillero Casanova",11880.0,155.0,288.0],[2016,2,"Zona Industrial Zungo",128497.0,7167.0,6266.0],[2016,2,"Planta Snacks",134868.0,1976.0,4527.9],[2016,2,"Pista Planes",128456.04,1103.04,1430.8],[2016,2,"Pista Indira",15051.9,162.9,1088.0],[2016,2,"Sede Central",73240.0,1920.0,2419.0],[2016,3,"Sede Central",75947.0,2707.0,2419.0],[2016,3,"Astillero Casanova",12071.0,191.0,288.0],[2016,3,"Zona Industrial Zungo",135688.0,7191.0,6266.0],[2016,3,"Planta Snacks",136378.0,1510.0,4527.9],[2016,3,"Pista Planes",129821.55,1365.51,1430.8],[2016,3,"Pista Indira",15100.33,48.43,1088.0],[2016,4,"Sede Central",77617.0,1670.0,2419.0],[2016,4,"Astillero Casanova",12410.0,339.0,288.0],[2016,4,"Zona Industrial Zungo",142443.0,6755.0,6266.0],[2016,4,"Planta Snacks",138169.0,1791.0,4527.9],[2016,4,"Pista Planes",131073.6,1252.05,1430.8],[2016,4,"Pista Indira",15324.2,223.87,1088.0],[2016,5,"Sede Central",79113.0,1496.0,2419.0],[2016,5,"Astillero Casanova",12883.0,473.0,288.0],[2016,5,"Zona Industrial Zungo",148726.0,6283.0,6266.0],[2016,5,"Planta Snacks",139828.0,1659.0,4527.9],[2016,5,"Pista Planes",131931.81,858.21,1430.8],[2016,5,"Pista Indira",15390.07,65.87,1088.0],[2016,6,"Sede Central",81529.0,2416.0,2419.0],[2016,6,"Astillero Casanova",13436.0,553.0,288.0],[2016,6,"Zona Industrial Zungo",155748.0,7022.0,6266.0],[2016,6,"Planta Snacks",141475.0,1647.0,4527.9],[2016,6,"Pista Planes",132803.73,871.92,1430.8],[2016,6,"Pista Indira",15498.1,108.03,1088.0],[2016,7,"Sede Central",83708.0,2179.0,2419.0],[2016,7,"Astillero Casanova",13594.0,158.0,288.0],[2016,7,"Zona Industrial Zungo",161312.0,5564.0,6266.0],[2016,7,"Planta Snacks",143003.0,1528.0,4527.9],[2016,7,"Pista Planes",133705.0,901.27,1430.8],[2016,7,"Pista Indira",15611.0,112.9,1088.0],[2016,8,"Sede Central",86617.0,2909.0,2419.0],[2016,8,"Astillero Casanova",13870.0,276.0,288.0],[2016,8,"Zona Industrial Zungo",165177.0,3865.0,6266.0],[2016,8,"Planta Snacks",144546.0,1543.0,4527.9],[2016,8,"Pista Planes",134720.95,1015.95,1430.8],[2016,8,"Pista Indira",15748.5,137.5,1088.0],[2016,9,"Sede Central",89111.0,2494.0,2419.0],[2016,9,"Astillero Casanova",14126.0,256.0,288.0],[2016,9,"Zona Industrial Zungo",169080.0,3903.0,6266.0],[2016,9,"Planta Snacks",146159.0,1613.0,4527.9],[2016,9,"Pista Planes",135755.17,1034.23,1430.8],[2016,9,"Pista Indira",15921.0,172.5,1088.0],[2016,10,"Sede Central",91753.0,2642.0,2419.0],[2016,10,"Astillero Casanova",14303.0,177.0,288.0],[2016,10,"Zona Industrial Zungo",172948.0,3868.0,6266.0],[2016,10,"Planta Snacks",147737.0,1578.0,4527.9],[2016,10,"Pista Planes",136834.47,1079.3,1430.8],[2016,10,"Pista Indira",15995.12,74.12,1088.0],[2016,11,"Sede Central",94490.0,2737.0,2419.0],[2016,11,"Astillero Casanova",14550.0,247.0,288.0],[2016,11,"Zona Industrial Zungo",178635.0,5687.0,6266.0],[2016,11,"Planta Snacks",149492.0,1755.0,4527.9],[2016,11,"Pista Planes",137845.23,1010.76,1430.8],[2016,11,"Pista Indira",16022.89,27.77,1088.0],[2016,12,"Sede Central",96920.0,2430.0,2419.0],[2016,12,"Astillero Casanova",14753.0,203.0,288.0],[2016,12,"Zona Industrial Zungo",184128.0,5493.0,6266.0],[2016,12,"Planta Snacks",151150.0,1658.0,4527.9],[2016,12,"Pista Planes",138857.0,1011.77,1430.8],[2016,12,"Pista Indira",16180.0,157.11,1088.0],[2017,1,"Zona Industrial Zungo",190605.0,6477.0,6266.0],[2017,1,"Pista Planes",140414.0,1557.0,1430.8],[2017,1,"Pista Indira",16378.0,198.0,1088.0],[2017,1,"Sede Central",99955.0,3035.0,2419.0],[2017,1,"Astillero Casanova",14901.0,148.0,288.0],[2017,1,"Planta Snacks",153030.0,1880.0,4527.9],[2017,2,"Planta Snacks",154845.0,1815.0,4527.9],[2017,2,"Astillero Casanova",15024.0,123.0,288.0],[2017,2,"Pista Planes",141733.0,1319.0,1430.8],[2017,2,"Pista Indira",16531.0,153.0,1088.0],[2017,2,"Sede Central",101938.0,1983.0,2419.0],[2017,2,"Zona Industrial Zungo",197036.0,6431.0,6266.0],[2017,3,"Astillero Casanova",15189.0,165.0,288.0],[2017,3,"Planta Snacks",156900.0,2055.0,4527.9],[2017,3,"Sede Central",104063.0,2125.0,2419.0],[2017,3,"Pista Planes",143043.0,1310.0,1430.8],[2017,3,"Pista Indira",16631.0,100.0,1088.0],[2017,3,"Zona Industrial Zungo",202533.0,5497.0,6266.0],[2017,4,"Astillero Casanova",15324.0,135.0,288.0],[2017,4,"Planta Snacks",158911.0,2011.0,4527.9],[2017,4,"Pista Planes",144222.0,1179.0,1430.8],[2017,4,"Pista Indira",16643.0,12.0,1088.0],[2017,4,"Sede Central",107527.0,3464.0,2419.0],[2017,4,"Zona Industrial Zungo",208242.0,5709.0,6266.0],[2017,5,"Astillero Casanova",15513.0,189.0,288.0],[2017,5,"Planta Snacks",161475.0,2564.0,4527.9],[2017,5,"Sede Central",108541.0,1014.0,2419.0],[2017,5,"Zona Industrial Zungo",213834.0,5592.0,6266.0],[2017,5,"Pista Planes",145456.0,1234.0,1430.8],[2017,5,"Pista Indira",16644.0,1.0,1088.0],[2017,6,"Planta Snacks",163363.0,1888.0,4527.9],[2017,6,"Pista Planes",146536.0,1080.0,1430.8],[2017,6,"Pista Indira",16658.0,14.0,1088.0],[2017,6,"Astillero Casanova",15697.0,184.0,288.0],[2017,6,"Zona Industrial Zungo",218416.0,4582.0,6266.0],[2017,6,"Sede Central",110698.0,2157.0,2419.0],[2017,7,"Planta Snacks",165813.0,2450.0,4527.9],[2017,7,"Pista Planes",147564.0,1028.0,1430.8],[2017,7,"Pista Indira",16672.0,14.0,1088.0],[2017,7,"Astillero Casanova",15899.0,202.0,288.0],[2017,7,"Zona Industrial Zungo",219055.0,639.0,6266.0],[2017,7,"Sede Central",112933.0,2235.0,2419.0],[2017,8,"Zona Industrial Zungo",221026.0,1971.0,6266.0],[2017,8,"Astillero Casanova",16113.22,214.22,288.0],[2017,8,"Planta Snacks",168307.0,2494.0,4527.9],[2017,8,"Sede Central",114018.0,1085.0,2419.0],[2017,8,"Pista Indira",16681.0,9.0,1088.0],[2017,8,"Pista Planes",148521.0,957.0,1430.8],[2017,9,"Planta Snacks",170475.0,2168.0,4527.9],[2017,9,"Zona Industrial Zungo",225848.0,4822.0,6266.0],[2017,9,"Pista Planes",149702.0,1181.0,1430.8],[2017,9,"Pista Indira",16681.0,0.0,1088.0],[2017,9,"Sede Central",116318.0,2300.0,2419.0],[2017,9,"Astillero Casanova",16311.0,197.78,288.0],[2017,10,"Astillero Casanova",16362.0,51.0,288.0],[2017,10,"Sede Central",117570.0,1252.0,2419.0],[2017,10,"Planta Snacks",172882.0,2407.0,4527.9],[2017,10,"Pista Planes",150724.0,1022.0,1430.8],[2017,10,"Pista Indira",16681.0,0.0,1088.0],[2017,10,"Zona Industrial Zungo",230623.0,4775.0,6266.0],[2017,11,"Zona Industrial Zungo",235949.0,5326.0,6266.0],[2017,11,"Planta Snacks",175247.0,2365.0,4527.9],[2017,11,"Pista Planes",151757.0,1033.0,1430.8],[2017,11,"Pista Indira",16695.0,14.0,1088.0],[2017,11,"Sede Central",119721.0,2151.0,2419.0],[2017,11,"Astillero Casanova",16423.0,61.0,288.0],[2017,12,"Astillero Casanova",16478.0,55.0,288.0],[2017,12,"Sede Central",121786.0,2065.0,2419.0],[2017,12,"Planta Snacks",177496.0,2249.0,4527.9],[2017,12,"Pista Indira",16734.0,39.0,1088.0],[2017,12,"Pista Planes",152707.0,950.0,1430.8],[2017,12,"Zona Industrial Zungo",241304.0,5355.0,6266.0],[2018,1,"Planta Snacks",180115.0,2619.0,4527.9],[2018,1,"Zona Industrial Zungo",247019.0,5715.0,6266.0],[2018,1,"Sede Central",123193.0,1407.0,2419.0],[2018,1,"Pista Planes",153790.47,1083.47,1430.8],[2018,1,"Pista Indira",16829.94,95.94,1088.0],[2018,1,"Astillero Casanova",16516.77,38.77,288.0],[2018,2,"Pista Planes",155042.18,1251.71,1430.8],[2018,2,"Pista Indira",17020.07,190.13,1088.0],[2018,2,"Planta Snacks",182117.0,2002.0,4527.9],[2018,2,"Zona Industrial Zungo",251853.0,4834.0,6266.0],[2018,2,"Sede Central",124506.0,1313.0,2419.0],[2018,2,"Astillero Casanova",16570.09,53.32,288.0],[2018,3,"Pista Planes",156303.98,1261.8,1430.8],[2018,3,"Pista Indira",17237.62,217.56,1088.0],[2018,3,"Planta Snacks",183861.0,1744.0,4527.9],[2018,3,"Sede Central",125864.0,1358.0,2419.0],[2018,3,"Zona Industrial Zungo",256687.0,4834.0,6266.0],[2018,3,"Astillero Casanova",16640.38,70.29,288.0],[2018,4,"Sede Central",126454.0,590.0,2419.0],[2018,4,"Planta Snacks",186601.0,2740.0,4527.9],[2018,4,"Zona Industrial Zungo",262687.0,6000.0,6266.0],[2018,4,"Pista Planes",157508.98,1205.0,1430.8],[2018,4,"Pista Indira",17439.62,202.0,1088.0],[2018,4,"Astillero Casanova",16715.82,75.44,288.0],[2018,5,"Astillero Casanova",16777.9,62.08,288.0],[2018,5,"Pista Planes",158859.58,1350.6,1430.8],[2018,5,"Pista Indira",17853.49,413.87,1088.0],[2018,5,"Planta Snacks",189274.0,2673.0,4527.9],[2018,5,"Zona Industrial Zungo",266687.0,4000.0,6266.0],[2018,5,"Sede Central",128054.0,1600.0,2419.0],[2018,6,"Planta Snacks",192377.0,3103.0,4527.9],[2018,6,"Astillero Casanova",16836.69,58.79,288.0],[2018,6,"Pista Planes",159660.0,800.42,1430.8],[2018,6,"Pista Indira",17903.0,49.51,1088.0],[2018,6,"Zona Industrial Zungo",271764.0,5077.0,6266.0],[2018,6,"Sede Central",130062.0,2008.0,2419.0],[2018,7,"Sede Central",132294.0,2232.0,2419.0],[2018,7,"Astillero Casanova",16894.0,57.31,288.0],[2018,7,"Planta Snacks",195449.0,3072.0,4527.9],[2018,7,"Pista Planes",160599.93,939.93,1430.8],[2018,7,"Pista Indira",18073.0,-1164.0,1088.0],[2018,7,"Zona Industrial Zungo",5771.0,5771.0,6266.0],[2018,8,"Zona Industrial Zungo",9292.0,3521.0,6266.0],[2018,8,"Astillero Casanova",16969.73,75.73,288.0],[2018,8,"Sede Central",134975.0,2681.0,2419.0],[2018,8,"Planta Snacks",200286.0,4837.0,4527.9],[2018,8,"Pista Planes",161846.82,1246.89,1430.8],[2018,8,"Pista Indira",18350.82,278.82,1088.0],[2018,9,"Sede Central",137570.0,2595.0,2419.0],[2018,9,"Planta Snacks",203776.0,3490.0,4527.9],[2018,9,"Zona Industrial Zungo",16347.0,7055.0,6266.0],[2018,9,"Pista Planes",163145.37,1298.55,1430.8],[2018,9,"Pista Indira",18656.32,305.5,1088.0],[2018,9,"Astillero Casanova",17040.61,70.88,288.0],[2018,10,"Zona Industrial Zungo",21713.0,5366.0,6266.0],[2018,10,"Sede Central",139858.0,2288.0,2419.0],[2018,10,"Planta Snacks",207102.0,3326.0,4527.9],[2018,10,"Pista Planes",164180.0,1034.63,1430.8],[2018,10,"Pista Indira",18952.0,295.68,1088.0],[2018,10,"Astillero Casanova",17121.0,80.39,288.0],[2018,11,"Planta Snacks",210038.0,2936.0,4527.9],[2018,11,"Pista Planes",165419.0,1239.0,1430.8],[2018,11,"Pista Indira",19361.0,409.0,1088.0],[2018,11,"Zona Industrial Zungo",28300.0,6587.0,6266.0],[2018,11,"Astillero Casanova",17186.0,65.0,288.0],[2018,11,"Sede Central",141838.0,1980.0,2419.0],[2018,12,"Planta Snacks",212331.0,2293.0,4527.9],[2018,12,"Pista Planes",166608.0,1189.0,1430.8],[2018,12,"Pista Indira",19719.0,358.0,1088.0],[2018,12,"Zona Industrial Zungo",34039.0,5739.0,6266.0],[2018,12,"Astillero Casanova",17251.0,65.0,288.0],[2018,12,"Sede Central",143230.0,1392.0,2419.0],[2019,1,"Planta Snacks",215858.0,3527.0,4527.9],[2019,1,"Pista Planes",167917.0,1309.0,1430.8],[2019,1,"Sede Central",145529.0,2299.0,2419.0],[2019,1,"Astillero Casanova",17331.94,80.94,288.0],[2019,1,"Zona Industrial Zungo",41780.0,7741.0,6266.0],[2019,1,"Pista Indira",20124.0,405.0,1088.0],[2019,2,"Zona Industrial Zungo",47030.0,5250.0,6266.0],[2019,2,"Planta Snacks",218854.0,2996.0,4527.9],[2019,2,"Pista Planes",169113.0,1196.0,1430.8],[2019,2,"Pista Indira",20519.0,395.0,1088.0],[2019,2,"Sede Central",147839.0,2310.0,2419.0],[2019,2,"Astillero Casanova",17383.0,51.06,288.0],[2019,3,"Zona Industrial Zungo",54008.0,6978.0,6266.0],[2019,3,"Planta Snacks",222067.0,3213.0,4527.9],[2019,3,"Pista Planes",170382.0,1269.0,1430.8],[2019,3,"Pista Indira",20858.0,339.0,1088.0],[2019,3,"Sede Central",150066.0,2227.0,2419.0],[2019,3,"Astillero Casanova",17452.0,69.0,288.0],[2019,4,"Sede Central",152098.0,2032.0,2419.0],[2019,4,"Astillero Casanova",17514.0,62.0,288.0],[2019,4,"Zona Industrial Zungo",59097.0,5089.0,6266.0],[2019,4,"Planta Snacks",225007.0,2940.0,4527.9],[2019,4,"Pista Planes",171425.0,1043.0,1430.8],[2019,4,"Pista Indira",21203.0,345.0,1088.0],[2019,5,"Planta Snacks",229233.0,4226.0,4527.9],[2019,5,"Sede Central",154369.0,2271.0,2419.0],[2019,5,"Astillero Casanova",17584.0,70.0,288.0],[2019,5,"Zona Industrial Zungo",65667.0,6570.0,6266.0],[2019,5,"Pista Planes",172538.36,1113.36,1430.8],[2019,5,"Pista Indira",21540.1,337.1,1088.0],[2019,6,"Planta Snacks",232523.0,3290.0,4527.9],[2019,6,"Sede Central",156409.0,2040.0,2419.0],[2019,6,"Astillero Casanova",17754.0,170.0,288.0],[2019,6,"Zona Industrial Zungo",69680.0,4013.0,6266.0],[2019,6,"Pista Planes",173684.0,1145.64,1430.8],[2019,6,"Pista Indira",21915.0,374.9,1088.0],[2019,7,"Planta Snacks",236371.0,3848.0,4527.9],[2019,7,"Astillero Casanova",17881.17,127.17,288.0],[2019,7,"Zona Industrial Zungo",74829.0,5149.0,6266.0],[2019,7,"Pista Planes",175022.0,1338.0,1430.8],[2019,7,"Pista Indira",22291.0,376.0,1088.0],[2019,7,"Sede Central",158478.0,2069.0,2419.0],[2019,8,"Planta Snacks",240692.0,4321.0,4527.9],[2019,8,"Zona Industrial Zungo",80863.0,6034.0,6266.0],[2019,8,"Pista Planes",176129.0,1107.0,1430.8],[2019,8,"Pista Indira",22614.0,323.0,1088.0],[2019,8,"Astillero Casanova",18075.0,193.83,288.0],[2019,8,"Sede Central",160545.0,2067.0,2419.0],[2019,9,"Astillero Casanova",18210.0,135.0,288.0],[2019,9,"Sede Central",163390.0,2845.0,2419.0],[2019,9,"Planta Snacks",244873.0,4181.0,4527.9],[2019,9,"Pista Planes",177224.0,1095.0,1430.8],[2019,9,"Pista Indira",23013.0,399.0,1088.0],[2019,9,"Zona Industrial Zungo",86696.0,5833.0,6266.0],[2018,1,"La Gran Vía",27457.0,411.0,1296.0],[2018,2,"La Gran Vía",27777.0,320.0,1296.0],[2018,3,"La Gran Vía",28226.0,449.0,1296.0],[2018,4,"La Gran Vía",28629.0,403.0,1296.0],[2018,5,"La Gran Vía",29111.0,482.0,1296.0],[2018,6,"La Gran Vía",29546.0,435.0,1296.0],[2018,7,"La Gran Vía",29826.0,280.0,1296.0],[2018,8,"La Gran Vía",30185.0,359.0,1296.0],[2018,9,"La Gran Vía",30632.0,447.0,1296.0],[2018,10,"La Gran Vía",30968.0,336.0,1296.0],[2018,11,"La Gran Vía",31245.0,277.0,1296.0],[2018,12,"La Gran Vía",31687.0,442.0,1296.0],[2019,1,"La Gran Vía",32179.0,492.0,1296.0],[2019,2,"La Gran Vía",32656.0,477.0,1296.0],[2019,3,"La Gran Vía",33367.0,711.0,1296.0],[2019,4,"La Gran Vía",33858.0,491.0,1296.0],[2019,5,"La Gran Vía",34262.0,404.0,1296.0],[2019,6,"La Gran Vía",34567.0,305.0,1296.0],[2019,7,"La Gran Vía",34900.0,333.0,1296.0],[2019,10,"Zona Industrial Zungo",90295.0,3599.0,6266.0],[2019,10,"Astillero Casanova",18358.0,148.0,288.0],[2019,10,"Pista Planes",178583.0,1359.0,1430.8],[2019,10,"Pista Indira",23463.0,450.0,1088.0],[2019,10,"Planta Snacks",248870.0,3997.0,4527.9],[2019,10,"Sede Central",166064.0,2674.0,2419.0],[2019,11,"Planta Snacks",253058.0,4188.0,4527.9],[2019,11,"Zona Industrial Zungo",95570.0,5275.0,6266.0],[2019,11,"Astillero Casanova",18480.0,122.0,288.0],[2019,11,"Sede Central",168354.0,2290.0,2419.0],[2019,11,"Pista Planes",179642.0,1059.0,1430.8],[2019,11,"Pista Indira",23788.0,325.0,1088.0],[2019,12,"Planta Snacks",256110.0,3052.0,4527.9],[2019,12,"Astillero Casanova",18620.0,140.0,288.0],[2019,12,"Pista Planes",180772.0,1130.0,1430.8],[2019,12,"Pista Indira",24147.0,359.0,1088.0],[2019,12,"Zona Industrial Zungo",100198.0,4628.0,6266.0],[2019,12,"Sede Central",170916.0,2562.0,2419.0],[2020,1,"Planta Snacks",260103.0,3993.0,4527.9],[2020,1,"Astillero Casanova",18712.0,92.0,288.0],[2020,1,"Pista Planes",182026.0,1254.0,1430.8],[2020,1,"Pista Indira",24609.0,462.0,1088.0],[2020,1,"Zona Industrial Zungo",4747.0,4549.0,6266.0],[2020,1,"Sede Central",173195.0,2279.0,2419.0],[2020,2,"Planta Snacks",263654.0,3551.0,4527.9],[2020,2,"Astillero Casanova",18806.0,94.0,288.0],[2020,2,"Zona Industrial Zungo",11134.0,6387.0,6266.0],[2020,2,"Sede Central",176449.0,3254.0,2419.0],[2020,2,"Pista Planes",183358.0,1332.0,1430.8],[2020,2,"Pista Indira",24978.0,369.0,1088.0],[2020,3,"Sede Central",179158.0,2709.0,2419.0],[2020,3,"Planta Snacks",266754.0,3100.0,4527.9],[2020,3,"Astillero Casanova",18920.0,114.0,288.0],[2020,3,"Pista Planes",184794.0,1436.0,1430.8],[2020,3,"Pista Indira",25260.0,282.0,1088.0],[2020,3,"Zona Industrial Zungo",15677.0,4543.0,6266.0],[2020,4,"Sede Central",181665.0,2507.0,2419.0],[2020,4,"Planta Snacks",270208.0,3454.0,4527.9],[2020,4,"Pista Planes",186517.0,1723.0,1430.8],[2020,4,"Pista Indira",25297.0,37.0,1088.0],[2020,4,"Astillero Casanova",18980.0,60.0,288.0],[2020,4,"Zona Industrial Zungo",20374.0,4697.0,6266.0],[2020,5,"Planta Snacks",273936.0,3728.0,4527.9],[2020,5,"Zona Industrial Zungo",24655.0,4281.0,6266.0],[2020,5,"Sede Central",184001.0,2336.0,2419.0],[2020,5,"Astillero Casanova",19073.0,93.0,288.0],[2020,5,"Pista Planes",187940.0,1423.0,1430.8],[2020,5,"Pista Indira",25303.0,6.0,1088.0],[2020,6,"Planta Snacks",277346.0,3410.0,4527.9],[2020,6,"Zona Industrial Zungo",28485.0,3830.0,6266.0],[2020,6,"Sede Central",186087.0,2086.0,2419.0],[2020,6,"Astillero Casanova",19161.0,88.0,288.0],[2020,6,"Pista Planes",189145.0,1205.0,1430.8],[2020,6,"Pista Indira",25590.0,287.0,1088.0],[2020,7,"Proceso de pelado",1048.0,1048.0,0.0],[2020,7,"Planta Snacks",279731.0,2385.0,4527.9],[2020,7,"Zona Industrial Zungo",33879.0,5394.0,6266.0],[2020,7,"Sede Central",1199.0,1667.0,2419.0],[2020,7,"Astillero Casanova",19269.0,108.0,288.0],[2020,7,"Pista Planes",190615.0,1470.0,1430.8],[2020,7,"Pista Indira",25640.0,50.0,1088.0],[2020,8,"Astillero Casanova",19350.0,81.0,288.0],[2020,8,"Zona Industrial Zungo",38460.0,4581.0,6266.0],[2020,8,"Pista Planes",191806.0,1191.0,1430.8],[2020,8,"Pista Indira",25842.0,202.0,1088.0],[2020,8,"Proceso de pelado",2692.0,1644.0,0.0],[2020,8,"Planta Snacks",282807.0,3076.0,4527.9],[2020,8,"Sede Central",2745.0,1546.0,2419.0],[2020,9,"Astillero Casanova",19440.0,90.0,288.0],[2020,9,"Zona Industrial Zungo",43453.0,4993.0,6266.0],[2020,9,"Pista Planes",192977.0,1171.0,1430.8],[2020,9,"Pista Indira",26070.0,228.0,1088.0],[2020,9,"Proceso de pelado",4446.0,1754.0,0.0],[2020,9,"Planta Snacks",286230.0,3423.0,4527.9],[2020,9,"Sede Central",4210.0,1465.0,2419.0],[2020,10,"Astillero Casanova",19604.0,164.0,288.0],[2020,10,"Zona Industrial Zungo",48499.0,5046.0,6266.0],[2020,10,"Pista Planes",194132.0,1155.0,1430.8],[2020,10,"Pista Indira",26427.0,357.0,1088.0],[2020,10,"Proceso de pelado",5865.0,1419.0,0.0],[2020,10,"Planta Snacks",289018.0,2788.0,4527.9],[2020,10,"Sede Central",6026.0,1816.0,2419.0],[2020,11,"Astillero Casanova",19706.0,102.0,288.0],[2020,11,"Zona Industrial Zungo",54866.0,6367.0,6266.0],[2020,11,"Pista Planes",195207.0,1075.0,1430.8],[2020,11,"Pista Indira",26730.0,303.0,1088.0],[2020,11,"Proceso de pelado",7425.0,1560.0,0.0],[2020,11,"Planta Snacks",292338.0,3320.0,4527.9],[2020,11,"Sede Central",7874.0,1848.0,2419.0],[2020,12,"Astillero Casanova",19825.0,119.0,288.0],[2020,12,"Zona Industrial Zungo",60485.0,5619.0,6266.0],[2020,12,"Pista Planes",196282.0,1075.0,1430.8],[2020,12,"Pista Indira",27043.0,313.0,1088.0],[2020,12,"Proceso de pelado",8816.0,1391.0,0.0],[2020,12,"Planta Snacks",294992.0,2654.0,4527.9],[2020,12,"Sede Central",9571.0,1697.0,2419.0],[2021,1,"Astillero Casanova",19899.0,74.0,288.0],[2021,1,"Planta Snacks",297563.0,2571.0,4527.9],[2021,1,"Proceso de pelado",9975.0,1159.0,0.0],[2021,1,"Zona Industrial Zungo",65011.0,4526.0,6266.0],[2021,1,"Sede Central",11206.0,1635.0,2419.0],[2021,1,"Pista Planes",197424.0,1142.0,1430.8],[2021,1,"Pista Indira",27378.0,335.0,1088.0],[2019,8,"La Gran Vía",35306.0,406.0,1296.0],[2019,9,"La Gran Vía",35550.0,244.0,1296.0],[2019,10,"La Gran Vía",36010.0,460.0,1296.0],[2019,11,"La Gran Vía",36434.0,424.0,1296.0],[2019,12,"La Gran Vía",36774.0,340.0,1296.0],[2020,1,"La Gran Vía",36981.0,207.0,1296.0],[2020,2,"La Gran Vía",37566.0,585.0,1296.0],[2020,3,"La Gran Vía",38055.0,489.0,1296.0],[2020,4,"La Gran Vía",38265.0,210.0,1296.0],[2020,5,"La Gran Vía",38480.0,215.0,1296.0],[2020,6,"La Gran Vía",38715.0,235.0,1296.0],[2020,7,"La Gran Vía",38920.0,205.0,1296.0],[2020,8,"La Gran Vía",39120.0,200.0,1296.0],[2020,9,"La Gran Vía",39340.0,220.0,1296.0],[2020,10,"La Gran Vía",39556.0,216.0,1296.0],[2020,11,"La Gran Vía",39760.0,204.0,1296.0],[2020,12,"La Gran Vía",40010.0,250.0,1296.0],[2021,2,"Proceso de pelado",11774.0,1799.0,0.0],[2021,2,"Planta Snacks",300854.0,3291.0,4527.9],[2021,2,"Sede Central",12921.0,1715.0,2419.0],[2021,2,"Pista Planes",198725.0,1301.0,1430.8],[2021,2,"Pista Indira",27791.0,413.0,1088.0],[2021,2,"Astillero Casanova",20001.0,102.0,288.0],[2021,2,"Zona Industrial Zungo",70095.0,5084.0,6266.0],[2021,3,"Planta Snacks",304433.0,3579.0,4527.9],[2021,3,"Proceso de pelado",13489.0,1715.0,0.0],[2021,3,"Sede Central",14608.0,1687.0,2419.0],[2021,3,"Pista Planes",199702.0,977.0,1430.8],[2021,3,"Pista Indira",28120.0,329.0,1088.0],[2021,3,"Zona Industrial Zungo",75395.0,5300.0,6266.0],[2021,3,"Astillero Casanova",20085.0,84.0,288.0],[2021,4,"Planta Snacks",307837.0,3404.0,4527.9],[2021,4,"Proceso de pelado",15242.0,1753.0,0.0],[2021,4,"Sede Central",16263.0,1655.0,2419.0],[2021,4,"Pista Planes",200928.0,1226.0,1430.8],[2021,4,"Pista Indira",28463.0,343.0,1088.0],[2021,4,"Zona Industrial Zungo",83200.0,7805.0,6266.0],[2021,4,"Astillero Casanova",20164.0,79.0,288.0],[2021,5,"Astillero Casanova",20245.0,81.0,288.0],[2021,5,"Planta Snacks",311065.0,3228.0,4527.9],[2021,5,"Proceso de pelado",16508.0,1266.0,0.0],[2021,5,"Sede Central",17674.0,1411.0,2419.0],[2021,5,"Pista Planes",202131.0,1203.0,1430.8],[2021,5,"Pista Indira",28780.0,317.0,1088.0],[2021,5,"Zona Industrial Zungo",88138.0,4938.0,6266.0],[2021,6,"Astillero Casanova",20347.0,102.0,288.0],[2021,6,"Planta Snacks",314092.0,3027.0,4527.9],[2021,6,"Proceso de pelado",17818.0,1310.0,0.0],[2021,6,"Sede Central",19042.0,1368.0,2419.0],[2021,6,"Pista Planes",203260.0,1129.0,1430.8],[2021,6,"Pista Indira",29007.0,227.0,1088.0],[2021,6,"Zona Industrial Zungo",91494.0,3356.0,6266.0],[2021,7,"Astillero Casanova",20433.0,86.0,288.0],[2021,7,"Zona Industrial Zungo",95949.0,4455.0,6266.0],[2021,7,"Planta Snacks",318482.0,4390.0,4527.9],[2021,7,"Proceso de pelado",19448.0,1630.0,0.0],[2021,7,"Pista Planes",204408.0,1148.0,1430.8],[2021,7,"Pista Indira",29376.0,369.0,1088.0],[2021,7,"Sede Central",21192.0,2150.0,2419.0],[2021,8,"Astillero Casanova",20516.0,83.0,288.0],[2021,8,"Zona Industrial Zungo",100634.0,4685.0,6266.0],[2021,8,"Planta Snacks",322038.0,3556.0,4527.9],[2021,8,"Proceso de pelado",21019.0,1571.0,0.0],[2021,8,"Pista Planes",205262.39,854.39,1430.8],[2021,8,"Pista Indira",29650.45,274.45,1088.0],[2021,8,"Sede Central",23392.0,2200.0,2419.0],[2021,8,"La Gran Vía",40337.0,1227.0,1296.0],[2021,9,"Astillero Casanova",20607.59,91.59,288.0],[2021,9,"Planta Snacks",325134.0,3096.0,4527.9],[2021,9,"Proceso de pelado",22302.0,1283.0,0.0],[2021,9,"Pista Planes",206358.57,1096.18,1430.8],[2021,9,"Pista Indira",29881.37,230.92,1088.0],[2021,9,"Zona Industrial Zungo",107272.0,6638.0,6266.0],[2021,9,"Sede Central",25848.0,2456.0,2419.0],[2021,10,"Astillero Casanova",20710.9,103.31,288.0],[2021,10,"Planta Snacks",328700.0,3566.0,4527.9],[2021,10,"Proceso de pelado",23747.0,1445.0,0.0],[2021,10,"Pista Planes",207295.36,936.79,1430.8],[2021,10,"Pista Indira",30153.24,271.87,1088.0],[2021,10,"Zona Industrial Zungo",111358.0,4086.0,6266.0],[2021,10,"Sede Central",28149.0,2301.0,2419.0],[2021,11,"Astillero Casanova",20815.11,104.21,288.0],[2021,11,"Planta Snacks",332095.0,3395.0,4527.9],[2021,11,"Proceso de pelado",25077.0,1330.0,0.0],[2021,11,"Pista Planes",208674.85,1379.49,1430.8],[2021,11,"Pista Indira",30470.19,316.96,1088.0],[2021,11,"Zona Industrial Zungo",115657.0,4299.0,6266.0],[2021,11,"Sede Central",30552.0,2403.0,2419.0],[2021,12,"Astillero Casanova",20908.71,93.6,288.0],[2021,12,"Planta Snacks",334937.0,2842.0,4527.9],[2021,12,"Proceso de pelado",26203.0,1126.0,0.0],[2021,12,"Pista Planes",209683.64,1008.79,1430.8],[2021,12,"Pista Indira",30734.82,264.62,1088.0],[2021,12,"Zona Industrial Zungo",119824.0,4167.0,6266.0],[2021,12,"Sede Central",32500.0,1948.0,2419.0],[2022,1,"Astillero Casanova",20992.94,84.23,288.0],[2022,1,"Zona Industrial Zungo",125590.0,5766.0,6266.0],[2022,1,"Planta Snacks",338606.0,3669.0,4527.9],[2022,1,"Proceso de pelado",27411.0,1208.0,0.0],[2022,1,"Pista Planes",210781.76,1098.12,1430.8],[2022,1,"Pista Indira",31056.54,321.72,1088.0],[2022,1,"Sede Central",34570.0,2070.0,2419.0],[2022,2,"Astillero Casanova",21090.39,97.45,288.0],[2022,2,"Zona Industrial Zungo",130680.0,5090.0,6266.0],[2022,2,"Planta Snacks",342569.0,3963.0,4527.9],[2022,2,"Proceso de pelado",28622.0,1211.0,0.0],[2022,2,"Pista Planes",211580.66,798.9,1430.8],[2022,2,"Pista Indira",31346.72,290.18,1088.0],[2022,2,"Sede Central",36578.0,2008.0,2419.0],[2022,3,"Astillero Casanova",21169.1,78.71,288.0],[2022,3,"Zona Industrial Zungo",135736.0,5056.0,6266.0],[2022,3,"Planta Snacks",346374.0,3805.0,4527.9],[2022,3,"Proceso de pelado",29860.0,1238.0,0.0],[2022,3,"Pista Planes",212536.87,956.21,1430.8],[2022,3,"Pista Indira",31542.59,195.87,1088.0],[2022,3,"Sede Central",38714.0,2136.0,2419.0],[2022,4,"Astillero Casanova",21262.72,93.62,288.0],[2022,4,"Zona Industrial Zungo",141681.0,5945.0,6266.0],[2022,4,"Planta Snacks",349897.0,3523.0,4527.9],[2022,4,"Proceso de pelado",30966.0,1106.0,0.0],[2022,4,"Pista Planes",213457.47,920.6,1430.8],[2022,4,"Pista Indira",31733.41,190.81,1088.0],[2022,4,"Sede Central",40435.0,1721.0,2419.0],[2022,5,"Astillero Casanova",21377.12,114.4,288.0],[2022,5,"Zona Industrial Zungo",145900.0,4219.0,6266.0],[2022,5,"Planta Snacks",353221.0,3324.0,4527.9],[2022,5,"Proceso de pelado",32141.0,1175.0,0.0],[2022,5,"Pista Planes",215141.39,1683.92,1430.8],[2022,5,"Pista Indira",31946.36,212.95,1088.0],[2022,5,"Sede Central",42700.0,2265.0,2419.0],[2022,6,"Astillero Casanova",21476.99,99.87,288.0],[2022,6,"Zona Industrial Zungo",152066.0,6166.0,6266.0],[2022,6,"Planta Snacks",357224.0,4003.0,4527.9],[2022,6,"Proceso de pelado",33505.0,1364.0,0.0],[2022,6,"Pista Planes",216434.24,1292.86,1430.8],[2022,6,"Pista Indira",32246.3,299.94,1088.0],[2022,6,"Sede Central",44592.0,1892.0,2419.0],[2022,7,"Astillero Casanova",21550.24,73.25,288.0],[2022,7,"Zona Industrial Zungo",157925.0,5859.0,6266.0],[2022,7,"Planta Snacks",361760.0,4536.0,4527.9],[2022,7,"Proceso de pelado",34820.0,1315.0,0.0],[2022,7,"Pista Planes",217856.0,1421.76,1430.8],[2022,7,"Pista Indira",32525.3,279.0,1088.0],[2022,7,"Sede Central",46673.0,2081.0,2419.0],[2022,8,"Astillero Casanova",21623.36,73.12,288.0],[2022,8,"Zona Industrial Zungo",163891.0,5966.0,6266.0],[2022,8,"Planta Snacks",365612.0,3852.0,4527.9],[2022,8,"Proceso de pelado",36193.0,1373.0,0.0],[2022,8,"Pista Planes",219342.16,1486.16,1430.8],[2022,8,"Pista Indira",32809.0,283.7,1088.0],[2022,8,"Sede Central",48900.0,2227.0,2419.0],[2022,9,"Astillero Casanova",21710.07,86.71,288.0],[2022,9,"Zona Industrial Zungo",169312.0,5421.0,6266.0],[2022,9,"Planta Snacks",369448.0,3836.0,4527.9],[2022,9,"Proceso de pelado",37609.0,1416.0,0.0],[2022,9,"Pista Planes",220576.14,1233.98,1430.8],[2022,9,"Pista Indira",33154.33,345.19,1088.0],[2022,9,"Sede Central",51530.0,2630.0,2419.0],[2022,10,"Astillero Casanova",21790.28,80.21,288.0],[2022,10,"Zona Industrial Zungo",174332.0,5020.0,6266.0],[2022,10,"Planta Snacks",373124.0,3676.0,4527.9],[2022,10,"Proceso de pelado",38866.0,1257.0,0.0],[2022,10,"Pista Planes",221803.36,1227.22,1430.8],[2022,10,"Pista Indira",33440.88,286.55,1088.0],[2022,10,"Sede Central",54201.0,2671.0,2419.0],[2022,11,"Astillero Casanova",21875.33,85.05,288.0],[2022,11,"Zona Industrial Zungo",179616.0,5284.0,6266.0],[2022,11,"Planta Snacks",377096.0,3972.0,4527.9],[2022,11,"Proceso de pelado",40209.0,1343.0,0.0],[2022,11,"Pista Planes",223067.0,1263.64,1430.8],[2022,11,"Pista Indira",33705.0,264.12,1088.0],[2022,11,"Sede Central",56478.0,2277.0,2419.0],[2022,12,"Astillero Casanova",21945.15,69.82,288.0],[2022,12,"Zona Industrial Zungo",183600.0,3984.0,6266.0],[2022,12,"Planta Snacks",380549.0,3453.0,4527.9],[2022,12,"Proceso de pelado",41525.0,1316.0,0.0],[2022,12,"Pista Planes",224319.71,1252.71,1430.8],[2022,12,"Pista Indira",33968.45,263.45,1088.0],[2022,12,"Sede Central",58318.0,1840.0,2419.0],[2023,1,"Astillero Casanova",22004.48,59.48,288.0],[2023,1,"Zona Industrial Zungo",188319.0,4719.0,6266.0],[2023,1,"Planta Snacks",384388.0,3839.0,4527.9],[2023,1,"Proceso de pelado",42853.0,1328.0,0.0],[2023,1,"Pista Planes",225398.6,1078.89,1430.8],[2023,1,"Pista Indira",34214.28,245.82,1088.0],[2023,1,"Sede Central",58728.0,410.0,2419.0],[2023,1,"La Gran Vía",934.0,934.0,1296.0],[2023,2,"Astillero Casanova",22068.34,63.86,288.0],[2023,2,"Zona Industrial Zungo",194145.0,5826.0,6266.0],[2023,2,"Planta Snacks",386750.0,2362.0,4527.9],[2023,2,"Proceso de pelado",43694.0,841.0,0.0],[2023,2,"Pista Planes",226829.16,1430.56,1430.8],[2023,2,"Pista Indira",34539.28,325.0,1088.0],[2023,2,"Sede Central",61462.0,2734.0,2419.0],[2023,2,"La Gran Vía",1502.0,568.0,1296.0],[2023,3,"Astillero Casanova",22134.08,65.74,288.0],[2023,3,"Zona Industrial Zungo",199568.0,5423.0,6266.0],[2023,3,"Planta Snacks",390802.0,4052.0,4527.9],[2023,3,"Proceso de pelado",45173.0,1479.0,0.0],[2023,3,"Pista Planes",228267.16,1438.0,1430.8],[2023,3,"Pista Indira",34857.21,317.94,1088.0],[2023,3,"Sede Central",63869.0,2407.0,2419.0],[2023,3,"La Gran Vía",2133.0,631.0,1296.0],[2023,4,"Astillero Casanova",22134.08,0.0,288.0],[2023,4,"Zona Industrial Zungo",204593.0,5025.0,6266.0],[2023,4,"Planta Snacks",394502.0,3700.0,4527.9],[2023,4,"Proceso de pelado",46564.0,1391.0,0.0],[2023,4,"Pista Planes",229324.7,1057.54,1430.8],[2023,4,"Pista Indira",35110.7,253.49,1088.0],[2023,4,"Sede Central",66403.0,2534.0,2419.0],[2023,4,"La Gran Vía",2788.0,655.0,1296.0],[2023,5,"Astillero Casanova",22134.08,0.0,288.0],[2023,5,"Zona Industrial Zungo",208576.0,3983.0,6266.0],[2023,5,"Planta Snacks",398227.0,3725.0,4527.9],[2023,5,"Proceso de pelado",47991.0,1427.0,0.0],[2023,5,"Pista Planes",230559.31,1234.61,1430.8],[2023,5,"Pista Indira",35365.8,255.1,1088.0],[2023,5,"Sede Central",69043.0,2640.0,2419.0],[2023,5,"La Gran Vía",3535.0,747.0,1296.0],[2023,6,"Astillero Casanova",22134.08,0.0,288.0],[2023,6,"Zona Industrial Zungo",212750.0,4174.0,6266.0],[2023,6,"Planta Snacks",401236.0,3009.0,4527.9],[2023,6,"Proceso de pelado",48952.0,961.0,0.0],[2023,6,"Pista Planes",232436.11,1876.8,1430.8],[2023,6,"Pista Indira",35612.63,246.83,1088.0],[2023,6,"Sede Central",71501.0,2458.0,2419.0],[2023,6,"La Gran Vía",4002.0,467.0,1296.0],[2023,7,"Astillero Casanova",22249.0,114.92,288.0],[2023,7,"Zona Industrial Zungo",216614.0,3864.0,6266.0],[2023,7,"Planta Snacks",404021.0,2785.0,4527.9],[2023,7,"Proceso de pelado",50061.0,1109.0,0.0],[2023,7,"Pista Planes",232801.31,365.2,1430.8],[2023,7,"Pista Indira",35857.37,244.74,1088.0],[2023,7,"Sede Central",74047.0,2546.0,2419.0],[2023,7,"La Gran Vía",4313.0,311.0,1296.0],[2023,8,"Astillero Casanova",22364.43,115.43,288.0],[2023,8,"Zona Industrial Zungo",221573.0,4959.0,6266.0],[2023,8,"Planta Snacks",408307.0,4286.0,4527.9],[2023,8,"Proceso de pelado",51659.0,1598.0,0.0],[2023,8,"Pista Planes",234054.61,1253.3,1430.8],[2023,8,"Pista Indira",36103.65,246.28,1088.0],[2023,8,"Sede Central",76796.0,2749.0,2419.0],[2023,8,"La Gran Vía",4773.0,460.0,1296.0],[2023,9,"Astillero Casanova",22466.15,101.72,288.0],[2023,9,"Zona Industrial Zungo",227263.0,5690.0,6266.0],[2023,9,"Planta Snacks",412176.0,3869.0,4527.9],[2023,9,"Proceso de pelado",53039.0,1380.0,0.0],[2023,9,"Pista Planes",235368.08,1313.47,1430.8],[2023,9,"Pista Indira",36330.02,226.37,1088.0],[2023,9,"Sede Central",80206.0,3410.0,2419.0],[2023,9,"La Gran Vía",5448.0,675.0,1296.0],[2023,10,"Astillero Casanova",22573.5,107.35,288.0],[2023,10,"Zona Industrial Zungo",232224.0,4961.0,6266.0],[2023,10,"Planta Snacks",415961.0,3785.0,4527.9],[2023,10,"Proceso de pelado",54311.0,1272.0,0.0],[2023,10,"Pista Planes",236479.41,1111.33,1430.8],[2023,10,"Pista Indira",36524.44,194.42,1088.0],[2023,10,"Sede Central",84159.0,3953.0,2419.0],[2023,10,"La Gran Vía",6070.0,622.0,1296.0],[2023,11,"Astillero Casanova",22662.97,89.47,288.0],[2023,11,"Zona Industrial Zungo",237793.0,5569.0,6266.0],[2023,11,"Planta Snacks",419941.0,3980.0,4527.9],[2023,11,"Proceso de pelado",55752.0,1441.0,0.0],[2023,11,"Pista Planes",237671.25,1191.84,1430.8],[2023,11,"Pista Indira",36766.36,241.92,1088.0],[2023,11,"Sede Central",86576.0,2417.0,2419.0],[2023,11,"La Gran Vía",7939.0,1869.0,1296.0],[2023,12,"Astillero Casanova",22738.54,75.57,288.0],[2023,12,"Zona Industrial Zungo",242436.0,4643.0,6266.0],[2023,12,"Planta Snacks",423870.0,3929.0,4527.9],[2023,12,"Proceso de pelado",56954.0,1202.0,0.0],[2023,12,"Pista Planes",239037.96,1366.71,1430.8],[2023,12,"Pista Indira",37039.85,273.49,1088.0],[2023,12,"Sede Central",88324.0,1748.0,2419.0],[2023,12,"La Gran Vía",8948.0,1009.0,1296.0],[2024,1,"Astillero Casanova",22838.0,99.46,288.0],[2024,1,"Zona Industrial Zungo",250113.0,7677.0,6266.0],[2024,1,"Planta Snacks",427076.0,3206.0,4527.9],[2024,1,"Proceso de pelado",58056.0,1102.0,0.0],[2024,1,"Pista Planes",240690.0,1652.04,1430.8],[2024,1,"Pista Indira",37324.0,284.15,1088.0],[2024,1,"Sede Central",90132.0,1808.0,2419.0],[2024,1,"La Gran Vía",9863.0,915.0,1296.0],[2024,2,"Astillero Casanova",22924.0,86.0,288.0],[2024,2,"Zona Industrial Zungo",256529.0,6416.0,6266.0],[2024,2,"Planta Snacks",430807.0,3731.0,4527.9],[2024,2,"Proceso de pelado",59367.0,1311.0,0.0],[2024,2,"Pista Planes",242038.0,1348.0,1430.8],[2024,2,"Pista Indira",37626.0,302.0,1088.0],[2024,2,"Sede Central",92432.0,2300.0,2419.0],[2024,2,"La Gran Vía",10088.0,225.0,1296.0],[2024,3,"Astillero Casanova",23012.0,88.0,288.0],[2024,3,"Zona Industrial Zungo",261715.0,5186.0,6266.0],[2024,3,"Planta Snacks",434017.0,3210.0,4527.9],[2024,3,"Proceso de pelado",60626.0,1259.0,0.0],[2024,3,"Pista Planes",243368.0,1330.0,1430.8],[2024,3,"Pista Indira",37863.0,237.0,1088.0],[2024,3,"Sede Central",95145.0,2713.0,2419.0],[2024,3,"La Gran Vía",10625.0,537.0,1296.0],[2024,4,"Astillero Casanova",23064.0,52.0,288.0],[2024,4,"Zona Industrial Zungo",265909.0,4194.0,6266.0],[2024,4,"Planta Snacks",437117.0,3100.0,4527.9],[2024,4,"Proceso de pelado",61994.0,1368.0,0.0],[2024,4,"Pista Planes",244202.0,834.0,1430.8],[2024,4,"Pista Indira",38090.0,227.0,1088.0],[2024,4,"Sede Central",97469.0,2324.0,2419.0],[2024,4,"La Gran Vía",10895.0,270.0,1296.0],[2024,5,"Astillero Casanova",23127.0,63.0,288.0],[2024,5,"Zona Industrial Zungo",270903.0,4994.0,6266.0],[2024,5,"Planta Snacks",440671.0,3554.0,4527.9],[2024,5,"Proceso de pelado",63407.0,1413.0,0.0],[2024,5,"Pista Planes",245248.0,1046.0,1430.8],[2024,5,"Pista Indira",38287.0,197.0,1088.0],[2024,5,"Sede Central",100004.0,2535.0,2419.0],[2024,5,"La Gran Vía",11492.0,597.0,1296.0],[2024,6,"Astillero Casanova",23190.67,63.67,288.0],[2024,6,"Zona Industrial Zungo",276078.0,5175.0,6266.0],[2024,6,"Planta Snacks",442990.0,2319.0,4527.9],[2024,6,"Proceso de pelado",64239.0,832.0,0.0],[2024,6,"Pista Planes",246218.84,970.84,1430.8],[2024,6,"Pista Indira",38544.49,257.49,1088.0],[2024,6,"Sede Central",103008.0,3004.0,2419.0],[2024,6,"La Gran Vía",11691.0,199.0,1296.0],[2024,7,"Astillero Casanova",23250.62,59.95,288.0],[2024,7,"Zona Industrial Zungo",281299.0,5221.0,6266.0],[2024,7,"Planta Snacks",446347.0,3357.0,4527.9],[2024,7,"Proceso de pelado",65550.0,1311.0,0.0],[2024,7,"Pista Planes",247692.41,1473.57,1430.8],[2024,7,"Pista Indira",38904.02,359.53,1088.0],[2024,7,"Sede Central",105487.0,2479.0,2419.0],[2024,7,"La Gran Vía",12153.0,462.0,1296.0],[2024,8,"Astillero Casanova",23294.29,43.67,288.0],[2024,8,"Zona Industrial Zungo",284328.0,3029.0,6266.0],[2024,8,"Planta Snacks",449712.0,3365.0,4527.9],[2024,8,"Proceso de pelado",66817.0,2578.0,0.0],[2024,8,"Pista Planes",249427.95,1735.54,1430.8],[2024,8,"Pista Indira",39480.13,576.11,1088.0],[2024,8,"Sede Central",107180.0,1693.0,2419.0],[2024,8,"La Gran Vía",12309.0,156.0,1296.0],[2024,1,"Finca La Reina",107629.0,1069.0,1244.0],[2024,2,"Finca La Reina",109010.0,1381.0,1244.0],[2024,3,"Finca La Reina",110660.0,1650.0,1244.0],[2024,4,"Finca La Reina",111900.0,1240.0,1244.0],[2024,5,"Finca La Reina",113190.0,1290.0,1244.0],[2024,6,"Finca La Reina",114500.0,1310.0,1244.0],[2024,7,"Finca La Reina",115861.0,1361.0,1244.0],[2024,8,"Finca La Reina",117262.0,1401.0,1244.0],[2024,9,"Finca La Reina",118010.0,748.0,1244.0],[2024,9,"Astillero Casanova",23339.41,45.12,288.0],[2024,9,"Zona Industrial Zungo",288629.0,4301.0,6266.0],[2024,9,"Planta Snacks",null,3119.0,4527.9],[2024,9,"Proceso de pelado",67911.0,1094.0,0.0],[2024,9,"Pista Planes",251320.12,1892.17,1430.8],[2024,9,"Pista Indira",40137.71,657.58,1088.0],[2024,9,"Sede Central",109081.0,1901.0,2419.0],[2024,9,"La Gran Vía",12456.0,147.0,1296.0],[2024,9,"La Niña",1223.0,100.0,null],[2024,10,"La Gran Vía",12729.0,273.0,1296.0],[2024,10,"Astillero Casanova",23393.94,54.53,288.0],[2024,10,"Zona Industrial Zungo",293526.0,4897.0,6266.0],[2024,10,"Planta Snacks",455379.0,2548.0,4527.9],[2024,10,"Proceso de pelado",68773.0,862.0,0.0],[2024,10,"Pista Planes",253845.29,2525.17,1430.8],[2024,10,"Pista Indira",40785.88,648.17,1088.0],[2024,10,"Sede Central",110659.0,1578.0,2419.0],[2024,10,"Finca La Reina",118547.0,537.0,1244.0],[2024,10,"Zona Industrial (inactivo)",230623.0,0.0,0.0],[2024,10,"La Niña",1345.0,122.0,null],[2024,11,"La Gran Vía",13287.0,558.0,1296.0],[2024,11,"Astillero Casanova",23451.26,57.32,288.0],[2024,11,"Zona Industrial Zungo",3897.0,3897.0,6266.0],[2024,11,"Planta Snacks",458886.0,3507.0,4527.9],[2024,11,"Proceso de pelado",70034.0,1261.0,0.0],[2024,11,"Pista Planes",255641.93,1796.64,1430.8],[2024,11,"Pista Indira",41286.65,500.77,1088.0],[2024,11,"Sede Central",111641.0,982.0,2419.0],[2024,11,"Finca La Reina",118970.0,423.0,1244.0],[2024,11,"Zona Industrial (inactivo)",230623.0,0.0,0.0],[2024,11,"La Niña",1439.0,94.0,null],[2024,12,"Finca La Reina",119431.0,461.0,1244.0],[2024,12,"Sede Central",113337.0,1696.0,2419.0],[2024,12,"Pista Planes",257414.09,1772.16,1430.8],[2024,12,"Pista Indira",41963.75,677.1,1088.0],[2024,12,"Zona Industrial (inactivo)",230623.0,0.0,0.0],[2024,12,"Planta Snacks",461892.0,3006.0,4527.9],[2024,12,"Proceso de pelado",0.0,0.0,0.0],[2024,12,"La Gran Vía",13561.0,274.0,1296.0],[2024,12,"Astillero Casanova",23516.18,64.92,288.0],[2024,12,"La Niña",1526.0,87.0,null],[2024,12,"Zona Industrial Zungo",9872.0,5975.0,6266.0],[2025,1,"Finca La Reina",121987.0,2556.0,1244.0],[2025,1,"Sede Central",115155.0,1818.0,2419.0],[2025,1,"Pista Planes",259638.7,2224.61,1430.8],[2025,1,"Pista Indira",42510.62,546.88,1088.0],[2025,1,"Zona Industrial (inactivo)",230623.0,0.0,0.0],[2025,1,"Planta Snacks",465052.0,3160.0,4527.9],[2025,1,"Proceso de pelado",0.0,0.0,0.0],[2025,1,"La Gran Vía",13704.0,143.0,1296.0],[2025,1,"Astillero Casanova",23578.38,62.2,288.0],[2025,1,"La Niña",1609.0,83.0,null],[2025,1,"Zona Industrial Zungo",14941.0,5069.0,6266.0],[2025,2,"Pista Planes",261518.43,1879.43,1430.8],[2025,2,"Pista Indira",43101.1,590.48,1088.0],[2025,2,"Planta Snacks",468231.0,3179.0,4527.9],[2025,2,"Astillero Casanova",23777.98,199.6,288.0],[2025,2,"La Gran Vía",14220.0,516.0,1296.0],[2025,2,"Zona Industrial Zungo",20390.0,5449.0,6266.0],[2025,2,"Zona Industrial (inactivo)",230624.0,0.0,6266.0],[2025,2,"Sede Central",115956.0,801.0,2419.0],[2025,2,"La Niña",1702.0,93.0,null],[2025,2,"Finca La Reina",131637.0,9650.0,1244.0],[2025,3,"Pista Planes",263356.18,1837.75,1430.8],[2025,3,"Pista Indira",43646.23,545.14,1088.0],[2025,3,"Planta Snacks",471380.0,3149.0,4527.9],[2025,3,"La Gran Vía",14554.0,334.0,1296.0],[2025,3,"Zona Industrial Zungo",27213.0,6823.0,6266.0],[2025,3,"Zona Industrial (inactivo)",230624.0,0.0,6266.0],[2025,3,"Finca La Reina",132378.0,741.0,1244.0],[2025,3,"Sede Central",117831.0,1875.0,2419.0],[2025,3,"La Niña",1750.0,48.0,null],[2025,3,"Astillero Casanova",24065.39,287.41,288.0],[2025,4,"Pista Planes",265403.46,2047.28,1430.8],[2025,4,"Pista Indira",44182.32,536.09,1088.0],[2025,4,"Astillero Casanova",24196.03,130.64,288.0],[2025,4,"Sede Central",119381.0,1550.0,2419.0],[2025,4,"Finca La Reina",137147.0,4769.0,1244.0],[2025,4,"La Gran Vía",15028.0,474.0,1296.0],[2025,4,"Zona Industrial (inactivo)",230624.0,0.0,6266.0],[2025,4,"Zona Industrial Zungo",33917.0,6704.0,6266.0],[2025,4,"La Niña",1826.0,76.0,null],[2025,4,"Planta Snacks",2141.0,2261.0,4527.9],[2025,5,"Pista Planes",267636.46,2233.0,1430.8],[2025,5,"Pista Indira",44873.6,691.28,1088.0],[2025,5,"Planta Snacks",6001.0,3860.0,4527.9],[2025,5,"Finca La Reina",139663.0,2516.0,1244.0],[2025,5,"Sede Central",121093.0,1712.0,2419.0],[2025,5,"Zona Industrial Zungo",40360.0,6443.0,6266.0],[2025,5,"Zona Industrial (inactivo)",230624.0,0.0,0.0],[2025,5,"Astillero Casanova",24217.13,21.1,288.0],[2025,5,"La Niña",1923.0,97.0,null],[2025,5,"La Gran Vía",15325.0,297.0,1296.0],[2025,6,"Pista Planes",269681.0,2044.54,1430.8],[2025,6,"Pista Indira",45436.0,562.4,1088.0],[2025,6,"Planta Snacks",9361.0,3360.0,4527.9],[2025,6,"Finca La Reina",143409.0,3746.0,1244.0],[2025,6,"Sede Central",122602.0,1509.0,2419.0],[2025,6,"Zona Industrial Zungo",46036.0,5676.0,6266.0],[2025,6,"Zona Industrial (inactivo)",230624.0,0.0,0.0],[2025,6,"Astillero Casanova",24274.36,57.23,288.0],[2025,6,"La Gran Vía",15745.0,420.0,1296.0],[2025,6,"La Niña",2033.0,110.0,null],[2025,7,"Pista Planes",272012.0,2331.0,1430.8],[2025,7,"Pista Indira",46019.96,583.96,1088.0],[2025,7,"Planta Snacks",12070.0,2709.0,4527.9],[2025,7,"La Gran Vía",16318.0,573.0,1296.0],[2025,7,"Astillero Casanova",24390.49,116.13,288.0],[2025,7,"Zona Industrial Zungo",53388.0,7352.0,6266.0],[2025,7,"Zona Industrial (inactivo)",230624.0,0.0,0.0],[2025,7,"Sede Central",124972.0,2370.0,2419.0],[2025,7,"Finca La Reina",147565.0,4156.0,1244.0],[2025,7,"La Niña",2110.0,77.0,null],[2025,8,"Pista Planes",274003.19,1990.43,1430.8],[2025,8,"Pista Indira",46868.49,848.53,1088.0],[2025,8,"Planta Snacks",16145.0,4075.0,4527.9],[2025,8,"Finca La Reina",149218.0,1653.0,1244.0],[2025,8,"Sede Central",127267.0,2295.0,2419.0],[2025,8,"Zona Industrial Zungo",60970.0,7582.0,6266.0],[2025,8,"Zona Industrial (inactivo)",0.0,0.0,0.0],[2025,8,"Astillero Casanova",24527.09,136.6,288.0],[2025,8,"La Gran Vía",16601.0,283.0,1296.0],[2025,8,"La Niña",2189.0,79.0,null],[2025,9,"Pista Planes",276063.11,2059.92,1430.8],[2025,9,"Pista Indira",47486.53,618.04,1088.0],[2025,9,"Planta Snacks",19645.0,3500.0,4527.9],[2025,9,"Finca La Reina",149675.0,457.0,1244.0],[2025,9,"Sede Central",129608.0,2341.0,2419.0],[2025,9,"Zona Industrial Zungo",66290.0,5320.0,6266.0],[2025,9,"Zona Industrial (inactivo)",0.0,0.0,0.0],[2025,9,"Astillero Casanova",24670.81,143.72,288.0],[2025,9,"La Gran Vía",16718.0,117.0,1296.0],[2025,9,"La Niña",2289.0,100.0,null],[2025,10,"Pista Planes",278207.16,2144.05,1430.8],[2025,10,"Pista Indira",48010.25,523.72,1088.0],[2025,10,"Planta Snacks",24031.0,4386.0,4527.9],[2025,10,"Finca La Reina",157691.0,8016.0,1244.0],[2025,10,"Sede Central",131968.0,2360.0,2419.0],[2025,10,"Zona Industrial Zungo",73563.0,7273.0,6266.0],[2025,10,"Zona Industrial (inactivo)",0.0,0.0,0.0],[2025,10,"Astillero Casanova",24888.29,217.48,288.0],[2025,10,"La Gran Vía",16841.0,123.0,1296.0],[2025,10,"La Niña",2383.0,94.0,null],[2025,11,"Pista Planes",280350.66,2143.5,1430.8],[2025,11,"Pista Indira",48763.04,752.79,1088.0],[2025,11,"Planta Snacks",27460.0,3429.0,4527.9],[2025,11,"Finca La Reina",157691.0,0.0,1244.0],[2025,11,"Sede Central",134588.0,2620.0,2419.0],[2025,11,"Zona Industrial Zungo",80788.0,7225.0,6266.0],[2025,11,"Zona Industrial (inactivo)",0.0,0.0,0.0],[2025,11,"Astillero Casanova",25166.71,278.42,288.0],[2025,11,"La Gran Vía",16999.0,158.0,1296.0],[2025,11,"La Niña",2497.0,114.0,null],[2025,12,"Pista Planes",282755.43,2404.77,1430.8],[2025,12,"Pista Indira",49555.75,792.7,1088.0],[2025,12,"Planta Snacks",29935.0,2475.0,4527.9],[2025,12,"Finca La Reina",157691.0,0.0,1244.0],[2025,12,"Sede Central",136474.0,1886.0,2419.0],[2025,12,"Zona Industrial Zungo",85728.0,4940.0,6266.0],[2025,12,"Zona Industrial (inactivo)",0.0,0.0,0.0],[2025,12,"Astillero Casanova",25536.93,370.22,288.0],[2025,12,"La Gran Vía",17138.0,139.0,1296.0],[2025,12,"La Niña",2622.0,125.0,null],[2026,1,"Pista Planes",284189.0,1433.57,1430.8],[2026,1,"Pista Indira",49905.68,349.93,1088.0],[2026,1,"Planta Snacks",33555.0,3620.0,4527.9],[2026,1,"Finca La Reina",165261.0,7570.0,1244.0],[2026,1,"Sede Central",139038.0,2564.0,2419.0],[2026,1,"Zona Industrial Zungo",93047.0,7319.0,6266.0],[2026,1,"Zona Industrial (inactivo)",0.0,0.0,0.0],[2026,1,"Astillero Casanova",25807.0,270.07,288.0],[2026,1,"La Gran Vía",17288.0,150.0,1296.0],[2026,1,"La Niña",2663.0,76.0,null],[2026,2,"Pista Planes",285609.0,1420.0,1430.8],[2026,2,"Pista Indira",50379.0,473.32,1088.0],[2026,2,"Planta Snacks",36958.0,3403.0,4527.9],[2026,2,"Finca La Reina",165261.0,0.0,1244.0],[2026,2,"Sede Central",141684.0,2646.0,2419.0],[2026,2,"Zona Industrial Zungo",96656.0,3609.0,6266.0],[2026,2,"Zona Industrial (inactivo)",0.0,0.0,0.0],[2026,2,"Astillero Casanova",26078.0,271.0,288.0],[2026,2,"La Gran Vía",17698.5,410.5,1296.0],[2026,2,"La Niña",null,-2663.0,null],[2026,3,"Pista Planes",287498.0,1889.0,1430.8],[2026,3,"Pista Indira",51037.0,658.0,1088.0],[2026,3,"Planta Snacks",41213.5,4255.5,4527.9],[2026,3,"Finca La Reina",165261.0,0.0,0.0],[2026,3,"Sede Central",143597.0,1913.0,2419.0],[2026,3,"Zona Industrial Zungo",98794.5,2138.5,6266.0],[2026,3,"Zona Industrial (inactivo)",0.0,0.0,0.0],[2026,3,"Astillero Casanova",26286.0,208.0,288.0],[2026,3,"La Gran Vía",18109.0,410.5,1296.0],[2026,3,"La Niña",null,null,null],[2026,4,"Pista Planes",289486.18,1988.18,1430.8],[2026,4,"Pista Indira",51676.0,639.0,1088.0],[2026,4,"Planta Snacks",45469.0,4255.5,4527.9],[2026,4,"Finca La Reina",165261.0,0.0,0.0],[2026,4,"Sede Central",146869.0,3272.0,2419.0],[2026,4,"Zona Industrial Zungo",100933.0,2138.5,6266.0],[2026,4,"Zona Industrial (inactivo)",0.0,0.0,0.0],[2026,4,"Astillero Casanova",26494.0,208.0,288.0],[2026,4,"La Gran Vía",19281.0,1172.0,1296.0],[2026,4,"La Niña",null,null,null],[2026,5,"Pista Planes",291096.0,1609.82,1430.8],[2026,5,"Pista Indira",52120.0,444.0,1088.0],[2026,5,"Planta Snacks",49115.0,3646.0,4527.9],[2026,5,"Finca La Reina",165261.0,0.0,0.0],[2026,5,"Sede Central",149118.0,2249.0,2419.0],[2026,5,"Zona Industrial Zungo",102103.0,1170.0,6266.0],[2026,5,"Zona Industrial (inactivo)",0.0,0.0,0.0],[2026,5,"Astillero Casanova",26784.0,290.0,288.0],[2026,5,"La Gran Vía",19449.0,168.0,1296.0],[2026,5,"La Niña",null,null,null],[2026,6,"Pista Planes",292983.0,1887.0,1430.8],[2026,6,"Pista Indira",52765.0,645.0,1088.0],[2026,6,"Planta Snacks",52920.0,3805.0,4527.9],[2026,6,"Finca La Reina",165261.0,0.0,0.0],[2026,6,"Sede Central",151112.0,1994.0,2419.0],[2026,6,"Zona Industrial Zungo",103198.0,1095.0,6266.0],[2026,6,"Zona Industrial (inactivo)",0.0,0.0,0.0],[2026,6,"Astillero Casanova",27066.0,282.0,288.0],[2026,6,"La Gran Vía",19669.0,220.0,1296.0],[2026,6,"La Niña",null,null,null],[2026,7,"Pista Planes",294317.66,1334.66,1430.8],[2026,7,"Pista Indira",53039.25,274.25,1088.0],[2026,7,"Planta Snacks",57805.0,4885.0,4527.9],[2026,7,"Finca La Reina",165261.0,0.0,0.0],[2026,7,"Sede Central",153595.0,2483.0,2419.0],[2026,7,"Zona Industrial Zungo",103524.0,326.0,6266.0],[2026,7,"Zona Industrial (inactivo)",0.0,0.0,0.0],[2026,7,"Astillero Casanova",27300.0,234.0,288.0],[2026,7,"La Gran Vía",20093.0,424.0,1296.0],[2026,7,"La Niña",null,null,null],[2026,8,"Pista Planes",295288.0,970.34,1430.8],[2026,8,"Pista Indira",53366.0,326.75,1088.0],[2026,8,"Planta Snacks",61612.0,3807.0,4527.9],[2026,8,"Finca La Reina",165261.0,0.0,0.0],[2026,8,"Sede Central",155732.0,2137.0,2419.0],[2026,8,"Zona Industrial Zungo",104039.0,515.0,6266.0],[2026,8,"Zona Industrial (inactivo)",0.0,0.0,0.0],[2026,8,"Astillero Casanova",27611.0,311.0,288.0],[2026,8,"La Gran Vía",20294.0,201.0,1296.0],[2026,8,"La Niña",null,null,null],[2026,8,"IP Nueva Colonia",78.0,78.0,0.0],[2026,9,"Pista Planes",295819.0,531.0,1430.8],[2026,9,"Pista Indira",53675.0,309.0,1088.0],[2026,9,"Planta Snacks",66390.0,4778.0,4527.9],[2026,9,"Finca La Reina",165261.0,0.0,0.0],[2026,9,"Sede Central",158332.0,2600.0,2419.0],[2026,9,"Zona Industrial Zungo",104202.0,163.0,6266.0],[2026,9,"Zona Industrial (inactivo)",0.0,0.0,0.0],[2026,9,"Astillero Casanova",27983.0,372.0,288.0],[2026,9,"La Gran Vía",20518.0,224.0,1296.0],[2026,9,"La Niña",null,null,null],[2026,9,"IP Nueva Colonia",270.0,192.0,0.0]];
+const CONC = [["Astillero Casanova", "034-8895", "Unibán servicios", 316.72, "1063/2018", "2026-01-31"], ["Finca La Reina", null, null, 1244, "1279/2014", "2024-09-06"], ["IP Zungo", "008-17959", "Unibán", 6266, "0052/2019", "2029-01-28"], ["La Gran Vía", null, null, 1296, "6823/2022", "2027-12-12"], ["Pista Indira", "034-14098", "Unibán", 475.2, "1226/2022", "2028-12-30"], ["Pista Planes", "008-30090", "Unibán", 1430.8, "1053/2016", "2023-05-19"], ["Planta Snacks", "008-17981", "Unibán", 4527.9, "1180/2021", "2024-06-17"], ["Planta Las Américas", "008-11686", null, 170.4, "0510/2012", "2022-05-10"], ["Sede Central", "008-36179", "Unibán", 2419, "1924/2013", "2023-10-13"]];
+const DUE_DAY = 5;
+const STEPS=[
+  {key:"solicitar",t:"Solicitar lecturas a los responsables de sede",day:1},
+  {key:"validar",t:"Validar consumos contra el mes anterior y la concesión",day:3},
+  {key:"consolidar",t:"Consolidar en la BD Consumos de agua",day:4},
+  {key:"reportar",t:"Reportar todas las sedes en Corpourabá",day:5,auto:true},
+  {key:"archivar",t:"Archivar soportes y evidencias",day:5},
+];
+const TIPOS=["Pantallazo del reporte en Corpourabá","Foto del medidor","Comprobante / radicado","Factura de acueducto","Otro"];
+const SEDES = [
+  {key:"sede-central", name:"Sede Central", hist:"Sede Central", resp:"Plantero Servicios Generales"},
+  {key:"zona-industrial-zungo", name:"Zona Industrial Zungo", hist:"Zona Industrial Zungo", resp:"Analista Gestión Integral"},
+  {key:"planta-snacks", name:"Planta Snacks", hist:"Planta Snacks", resp:"Técnico Mantenimiento"},
+  {key:"astillero-casanova", name:"Astillero Casanova", hist:"Astillero Casanova", resp:"Practicante G.I. Casanova / Guardas"},
+  {key:"pista-planes", name:"Pista Planes", hist:"Pista Planes", resp:"Asistente SIG Calima S.A.S"},
+  {key:"pista-indira", name:"Pista Indira", hist:"Pista Indira", resp:"Sin responsable asignado"},
+  {key:"finca-la-reina", name:"Finca La Reina", hist:"Finca La Reina", resp:"Sin responsable asignado"},
+  {key:"las-americas", name:"Las Américas", hist:null, resp:"Sin responsable asignado"},
+  {key:"nueva-colonia-embarcadero", name:"IP Nueva Colonia Embarcadero", hist:"IP Nueva Colonia", resp:"Sin responsable asignado"},
+];
+const SHORT={"Zona Industrial Zungo":"Zungo","Astillero Casanova":"Casanova","IP Nueva Colonia Embarcadero":"N. Colonia","Finca La Reina":"La Reina","Planta Snacks":"Snacks","Sede Central":"S. Central","Pista Planes":"P. Planes","Pista Indira":"P. Indira","Las Américas":"Américas"};
+const PAL=["#45a2e3","#f0a14a","#2bb39a","#8b6fe0","#e2799b","#6cc070","#5bc4d8","#d9b23a","#9aa9b8","#c77dd6","#7f9cf5"];
+const MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const MES3=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+const cap=s=>s[0].toUpperCase()+s.slice(1);
+const fmt=n=>n==null||n===""||isNaN(n)?"—":Number(n).toLocaleString("es-CO",{maximumFractionDigits:0});
+const fmt1=n=>n==null?"—":Number(n).toLocaleString("es-CO",{maximumFractionDigits:1});
+const $=id=>document.getElementById(id);
+const el=(tag,cls,text)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e};
+const svgI=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const IC={
+  home:'<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  sedes:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  check:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 9l2 2 4-4M8 16h8"/>',
+  up:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M12 18v-6M9 15l3-3 3 3"/>',
+  hist:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  drop:'<path d="M12 3s-6 7-6 11a6 6 0 0 0 12 0c0-4-6-11-6-11z"/>',
+  build:'<path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 10h1M14 10h1M9 14h1M14 14h1M9 18h1M14 18h1"/>',
+  tick:'<path d="M5 12.5l4.5 4.5L19 7"/>',
+  undo:'<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  send:'<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>',
+  task:'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12l3 3 5-6"/>',
+  eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  file:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/>',
+};
+
+
+/* ---------- navegación ---------- */
+const VIEWS=[["inicio","Inicio","home"],["consumo","Consumo por sede","sedes"],["comparativo","Comparativo anual","chart"],["checklist","Checklist mensual","check"],["registros","Registros y evidencias","up"],["historial","Historial","hist"]];
+let view="inicio";
+try{const h=location.hash.slice(1);if(VIEWS.some(v=>v[0]===h))view=h}catch{}
+function go(v){view=v;VIEWS.forEach(([k])=>$("v-"+k).hidden=k!==v);$("monthPicker").hidden=["comparativo","historial"].includes(v);renderNav();window.scrollTo({top:0})}
+function renderNav(){const nav=$("nav");nav.textContent="";const pend=SEDES.filter(s=>!rec(s).done).length;
+  VIEWS.forEach(([k,t,i])=>{const b=el("button","nav"+(view===k?" on":""));b.innerHTML=svgI(IC[i]);b.append(el("span",null,t));
+    if(k==="checklist"&&pend)b.append(el("span","badge",String(pend)));b.onclick=()=>go(k);if(view===k)b.setAttribute("aria-current","page");nav.append(b)})}
+document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(g)go(g.dataset.go)});
+
+/* ---------- periodo ---------- */
+const today=new Date();
+let pY=today.getFullYear(),pM=today.getMonth();if(pM===0){pM=12;pY--}
+const curY=pY,curM=pM;
+const pid=(y=pY,m=pM)=>`${y}-${String(m).padStart(2,"0")}`;
+const pName=(y=pY,m=pM)=>`${cap(MESES[m-1])} ${y}`;
+const dueMonth=()=>pM===12?[pY+1,1]:[pY,pM+1];
+const dueDate=(d=DUE_DAY)=>{const[y,m]=dueMonth();return new Date(y,m-1,d,23,59)};
+function shiftP(d){pM+=d;if(pM<1){pM=12;pY--}if(pM>12){pM=1;pY++}$("mYear").value=pY;renderAll()}
+$("prevP").onclick=()=>shiftP(-1);$("nextP").onclick=()=>shiftP(1);
+
+/* ---------- estado compartido ---------- */
+let db=null,user=null,assets=null,downloads=null,myId=null,canWrite=false,connected=false;
+const records={},procs={},names={};
+const docId=(k,p=pid())=>`${p}__${k}`;
+const rec=(s,p)=>records[docId(s.key,p)]||{};
+const nameOf=id=>id?(names[id]||"Alguien del equipo"):"—";
+const dShort=iso=>{try{return new Date(iso).toLocaleDateString("es-CO",{day:"2-digit",month:"2-digit",year:"numeric"})}catch{return""}};
+const dFull=iso=>{try{const d=new Date(iso);return dShort(iso)+" "+d.toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit"})}catch{return""}};
+const fDate=s=>s?dShort(s+"T12:00"):"";
+const initials=n=>(n||"").split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase()||"··";
+
+/* ---------- datos: Excel + registros ---------- */
+const HSEDES=[...new Set(CONS.map(r=>r[2]))].filter(s=>s!=="Zona Industrial (inactivo)");
+const XL={};CONS.forEach(r=>{XL[r[2]+"|"+r[0]+"|"+r[1]]=r});
+const YEARS=[...new Set(CONS.map(r=>r[0]))].sort((a,b)=>a-b);
+function appRec(h,y,m){const s=SEDES.find(x=>x.hist===h);if(!s)return null;const r=records[docId(s.key,pid(y,m))];return r&&r.consumo!=null?r:null}
+function val(h,y,m){const a=appRec(h,y,m);if(a)return a.consumo;const r=XL[h+"|"+y+"|"+m];if(!r||r[4]==null||r[4]<0)return null;return r[4]}
+function concM(h,y,m){const r=XL[h+"|"+y+"|"+m];if(r&&r[5])return r[5];const rows=CONS.filter(x=>x[2]===h&&x[5]);return rows.length?rows[rows.length-1][5]:null}
+const sVal=(s,y=pY,m=pM)=>{const r=rec(s,pid(y,m));if(r.consumo!=null)return r.consumo;return s.hist?val(s.hist,y,m):null};
+const sConc=(s,y=pY,m=pM)=>s.hist?concM(s.hist,y,m):null;
+const sedesIn=y=>HSEDES.filter(h=>{for(let m=1;m<=12;m++)if(val(h,y,m)!=null)return true;return false});
+const colorOf=h=>PAL[HSEDES.indexOf(h)%PAL.length];
+
+/* ---------- charts ---------- */
+function niceStep(x){if(x<=0)return 1;const p=Math.pow(10,Math.floor(Math.log10(x)));const f=x/p;return(f<=1?1:f<=2?2:f<=5?5:10)*p}
+function barChart({labels,values,ghost,caps,cap,avg,title,W=760}){
+  const H=280,L=58,R=14,T=24,B=40,n=labels.length;
+  const all=[...values,...(ghost||[]),cap||0,avg||0].filter(v=>v!=null);
+  const st=niceStep(Math.max(1,...all)/4),top=Math.ceil(Math.max(1,...all)/st)*st;
+  const y=v=>T+(H-T-B)*(1-v/top);const bw=(W-L-R)/n;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}">`;
+  for(let v=0;v<=top+1e-9;v+=st)s+=`<line class="grid" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end">${fmt(v)}</text>`;
+  labels.forEach((lb,i)=>{const x=L+i*bw;const v=values[i],g=ghost?.[i];const c=caps?.[i]??cap;
+    if(g!=null)s+=`<rect class="ghost" x="${x+bw*.18}" y="${y(g)}" width="${bw*.64}" height="${y(0)-y(g)}" rx="7"><title>${lb} año anterior: ${fmt(g)} m³</title></rect>`;
+    if(v!=null){const w=bw*(ghost?.44:.56);const xx=x+(bw-w)/2+(ghost?bw*.06:0);const over=c&&v>c;
+      s+=`<rect class="bar${over?" over":""}" x="${xx}" y="${y(v)}" width="${w}" height="${Math.max(2,y(0)-y(v))}" rx="7"><title>${lb}: ${fmt(v)} m³${c?" · concesión "+fmt(c):""}</title></rect><text class="v" x="${xx+w/2}" y="${y(v)-6}" text-anchor="middle">${fmt(v)}</text>`}
+    else s+=`<text x="${x+bw/2}" y="${y(0)-6}" text-anchor="middle">s/d</text>`;
+    const parts=lb.length>11&&lb.includes(" ")?lb.split(" "):[lb];parts.slice(0,2).forEach((p,j)=>s+=`<text x="${x+bw/2}" y="${H-B+16+j*12}" text-anchor="middle">${p}</text>`)});
+  if(cap)s+=`<line class="cap" x1="${L}" x2="${W-R}" y1="${y(cap)}" y2="${y(cap)}"/><text x="${W-R}" y="${y(cap)-6}" text-anchor="end" style="fill:var(--bad)">Concesión ${fmt(cap)}</text>`;
+  if(avg)s+=`<line class="avg" x1="${L}" x2="${W-R}" y1="${y(avg)}" y2="${y(avg)}"/><text x="${W-R}" y="${y(avg)+14}" text-anchor="end" style="fill:var(--green);font-weight:700">Promedio ${fmt(avg)}</text>`;
+  return s+"</svg>";
+}
+function lineChart({labels,series,title}){
+  const W=760,H=290,L=58,R=16,T=18,B=30,n=labels.length;
+  const all=series.flatMap(s=>s.values).filter(v=>v!=null);
+  const st=niceStep(Math.max(1,...all)/4),top=Math.ceil(Math.max(1,...all)/st)*st;
+  const y=v=>T+(H-T-B)*(1-v/top),x=i=>L+(W-L-R)*(i/(n-1));
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}">`;
+  for(let v=0;v<=top+1e-9;v+=st)s+=`<line class="grid" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end">${fmt(v)}</text>`;
+  labels.forEach((lb,i)=>s+=`<text x="${x(i)}" y="${H-B+18}" text-anchor="middle">${lb}</text>`);
+  series.forEach((se,k)=>{let d="",open=false;se.values.forEach((v,i)=>{if(v==null){open=false;return}d+=(open?"L":"M")+x(i)+" "+y(v)+" ";open=true});
+    const last=k===series.length-1;
+    s+=`<path d="${d}" fill="none" stroke="${se.color}" stroke-width="${last?3:2}" stroke-linejoin="round" stroke-linecap="round" opacity="${last?1:.85}"/>`;
+    se.values.forEach((v,i)=>{if(v!=null)s+=`<circle cx="${x(i)}" cy="${y(v)}" r="${last?3.6:2.6}" fill="#fff" stroke="${se.color}" stroke-width="2"><title>${se.name} · ${labels[i]}: ${fmt(v)} m³</title></circle>`})});
+  return s+"</svg>";
+}
+function donut(items,total,center){
+  const R=80,r=54,cx=100,cy=100;let a=-Math.PI/2;let s=`<svg viewBox="0 0 200 200" role="img" aria-label="Distribución del consumo">`;
+  if(!total){s+=`<circle cx="${cx}" cy="${cy}" r="${(R+r)/2}" fill="none" stroke="var(--line)" stroke-width="${R-r}"/>`}
+  items.forEach(it=>{const f=it.v/total;if(f<=0)return;const a2=a+f*Math.PI*2;const large=f>.5?1:0;
+    const p=(rr,an)=>[cx+rr*Math.cos(an),cy+rr*Math.sin(an)];
+    if(f>=.9999){s+=`<circle cx="${cx}" cy="${cy}" r="${(R+r)/2}" fill="none" stroke="${it.c}" stroke-width="${R-r}"/>`}
+    else{const[x1,y1]=p(R,a),[x2,y2]=p(R,a2),[x3,y3]=p(r,a2),[x4,y4]=p(r,a);
+    s+=`<path d="M${x1} ${y1} A${R} ${R} 0 ${large} 1 ${x2} ${y2} L${x3} ${y3} A${r} ${r} 0 ${large} 0 ${x4} ${y4}z" fill="${it.c}" stroke="#fff" stroke-width="1.5"><title>${it.n}: ${fmt(it.v)} m³</title></path>`}a=a2});
+  s+=`<text x="100" y="92" text-anchor="middle" font-size="11" fill="#668781">Total</text><text x="100" y="114" text-anchor="middle" font-size="17" font-weight="700" fill="#173a33" font-family="Poppins">${center}</text></svg>`;
+  return s;
+}
+
+/* ---------- INICIO ---------- */
+let barMode="mes";
+$("segMes").onclick=()=>{barMode="mes";$("segMes").classList.add("on");$("segAno").classList.remove("on");renderInicio()};
+$("segAno").onclick=()=>{barMode="ano";$("segAno").classList.add("on");$("segMes").classList.remove("on");renderInicio()};
+function monthTotal(y,m){let t=0,a=false;HSEDES.forEach(h=>{const v=val(h,y,m);if(v!=null){t+=v;a=true}});return a?t:null}
+function spark(vals,color){const v=vals.filter(x=>x!=null);if(v.length<2)return"";const mn=Math.min(...v),mx=Math.max(...v);const W=220,H=46;
+  const pts=vals.map((x,i)=>x==null?null:[i*(W/(vals.length-1)),H-4-(x-mn)/((mx-mn)||1)*(H-10)]).filter(Boolean);
+  const d=pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="spk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".35"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><path d="${d} L${pts[pts.length-1][0]} ${H} L${pts[0][0]} ${H}z" fill="url(#spk)"/><path d="${d}" fill="none" stroke="${color}" stroke-width="2"/></svg>`}
+function renderInicio(){
+  const vals=SEDES.map(s=>sVal(s)).filter(v=>v!=null),tot=vals.reduce((a,b)=>a+b,0);
+  const pm=pM===1?[pY-1,12]:[pY,pM-1];const pv=SEDES.map(s=>sVal(s,pm[0],pm[1])).filter(v=>v!=null),prev=pv.reduce((a,b)=>a+b,0);
+  const ch=prev&&vals.length?((tot-prev)/prev*100):null;
+  const done=SEDES.filter(s=>rec(s).done).length,steps=STEPS.filter(x=>stepDone(x.key)).length;
+  const withData=SEDES.filter(s=>sVal(s)!=null).length;
+  const last12=[];for(let i=11;i>=0;i--){let y=pY,m=pM-i;while(m<1){m+=12;y--}last12.push(monthTotal(y,m))}
+  const k=$("kpis");k.textContent="";
+  const card=(icCls,ic,lab,big,pc,pcCls,sub,viz)=>{const c=el("div","card kpi2");const h=el("div","kh");const i=el("span","ic "+icCls);i.innerHTML=svgI(IC[ic]);h.append(i,el("span",null,lab));
+    c.append(h,el("b","big",big));if(pc)c.append(el("span","pc "+pcCls,pc));c.append(el("span","lab",sub));const v=el("div","viz");v.innerHTML=viz;c.append(v);k.append(c)};
+  const bar=(p,col,bg)=>`<div class="bar" style="background:${bg}"><i style="width:${Math.max(3,p)}%;background:${col}"></i></div>`;
+  card("blue","drop","Consumo total (m³)",vals.length?fmt(tot):"—",ch==null?"":`${ch>=0?"↑":"↓"} ${Math.abs(ch).toFixed(1)}%`,ch==null?"":ch>=0?"up":"down",ch==null?pName():"vs. mes anterior",spark(last12,"#3a9be0"));
+  const p1=Math.round(withData/SEDES.length*100),p2=Math.round(steps/STEPS.length*100),p3=Math.round(done/SEDES.length*100);
+  card("green","build","Sedes con dato",`${withData} / ${SEDES.length}`,p1+"%","g","sedes registradas",bar(p1,"linear-gradient(90deg,#1f9a5e,#43c07f)","#e6f4ee"));
+  card("violet","task","Tareas completadas",`${steps} / ${STEPS.length}`,p2+"%","v","de avance",bar(p2,"linear-gradient(90deg,#8f6fe8,#b9a3f3)","#efeafb"));
+  card("amber","send","Reportes enviados",`${done} / ${SEDES.length}`,p3+"%","a","de avance",bar(p3,"linear-gradient(90deg,#f0a14a,#f6c27e)","#fcf0de"));
+  // gráfica
+  let data;
+  if(barMode==="mes"){data=SEDES.map(s=>({n:SHORT[s.name]||s.name,v:sVal(s),c:sConc(s)}));$("barSub").textContent=pName()}
+  else{data=SEDES.map(s=>{let t=0,a=false;for(let m=1;m<=12;m++){const v=sVal(s,pY,m);if(v!=null){t+=v;a=true}}return{n:SHORT[s.name]||s.name,v:a?t:null,c:null}});$("barSub").textContent=`Acumulado ${pY}`}
+  data.sort((a,b)=>(b.v??-1)-(a.v??-1));
+  $("barChart").innerHTML=barChart({labels:data.map(d=>d.n),values:data.map(d=>d.v),caps:data.map(d=>d.c),title:"Consumo por sede",W:640});
+  $("barLegend").innerHTML=barMode==="mes"?'<span><i style="background:linear-gradient(#4aa6e6,#9be0b8)"></i>Consumo del mes</span><span><i style="background:#f3b46c"></i>Por encima de la concesión</span>':'<span><i style="background:linear-gradient(#4aa6e6,#9be0b8)"></i>Consumo acumulado del año</span>';
+  // estado
+  const [dy,dm]=dueMonth();const due=new Date(dy,dm-1,DUE_DAY);const dueTxt=`${String(DUE_DAY).padStart(2,"0")} ${MES3[dm-1].toLowerCase()} ${dy}`;
+  $("estSub").textContent=`Consumo de ${MESES[pM-1]} · plazo hasta el ${DUE_DAY} de ${MESES[dm-1]}`;
+  const L=$("estList");L.textContent="";
+  SEDES.map(s=>{const r=rec(s);const st=r.done?["ok","Enviado","#1f9a5e"]:sVal(s)==null?["x","Sin dato","#d9443a"]:["p","Pendiente","#f0a14a"];return{s,r,st}})
+   .sort((a,b)=>["ok","p","x"].indexOf(a.st[0])-["ok","p","x"].indexOf(b.st[0]))
+   .forEach(({s,r,st})=>{const row=el("div","er");const n=el("span");const d=el("i","d");d.style.background=st[2];n.append(d,s.name);
+    const p=el("span","st "+st[0]);p.textContent=(st[0]==="ok"?"✓ ":st[0]==="p"?"★ ":"✕ ")+st[1];
+    row.append(n,p,el("span","fe",r.done&&r.fechaReporte?(()=>{const[y,m,d]=r.fechaReporte.split("-");return `${d} ${MES3[+m-1].toLowerCase()} ${y}`})():dueTxt));row.title=r.done?`Reportó ${nameOf(r.by)}`:`Responsable: ${s.resp}`;L.append(row)});
+  const pend=SEDES.length-done;
+  $("remText").innerHTML="";const rt=$("remText");
+  if(pend){rt.append(`el reporte mensual debe enviarse entre el 1 y el ${DUE_DAY} de cada mes. Hay `,el("b",null,`${pend} sede${pend>1?"s":""} pendiente${pend>1?"s":""}`),".")}
+  else rt.append(`el reporte de ${MESES[pM-1]} ya está completo en todas las sedes.`);
+  $("ns1").textContent=pend?`${pend} sede${pend>1?"s aún no han":" aún no ha"} enviado su reporte de consumo.`:"Todas las sedes ya enviaron su reporte.";
+}
+
+/* ---------- CONSUMO POR SEDE ---------- */
+$("mSede").innerHTML='<option value="">Todas las sedes</option>';HSEDES.forEach(h=>{const o=el("option",null,h);o.value=h;$("mSede").append(o)});
+[...YEARS].reverse().forEach(y=>{const o=el("option",null,String(y));o.value=y;$("mYear").append(o)});$("mYear").value=pY;
+$("mSede").onchange=renderConsumo;$("mYear").onchange=renderConsumo;$("tBuscar").oninput=renderConsumo;
+function statusOf(s){const r=rec(s);if(r.done)return["ok","Reportado"];if(r.consumo!=null||(r.fotos||[]).length)return["warn","En proceso"];return today>dueDate()?["bad","Atrasado"]:["neutral","Pendiente"]}
+function renderConsumo(){
+  const q=$("tBuscar").value.trim().toLowerCase();const tb=$("tBody");tb.textContent="";let shown=0;
+  $("tTitle").textContent=`Sedes · ${pName()}`;
+  for(const s of SEDES){if(q&&!s.name.toLowerCase().includes(q))continue;shown++;
+    const v=sVal(s),c=sConc(s),pct=v!=null&&c?v/c*100:null;const st=statusOf(s);
+    const tr=el("tr");const tdN=el("td");tdN.append(el("b",null,s.name),el("div","note",s.resp));
+    const tdU=el("td");if(pct!=null){const u=el("div","use");const t=el("div","tr");const i=el("i",pct>100?"over":"");i.style.width=Math.min(100,pct)+"%";t.append(i);const sp=el("span",null,pct.toFixed(0)+"%");if(pct>100)sp.style.color="var(--warn)";u.append(t,sp);tdU.append(u)}else tdU.append(el("span","note",c?"sin dato":"sin concesión registrada"));
+    const tdS=el("td");tdS.append(el("span","pill "+st[0],st[1]));
+    const tdA=el("td");const act=el("div","act");
+    const bV=el("button","icb");bV.innerHTML=svgI(IC.eye);bV.title="Ver evidencias";bV.setAttribute("aria-label","Ver evidencias de "+s.name);bV.onclick=()=>{$("eSede").value=s.key;$("eScope").value="mes";go("registros");renderEvid()};
+    const bR=el("button","icb g");bR.innerHTML=svgI(IC.plus);bR.title="Registrar";bR.setAttribute("aria-label","Registrar "+s.name);bR.onclick=()=>{go("registros");openForm(s.key)};
+    const bH=el("button","icb");bH.innerHTML=svgI(IC.chart);bH.title="Ver en la gráfica";bH.setAttribute("aria-label","Graficar "+s.name);bH.disabled=!s.hist;bH.onclick=()=>{$("mSede").value=s.hist;renderConsumo();$("mChart").scrollIntoView({behavior:"smooth",block:"center"})};
+    act.append(bV,bR,bH);tdA.append(act);
+    tr.append(tdN,el("td","r num",fmt(v)),tdU,tdS,tdA);tb.append(tr)}
+  if(!shown){const tr=el("tr"),td=el("td","note","Ninguna sede coincide con la búsqueda.");td.colSpan=5;tr.append(td);tb.append(tr)}
+  $("tFoot").textContent=`Mostrando ${shown} de ${SEDES.length} sedes`;
+  // donut
+  const items=SEDES.map(s=>({n:s.name,v:sVal(s)||0,c:s.hist?colorOf(s.hist):"#c4d4d0"})).filter(i=>i.v>0).sort((a,b)=>b.v-a.v);
+  const total=items.reduce((a,b)=>a+b.v,0);
+  const dw=$("donut");dw.innerHTML=donut(items,total,total?fmt(total)+" m³":"—");
+  const lg=el("div","dlegend");items.forEach(it=>{const r=el("div");const i=el("i");i.style.background=it.c;r.append(i,el("span",null,it.n),el("b",null,(it.v/total*100).toFixed(1)+"%"));lg.append(r)});
+  if(!items.length)lg.append(el("p","note","No hay consumos registrados para este mes."));dw.append(lg);
+  $("dnSub").textContent=pName();
+  // monthly chart
+  const yr=+$("mYear").value||pY,sel=$("mSede").value,list=sel?[sel]:HSEDES;
+  const sum=(y,m)=>{let t=0,a=false;list.forEach(h=>{const v=val(h,y,m);if(v!=null){t+=v;a=true}});return a?t:null};
+  const vals=MES3.map((_,i)=>sum(yr,i+1)),prev=MES3.map((_,i)=>sum(yr-1,i+1));
+  $("mChart").innerHTML=barChart({labels:MES3,values:vals,ghost:prev,cap:sel?concM(sel,yr,12):null,title:"Consumo mensual"});
+  $("mTitle").textContent=`Consumo mensual ${yr} · ${sel||"todas las sedes"}`;
+  const n=vals.filter(v=>v!=null).length,tt=vals.reduce((a,v)=>a+(v||0),0);
+  $("mSub").textContent=`${n} meses con datos · total ${fmt(tt)} m³ · barra verde clara: ${yr-1}`;
+  $("mLegend").innerHTML=`<span><i style="background:#6db9ea"></i>${yr}</span><span><i style="background:var(--mint)"></i>${yr-1}</span>${sel?'<span><i style="background:#f3b46c"></i>Sobre la concesión</span><span><i style="border-top:2px dashed var(--bad);height:0;border-radius:0"></i>Concesión mensual</span>':""}`;
+  // heat
+  $("heatTitle").textContent=`Consumo por sede y mes · ${yr} (m³)`;
+  const ys=sedesIn(yr);const t=$("heat");t.textContent="";
+  const th=el("thead"),hr=el("tr");hr.append(el("th",null,"Sede"));MES3.forEach(m=>hr.append(el("th","r",m)));hr.append(el("th","r","Total"));th.append(hr);t.append(th);
+  const tbb=el("tbody");const colT=Array(12).fill(0);let grand=0;
+  ys.forEach(h=>{const tr=el("tr");if(h===sel)tr.className="sel";tr.append(el("td",null,h));const row=MES3.map((_,i)=>val(h,yr,i+1));const mx=Math.max(1,...row.filter(v=>v!=null));let rt=0;
+    row.forEach((v,i)=>{const c=concM(h,yr,i+1);const td=el("td","c"+(v==null?" nil":c&&v>c?" over":""),v==null?"·":fmt(v));if(v!=null){td.style.background=`rgba(69,162,227,${(.05+.3*v/mx).toFixed(3)})`;rt+=v;colT[i]+=v}td.title=`${h} · ${MES3[i]} ${yr}: ${fmt(v)} m³`;tr.append(td)});
+    grand+=rt;tr.append(el("td","c",fmt(rt)));tr.onclick=()=>{$("mSede").value=h===sel?"":h;renderConsumo();$("mChart").scrollIntoView({behavior:"smooth",block:"center"})};tbb.append(tr)});
+  t.append(tbb);const tf=el("tfoot"),fr=el("tr");fr.append(el("td",null,"Total"));colT.forEach(v=>fr.append(el("td","c",v?fmt(v):"·")));fr.append(el("td","c",fmt(grand)));tf.append(fr);t.append(tf);
+}
+
+/* ---------- COMPARATIVO ---------- */
+$("cSede").innerHTML='<option value="">Todas las sedes</option>';HSEDES.forEach(h=>{const o=el("option",null,h);o.value=h;$("cSede").append(o)});
+YEARS.forEach(y=>{["cFrom","cTo"].forEach(id=>{const o=el("option",null,String(y));o.value=y;$(id).append(o)})});
+$("cFrom").value=YEARS[YEARS.length-4];$("cTo").value=YEARS[YEARS.length-1];
+["cSede","cFrom","cTo","cMetric"].forEach(id=>$(id).onchange=renderComp);
+function yearStat(list,y){let t=0,ms=new Set();list.forEach(h=>{for(let m=1;m<=12;m++){const v=val(h,y,m);if(v!=null){t+=v;ms.add(m)}}});return{t,n:ms.size}}
+function renderComp(){
+  let a=+$("cFrom").value,b=+$("cTo").value;if(a>b)[a,b]=[b,a];
+  const sel=$("cSede").value,list=sel?[sel]:HSEDES;const yrs=YEARS.filter(y=>y>=a&&y<=b);
+  const YC=["#9fc9e8","#7fd1b9","#c3a8f0","#f3b46c","#e893ad","#8fd08f","#77c7da","#e0c060","#a7b4c2","#45a2e3","#1f8f6c"];
+  const series=yrs.map((y,i)=>({name:String(y),color:i===yrs.length-1?"#2b84c2":YC[i%YC.length],values:MES3.map((_,m)=>{let t=0,any=false;list.forEach(h=>{const v=val(h,y,m+1);if(v!=null){t+=v;any=true}});return any?t:null})}));
+  $("lChart").innerHTML=lineChart({labels:MES3,series,title:"Consumo mensual por año"});
+  $("lTitle").textContent=`Consumo mensual por año · ${sel||"todas las sedes"} (m³)`;
+  $("lSub").textContent=`${a}–${b} · la línea más gruesa es el año más reciente`;
+  $("lLegend").innerHTML=series.map(s=>`<span><i style="background:${s.color}"></i>${s.name}</span>`).join("");
+  const yc=$("ycards");yc.textContent="";let prevT=null;
+  const before=yearStat(list,a-1);if(before.n===12)prevT=before.t;
+  yrs.forEach(y=>{const s=yearStat(list,y);const c=el("div","yc");c.append(el("span",null,String(y)+(s.n&&s.n<12?` · ${s.n} meses`:"")),el("b","num",s.n?fmt(s.t):"—"));
+    if(prevT!=null&&s.n===12){const ch=(s.t-prevT)/prevT*100;const sm=el("small",null,`${ch>=0?"↑":"↓"} ${Math.abs(ch).toFixed(0)}% vs. año anterior`);sm.style.color=ch>=0?"var(--bad)":"var(--ok)";c.append(sm)}
+    else if(s.n&&s.n<12){c.append(el("small","note",`Promedio ${fmt(s.t/s.n)} m³/mes`))}
+    yc.append(c);prevT=s.n===12?s.t:prevT});
+  const met=$("cMetric").value;const t=$("cHeat");t.textContent="";const th=el("thead"),hr=el("tr");hr.append(el("th",null,"Sede"));YEARS.forEach(y=>hr.append(el("th","r",String(y))));th.append(hr);t.append(th);
+  const tb=el("tbody");HSEDES.forEach(h=>{const tr=el("tr");if(h===sel)tr.className="sel";tr.append(el("td",null,h));
+    const row=YEARS.map(y=>{const s=yearStat([h],y);return s.n?(met==="tot"?s.t:s.t/s.n):null});const mx=Math.max(1,...row.filter(v=>v!=null));
+    row.forEach(v=>{const td=el("td","c"+(v==null?" nil":""),v==null?"·":fmt(v));if(v!=null)td.style.background=`rgba(31,143,108,${(.05+.28*v/mx).toFixed(3)})`;tr.append(td)});
+    tr.onclick=()=>{$("cSede").value=h===sel?"":h;renderComp();$("lChart").scrollIntoView({behavior:"smooth",block:"center"})};tb.append(tr)});t.append(tb);
+  $("cTblSub").textContent=`${met==="tot"?"Total anual":"Promedio mensual"} en m³ · el color se compara dentro de cada sede · toca una fila para graficarla`;
+}
+
+/* ---------- CHECKLIST ---------- */
+const stepDone=k=>k==="reportar"?SEDES.every(s=>rec(s).done):!!procs[pid()]?.steps?.[k]?.done;
+function renderChecklist(){
+  const pend=SEDES.filter(s=>!rec(s).done),done=SEDES.filter(s=>rec(s).done);const [dy,dm]=dueMonth();const late=today>dueDate()&&pend.length;
+  $("alert").className="card alert "+(!pend.length?"done":late?"late":"pending");
+  $("aBig").textContent=pend.length||"✓";
+  $("aTitle").textContent=!pend.length?`Consumo de ${MESES[pM-1]} reportado en todas las sedes`:`${pend.length===1?"Falta 1 sede":`Faltan ${pend.length} sedes`} por reportar el consumo de ${MESES[pM-1]}`;
+  $("aText").textContent=!pend.length?"Revisa que cada sede tenga su evidencia cargada.":late?`La ventana de reporte (1 al ${DUE_DAY} de ${MESES[dm-1]} de ${dy}) ya pasó. Repórtalas cuanto antes.`:`Repórtalas en la plataforma de Corpourabá entre el 1 y el ${DUE_DAY} de ${MESES[dm-1]} de ${dy}.`;
+  $("aMeter").style.width=(done.length/SEDES.length*100)+"%";
+  const tb=$("stepsBody");tb.textContent="";let n=0;
+  STEPS.forEach((x,i)=>{const dn=stepDone(x.key);if(dn)n++;const info=procs[pid()]?.steps?.[x.key];const due=dueDate(x.day);const tr=el("tr");
+    const who=x.auto?(dn?"Automático":`${done.length} de ${SEDES.length} sedes`):(dn&&info?`${nameOf(info.by)}`:"—");
+    const pill=dn?["ok","Completado"]:today>due?["bad","Vencido"]:["warn","Pendiente"];const tdS=el("td");tdS.append(el("span","pill "+pill[0],pill[1]));
+    const tdA=el("td");const act=el("div","act");
+    if(x.auto){const b=el("button","icb");b.innerHTML=svgI(IC.sedes);b.title="Ver sedes";b.setAttribute("aria-label","Ver sedes pendientes");b.onclick=()=>$("pendList").scrollIntoView({behavior:"smooth"});act.append(b)}
+    else{const b=el("button","icb g");b.innerHTML=svgI(dn?IC.undo:IC.tick);b.title=dn?"Desmarcar":"Marcar como completada";b.setAttribute("aria-label",b.title);b.disabled=!canWrite;b.onclick=()=>toggleStep(x.key);act.append(b)}
+    tdA.append(act);const tdT=el("td");tdT.append(el("b",null,x.t));if(dn&&info?.at&&!x.auto)tdT.append(el("div","note",dFull(info.at)));
+    tr.append(el("td","num",String(i+1)),tdT,el("td",null,who),el("td","num",dShort(due)),tdS,tdA);tb.append(tr)});
+  $("stepsN").textContent=`${n} de ${STEPS.length} completadas`;
+  $("pendN").textContent=`${pend.length} pendientes`;$("doneN").textContent=`${done.length} reportadas`;
+  const pl=$("pendList");pl.textContent="";if(!pend.length)pl.append(el("p","note","No falta ninguna sede."));
+  pend.forEach(s=>{const it=el("div","si p");const d=el("div","dot");d.innerHTML=svgI(IC.clock);const t=el("div");t.append(el("b",null,s.name),el("small",null,s.resp));
+    const b=el("button","btn ghost","Registrar");b.onclick=()=>{go("registros");openForm(s.key)};it.append(d,t,b);pl.append(it)});
+  const dl=$("doneList");dl.textContent="";if(!done.length)dl.append(el("p","note","Todavía ninguna sede está reportada este mes."));
+  done.forEach(s=>{const r=rec(s);const it=el("div","si d");const d=el("div","dot");d.innerHTML=svgI(IC.tick);const t=el("div");t.append(el("b",null,s.name),el("small",null,`${nameOf(r.by)} · ${r.fechaReporte?fDate(r.fechaReporte):dShort(r.at)}`));
+    const k=(r.fotos||[]).length;it.append(d,t,el("span","pill "+(k?"info":"warn"),k?`${k} evidencia${k>1?"s":""}`:"Sin evidencia"));dl.append(it)});
+}
+async function toggleStep(k){const cur=procs[pid()]||{steps:{}};const steps={...(cur.steps||{})};
+  steps[k]=steps[k]?.done?{done:false}:{done:true,by:myId,at:new Date().toISOString()};procs[pid()]={periodo:pid(),steps};renderAll();
+  try{await db.collection("procesos").doc(pid()).set({periodo:pid(),steps});$("stepsErr").textContent=""}catch(e){$("stepsErr").textContent="No se pudo guardar la actividad ("+(e?.code||"error")+"). Inténtalo de nuevo."}}
+
+/* ---------- REGISTROS Y EVIDENCIAS ---------- */
+SEDES.forEach(s=>{[["rSede"],["eSede"]].forEach(([id])=>{const o=el("option",null,s.name);o.value=s.key;$(id).append(o)})});
+TIPOS.forEach(t=>{[["rTipo"],["eTipo"]].forEach(([id])=>{const o=el("option",null,t);o.value=t;$(id).append(o)})});
+["eSede","eTipo","eScope"].forEach(id=>$(id).onchange=renderEvid);
+const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+$("rFecha").value=iso(today);
+let pending=[];
+function openForm(key){$("formCard").hidden=false;if(key)$("rSede").value=key;fillForm();$("rMsg").textContent="";setTimeout(()=>{$("formCard").scrollIntoView({behavior:"smooth",block:"start"});$("rFecha").focus()},40)}
+function closeForm(){$("formCard").hidden=true;pending.forEach(p=>p.url&&URL.revokeObjectURL(p.url));pending=[];renderChips()}
+$("openForm").onclick=()=>openForm();$("closeForm").onclick=closeForm;$("rCancel").onclick=closeForm;
+function fillForm(){const s=SEDES.find(x=>x.key===$("rSede").value);const r=rec(s);$("rCons").value=r.consumo??"";$("rNota").value=r.nota??"";if(r.fechaReporte)$("rFecha").value=r.fechaReporte}
+$("rSede").onchange=fillForm;
+function renderChips(){const c=$("rChips");c.textContent="";pending.forEach((p,i)=>{const ch=el("div","chip");if(p.url){const im=el("img");im.src=p.url;im.alt="";ch.append(im)}else ch.append(el("b",null,"PDF"));
+  ch.append(el("span",null,p.file.name));const x=el("button",null,"✕");x.type="button";x.setAttribute("aria-label","Quitar "+p.file.name);x.onclick=()=>{if(p.url)URL.revokeObjectURL(p.url);pending.splice(i,1);renderChips()};ch.append(x);c.append(ch)})}
+function addFiles(fs){for(const f of fs){if(!(f.type.startsWith("image/")||f.type==="application/pdf"))continue;pending.push({file:f,url:f.type.startsWith("image/")?URL.createObjectURL(f):null})}renderChips()}
+$("rFile").onchange=e=>{addFiles([...e.target.files]);e.target.value=""};
+const drop=$("rDrop");drop.ondragover=e=>{e.preventDefault();drop.classList.add("over")};drop.ondragleave=()=>drop.classList.remove("over");drop.ondrop=e=>{e.preventDefault();drop.classList.remove("over");addFiles([...e.dataTransfer.files])};
+const numOrNull=v=>{if(v===""||v==null)return null;if(typeof v==="number")return v;let s=String(v).trim();if(s.includes(","))s=s.replace(/\./g,"").replace(",",".");const n=Number(s);return isFinite(n)?n:null};
+async function shrink(f){if(!f.type.startsWith("image/")||f.type==="image/svg+xml"||f.size<900000)return f;
+  try{const b=await createImageBitmap(f);const sc=Math.min(1,1800/Math.max(b.width,b.height));const c=document.createElement("canvas");c.width=Math.round(b.width*sc);c.height=Math.round(b.height*sc);c.getContext("2d").drawImage(b,0,0,c.width,c.height);return await new Promise(r=>c.toBlob(x=>r(x||f),"image/jpeg",.85))}catch{return f}}
+$("rForm").onsubmit=async e=>{e.preventDefault();if(!canWrite||!db)return;
+  const s=SEDES.find(x=>x.key===$("rSede").value);const id=docId(s.key);const r=records[id]||{};
+  const msg=$("rMsg");msg.className="note";msg.textContent=pending.length?"Subiendo evidencias…":"Guardando…";$("rSave").disabled=true;
+  const fotos=[...(r.fotos||[])],mm={...(r.fotosMeta||{})};let fail=0;
+  if(pending.length&&!assets)fail=pending.length;
+  else for(const p of pending){try{const b=await shrink(p.file);const u=await assets.upload(b,b.type?undefined:{type:p.file.type});fotos.push(u.id);mm[u.id]={type:u.contentType,tipo:$("rTipo").value,nombre:p.file.name,subidoPor:myId,en:new Date().toISOString()}}catch{fail++}}
+  const cons=numOrNull($("rCons").value);
+  const next={...r,periodo:pid(),sede:s.name,done:true,by:r.done?r.by:myId,at:r.done?r.at:new Date().toISOString(),fechaReporte:$("rFecha").value||iso(today),tipo:$("rTipo").value,
+    consumo:cons??r.consumo??null,nota:$("rNota").value||"",fotos,fotosMeta:mm,editadoPor:myId,editadoEn:new Date().toISOString()};
+  try{await db.collection("reportes").doc(id).set(next);records[id]=next;pending.forEach(p=>p.url&&URL.revokeObjectURL(p.url));pending=[];renderChips();
+    msg.className=fail?"err":"okmsg";msg.textContent=fail?`Registro guardado, pero ${fail} archivo(s) no se subieron. Usa JPG, PNG o PDF de menos de 20 MB.`:`✓ ${s.name} quedó registrada como reportada.`;renderAll()}
+  catch(err){msg.className="err";msg.textContent="No se pudo guardar ("+(err?.code||"error")+"). Revisa la conexión o tus permisos."}
+  $("rSave").disabled=false};
+function renderEvid(){
+  $("rSub").textContent=`Periodo: ${pName()} · al guardar, la sede queda marcada como reportada`;
+  $("rPerm").textContent=!connected?"Abre la página con tu cuenta para registrar.":!canWrite?"Tienes acceso de solo lectura.":!assets?"Puedes registrar la fecha. Para subir fotos necesitas acceso de Editor.":"";
+  $("rSave").disabled=!canWrite||!connected;$("openForm").hidden=connected&&!canWrite;
+  const fs=$("eSede").value,ft=$("eTipo").value,all=$("eScope").value==="todo";
+  $("eTitle").textContent=all?"Todos los registros":`Registros de ${MESES[pM-1]} ${pY}`;
+  const rows=[];for(const [id,r] of Object.entries(records)){const [p,k]=id.split("__");if(!all&&p!==pid())continue;const s=SEDES.find(x=>x.key===k);if(!s)continue;if(fs&&k!==fs)continue;if(!r.done&&!(r.fotos||[]).length)continue;
+    const tipos=[...new Set((r.fotos||[]).map(f=>r.fotosMeta?.[f]?.tipo).filter(Boolean))];if(ft&&!tipos.includes(ft)&&r.tipo!==ft)continue;rows.push({id,p,s,r,tipos})}
+  rows.sort((a,b)=>(b.r.fechaReporte||b.r.at||"").localeCompare(a.r.fechaReporte||a.r.at||""));
+  const tb=$("eBody");tb.textContent="";
+  if(!rows.length){const tr=el("tr"),td=el("td");td.colSpan=8;const e=el("div","empty");e.innerHTML=`<svg viewBox="0 0 48 48" aria-hidden="true"><use href="#drop"/></svg>`;e.append(el("b",null,"Aún no hay registros"+(all?"":" este mes")),el("span",null,"Usa «Cargar evidencia» para subir la foto del reporte."));td.append(e);tr.append(td);tb.append(tr);return}
+  rows.forEach(({p,s,r,tipos})=>{const tr=el("tr");const [y,m]=p.split("-").map(Number);
+    const tdE=el("td");const th=el("div","thumbs");(r.fotos||[]).slice(0,3).forEach(fid=>{const mt=r.fotosMeta?.[fid]||{};const b=el("button","tmb");b.type="button";b.setAttribute("aria-label","Ampliar evidencia");
+      if(mt.type==="application/pdf"){b.append(el("span","pdf","PDF"));b.onclick=()=>window.open("/_blob/"+fid,"_blank")}else{const i=el("img");i.src="/_blob/"+fid;i.alt="";i.loading="lazy";b.append(i);b.onclick=()=>openLb(fid,`${s.name} · ${mt.tipo||""}`)}th.append(b)});
+    if((r.fotos||[]).length>3)th.append(el("span","more",`+${r.fotos.length-3}`));if(!(r.fotos||[]).length)th.append(el("span","pill warn","Sin evidencia"));tdE.append(th);
+    const tdA=el("td");const act=el("div","act");
+    if(canWrite){const bE=el("button","icb g");bE.innerHTML=svgI(IC.plus);bE.title="Agregar evidencia";bE.setAttribute("aria-label","Agregar evidencia a "+s.name);bE.onclick=()=>{if(p!==pid()){const[yy,mm]=p.split("-").map(Number);pY=yy;pM=mm;renderAll()}openForm(s.key)};act.append(bE)}
+    if(assets&&canWrite&&(r.fotos||[]).length){const bD=el("button","icb r");bD.innerHTML=svgI(IC.trash);bD.title="Quitar la última evidencia";bD.setAttribute("aria-label","Quitar la última evidencia de "+s.name);
+      bD.onclick=()=>{if(bD.dataset.c){removePhoto(s,p,r.fotos[r.fotos.length-1])}else{bD.dataset.c="1";bD.style.background="var(--bad-soft)";bD.title="Toca otra vez para confirmar";setTimeout(()=>{delete bD.dataset.c;bD.style.background=""},3000)}};act.append(bD)}
+    tdA.append(act);
+    tr.append(el("td","num",r.fechaReporte?fDate(r.fechaReporte):dShort(r.at)),el("td",null,pName(y,m)),el("td",null,s.name),el("td",null,tipos.join(", ")||r.tipo||"Reporte"),el("td","r num",fmt(r.consumo??sVal(s,y,m))),tdE,el("td",null,nameOf(r.by)),tdA);tb.append(tr)});
+}
+async function removePhoto(s,p,fid){const id=docId(s.key,p),r=records[id]||{};const mm={...(r.fotosMeta||{})};delete mm[fid];
+  const next={...r,fotos:(r.fotos||[]).filter(x=>x!==fid),fotosMeta:mm,editadoPor:myId,editadoEn:new Date().toISOString()};
+  try{await db.collection("reportes").doc(id).set(next);records[id]=next;renderAll();try{await assets.delete(fid)}catch{}}catch{}}
+
+/* ---------- HISTORIAL ---------- */
+HSEDES.forEach(h=>{const o=el("option",null,h);o.value=h;$("dSede").append(o)});
+[...YEARS].reverse().forEach(y=>{const o=el("option",null,String(y));o.value=y;$("dAno").append(o)});
+let dPage=0;const PS=25;
+$("dSede").onchange=()=>{dPage=0;renderData()};$("dAno").onchange=()=>{dPage=0;renderData()};$("hBuscar").oninput=()=>{dPage=0;renderData();renderLog()};
+function dataRows(){
+  const rows=CONS.filter(r=>r[2]!=="Zona Industrial (inactivo)").map(r=>({y:r[0],m:r[1],sede:r[2],lec:r[3],con:r[4],conc:r[5],src:"Excel",by:null,n:0}));
+  const idx={};rows.forEach(r=>idx[r.sede+"|"+r.y+"|"+r.m]=r);
+  for(const [id,r] of Object.entries(records)){const [p,k]=id.split("__");const s=SEDES.find(x=>x.key===k);if(!s)continue;const [y,m]=p.split("-").map(Number);const nm=s.hist||s.name;const ex=idx[nm+"|"+y+"|"+m];
+    if(ex){if(r.consumo!=null)ex.con=r.consumo;ex.src=r.done?"Excel + reporte":"Excel";ex.by=r.by;ex.n=(r.fotos||[]).length}
+    else rows.push({y,m,sede:nm,lec:r.lectura??null,con:r.consumo??null,conc:s.hist?concM(s.hist,y,m):null,src:r.done?"Reporte en la página":"Borrador",by:r.by,n:(r.fotos||[]).length})}
+  return rows.sort((a,b)=>b.y-a.y||b.m-a.m||a.sede.localeCompare(b.sede));
+}
+function filtered(){const fs=$("dSede").value,fy=$("dAno").value,q=$("hBuscar").value.trim().toLowerCase();
+  return dataRows().filter(r=>(!fs||r.sede===fs)&&(!fy||r.y===+fy)&&(!q||`${r.sede} ${MESES[r.m-1]} ${r.y} ${r.src}`.toLowerCase().includes(q)))}
+function renderData(){
+  const rows=filtered();const pages=Math.max(1,Math.ceil(rows.length/PS));dPage=Math.min(Math.max(0,dPage),pages-1);
+  const tb=$("dBody");tb.textContent="";
+  rows.slice(dPage*PS,dPage*PS+PS).forEach(r=>{const tr=el("tr");const pct=r.con!=null&&r.con>=0&&r.conc?r.con/r.conc*100:null;
+    const tdU=el("td");if(pct!=null){const u=el("div","use");const t=el("div","tr");const i=el("i",pct>100?"over":"");i.style.width=Math.min(100,pct)+"%";t.append(i);const sp=el("span",null,pct.toFixed(0)+"%");if(pct>100)sp.style.color="var(--warn)";u.append(t,sp);tdU.append(u)}else tdU.append(el("span","note","—"));
+    const src=el("td");src.append(el("span","pill "+(r.src==="Excel"?"neutral":"info"),r.src+(r.n?` · ${r.n} evid.`:"")));
+    tr.append(el("td","num",`${MES3[r.m-1]} ${r.y}`),el("td",null,r.sede),el("td","r num",typeof r.lec==="number"?fmt1(r.lec):"—"),el("td","r num",r.con!=null&&r.con>=0?fmt1(r.con):r.con<0?"lectura inválida":"—"),el("td","r num",fmt(r.conc)),tdU,src,el("td","note",r.by?nameOf(r.by):"—"));tb.append(tr)});
+  if(!rows.length){const tr=el("tr"),td=el("td","note","No hay registros con ese filtro.");td.colSpan=8;tr.append(td);tb.append(tr)}
+  $("dPage").textContent=`${rows.length.toLocaleString("es-CO")} registros · página ${dPage+1} de ${pages}`;
+  const pg=$("dPgb");pg.textContent="";const mk=(t,p,dis,on)=>{const b=el("button",on?"on":"",t);b.disabled=dis;b.onclick=()=>{dPage=p;renderData()};pg.append(b)};
+  mk("‹",dPage-1,dPage===0);const st=Math.max(0,Math.min(dPage-2,pages-5));for(let i=st;i<Math.min(pages,st+5);i++)mk(String(i+1),i,false,i===dPage);mk("›",dPage+1,dPage>=pages-1);
+}
+function renderLog(){
+  const q=$("hBuscar").value.trim().toLowerCase();const ev=[];
+  for(const [id,r] of Object.entries(records)){const [p,k]=id.split("__");const s=SEDES.find(x=>x.key===k);if(!s)continue;
+    if(r.done&&r.at)ev.push({at:r.at,p,sede:s.name,act:"Reporte a Corpourabá"+(r.fechaReporte?` (${fDate(r.fechaReporte)})`:""),by:r.by,st:["ok","Enviado"],n:(r.fotos||[]).length});
+    for(const fid of r.fotos||[]){const m=(r.fotosMeta||{})[fid]||{};if(m.en)ev.push({at:m.en,p,sede:s.name,act:"Adjuntó: "+(m.tipo||"evidencia"),by:m.subidoPor,st:["info","Evidencia"],fid,type:m.type})}}
+  for(const [p,pr] of Object.entries(procs))for(const [k,v] of Object.entries(pr.steps||{}))if(v.done&&v.at){const st=STEPS.find(x=>x.key===k);ev.push({at:v.at,p,sede:"Todas",act:st?st.t:k,by:v.by,st:["ok","Completado"]})}
+  ev.sort((a,b)=>b.at.localeCompare(a.at));const tb=$("logBody");tb.textContent="";
+  const list=ev.filter(e=>!q||`${e.sede} ${e.act} ${nameOf(e.by)}`.toLowerCase().includes(q));
+  if(!list.length){const tr=el("tr"),td=el("td","note",ev.length?"Nada coincide con la búsqueda.":"Aún no hay actividad. Cada reporte, actividad del checklist o evidencia quedará aquí con el nombre de quien lo hizo.");td.colSpan=7;tr.append(td);tb.append(tr);return}
+  list.slice(0,100).forEach(e=>{const tr=el("tr");const [y,m]=e.p.split("-").map(Number);const tdS=el("td");tdS.append(el("span","pill "+e.st[0],e.st[1]));
+    const tdE=el("td");if(e.fid){const b=el("button","icb");b.innerHTML=svgI(IC.file);b.title="Ver evidencia";b.setAttribute("aria-label","Ver evidencia");b.onclick=()=>e.type==="application/pdf"?window.open("/_blob/"+e.fid,"_blank"):openLb(e.fid,e.sede);tdE.append(b)}else tdE.append(el("span","note",e.n?`${e.n} adjunta${e.n>1?"s":""}`:"—"));
+    tr.append(el("td","num",dFull(e.at)),el("td",null,pName(y,m)),el("td",null,e.sede),el("td",null,e.act),el("td",null,nameOf(e.by)),tdS,tdE);tb.append(tr)})}
+(function(){const tb=$("conc");CONC.forEach(r=>{const tr=el("tr");const v=r[5]?new Date(r[5]+"T00:00"):null;const d=v?(v-today)/864e5:null;
+  tr.append(el("td",null,r[0]),el("td","num",r[4]||"—"),el("td","num",r[1]||"—"),el("td","r num",fmt1(r[3])));
+  const td=el("td");td.append(el("span","pill "+(d==null?"neutral":d<0?"bad":d<365?"warn":"ok"),v?v.toLocaleDateString("es-CO",{day:"numeric",month:"short",year:"numeric"})+(d<0?" · vencida":d<365?" · vence pronto":" · vigente"):"—"));tr.append(td);tb.append(tr)})})();
+
+/* ---------- lightbox ---------- */
+function openLb(fid,cap){$("lbImg").src="/_blob/"+fid;$("lbCap").textContent=cap||"";$("lb").hidden=false}
+$("lbClose").onclick=()=>$("lb").hidden=true;$("lb").onclick=e=>{if(e.target.id==="lb")$("lb").hidden=true};
+document.addEventListener("keydown",e=>{if(e.key==="Escape")$("lb").hidden=true});
+
+function renderAll(){$("pLabel").textContent=pName();$("nextP").disabled=pY===curY&&pM===curM;renderNav();renderInicio();renderConsumo();renderComp();renderChecklist();renderEvid();renderData();renderLog()}
+
+/* ---------- conexión ---------- */
+async function resolveNames(){if(!user)return;const ids=new Set();
+  Object.values(records).forEach(r=>{if(r.by)ids.add(r.by);Object.values(r.fotosMeta||{}).forEach(m=>m.subidoPor&&ids.add(m.subidoPor))});
+  Object.values(procs).forEach(p=>Object.values(p.steps||{}).forEach(v=>v.by&&ids.add(v.by)));
+  const miss=[...ids].filter(i=>!names[i]);if(!miss.length)return;
+  try{const ps=await user.profiles(miss);miss.forEach(i=>names[i]=ps[i]?.name||"Alguien del equipo");renderAll()}catch{}}
+function setMe(nm,role){["meName","meName2"].forEach(i=>$(i).textContent=nm);["meAv","meAv2"].forEach(i=>$(i).textContent=initials(nm));["meRole","meRole2"].forEach(i=>$(i).textContent=role)}
+(async()=>{
+  go(view);renderAll();setMe("Sin conexión","");
+  if(!window.claude?.use){$("ghlink").hidden=false;setMe("Modo consulta","Solo lectura");return}
+  [db,user]=await Promise.all([claude.use("db"),claude.use("user")]);
+  let nm="",role="Equipo";
+  if(user){try{const me=await user.me();myId=me.id;nm=me.name||"";if(myId&&nm)names[myId]=nm;role=(await user.isOwner())?"Administrador":(await user.canEdit())?"Editor":"Equipo"}catch{}}
+  $("hello").textContent=nm?`Hola, ${nm.split(" ")[0]}`:"Hola";
+  if(!db){setMe(nm||"Invitado","Inicia sesión para registrar");return}
+  connected=true;let w=null;try{w=user?await user.can("data.write"):null}catch{}
+  canWrite=w!==false;if(!canWrite)role="Solo lectura";setMe(nm||"Tu cuenta",role);
+  assets=canWrite?await claude.use("assets"):null;
+  db.collection("reportes").onSnapshot(sn=>{for(const k in records)delete records[k];sn.docs.forEach(d=>{if(d.exists)records[d.id]=d.data()});renderAll();resolveNames()},()=>{});
+  db.collection("procesos").onSnapshot(sn=>{for(const k in procs)delete procs[k];sn.docs.forEach(d=>{if(d.exists)procs[d.id]=d.data()});renderAll();resolveNames()},()=>{});
+  renderAll();
+  downloads=await claude.use("downloads");
+  if(downloads){const b=$("csvBtn");b.hidden=false;b.onclick=async()=>{const rows=filtered();const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
+    const L=[["Año","Mes","Sede","Lectura actual","Consumo m3","Concesión m3","Fuente","Reportó","Evidencias"].map(q).join(";")];
+    rows.forEach(r=>L.push([r.y,r.m,r.sede,r.lec,r.con,r.conc,r.src,r.by?nameOf(r.by):"",r.n||0].map(q).join(";")));
+    try{await downloads.save({filename:"consumos-agua-unibán.csv",data:new Blob(["﻿"+L.join("\r\n")],{type:"text/csv"})})}catch{}}}
+})();
+</script>
+
+</body>
+</html>
