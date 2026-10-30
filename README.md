@@ -11,3 +11,10 @@ Mapa de la planta, causas y mejoras, oxidación e IRCA, seguimientos 1 a 5 y con
 Página: https://nksc1412-stack.github.io/nksc1214/ptap/
 
 Los datos de los seguimientos vienen dentro del archivo `ptap/index.html`. Lo que se edite en la página se guarda solo en el navegador de quien lo edita; para que todos vean un cambio hay que actualizar ese archivo.
+
+## Consumo de agua y reporte a Corpourabá
+
+Consumo mensual por sede, comparativo anual, checklist del reporte (días 1 al 5), registros con evidencias e historial desde 2016.
+Página: https://nksc1412-stack.github.io/nksc1214/consumo-agua/
+
+Esta página es de consulta: los datos del Excel van dentro de `consumo-agua/index.html`. Para marcar sedes como reportadas y subir evidencias se usa el panel del equipo: https://claude.ai/artifact/3ZmCQaSt5YLkzkh2ybqwgP
