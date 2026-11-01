@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Consumo de agua Unibán · Reporte Corpourabá</title>
-<meta name="description" content="Seguimiento del consumo de agua de los pozos profundos de Unibán y reporte mensual a Corpourabá.">
+<title>Consumo de agua Unibán · Concesiones Corpourabá</title>
+<meta name="description" content="Consumo de agua de los pozos profundos de Unibán por sede, comparado con las concesiones de Corpourabá.">
 <style>:root{color-scheme:light}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -381,6 +381,21 @@ button.ns:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
   .ghlink{margin-right:0}
 }
 @media (max-width:820px){.sideart{display:none}.brand .bt small{display:none}.brand .bt b{font-size:1.2rem}.brand svg{width:30px;height:30px}.topme{display:none}}
+/* ===== v8: imagen completa y página abierta ===== */
+.hero{display:block;min-height:0;aspect-ratio:auto;background:#eaf6fb;padding:0}
+.hero::before{display:none}
+.heroimg{display:block;width:100%;height:auto}
+.hero .txt{position:absolute;left:0;top:0;bottom:0;width:min(42%,540px);max-width:none;justify-content:center;padding:28px 34px}
+.hero .remind{text-decoration:none}
+.hero .txt p{text-shadow:0 0 12px rgba(255,255,255,.95),0 0 4px rgba(255,255,255,.9)}
+.heroq{right:2.5%;top:4%}
+@media (max-width:1100px){.hero .txt{position:static;width:auto;padding:22px 24px 26px}.hero .txt h1{font-size:2rem}.heroq{font-size:1.35rem}}
+@media (max-width:640px){.heroq{display:none}.hero .txt{padding:18px}}
+.estado .st.n{background:#eef3f2;color:#6b7f7b}
+.estado .r{text-align:right}
+a.ns{text-decoration:none;color:inherit;cursor:pointer}
+a.ns:hover b{color:var(--green)}
+.top{min-height:44px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -402,24 +417,22 @@ button.ns:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
     <div class="brand"><svg aria-hidden="true"><use href="#logo"/></svg><div class="bt"><b>Unibán</b><small>Agua que impulsa<br>nuestro futuro</small></div></div>
     <nav id="nav"></nav>
     <div class="sideart" aria-hidden="true"><div class="sideimg"></div><p class="hand">Cuidamos el agua,<br>construimos<br>un mejor mañana</p></div>
-    <div class="me"><div class="avatar" id="meAv">··</div><div><b id="meName">Cargando…</b><span id="meRole"></span></div></div>
   </aside>
 
   <main>
     <div class="top">
-      <a class="ghlink" id="ghlink" href="https://claude.ai/artifact/3ZmCQaSt5YLkzkh2ybqwgP" target="_blank" rel="noopener" hidden>Versión de consulta · Para marcar sedes y subir evidencias abre el panel del equipo →</a>
       <div class="picker" id="monthPicker"><button id="prevP" aria-label="Mes anterior">‹</button><span class="lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span id="pLabel"></span></span><button id="nextP" aria-label="Mes siguiente">›</button></div>
-      <div class="topme"><div class="avatar" id="meAv2">··</div><div><b id="meName2"></b><span id="meRole2"></span></div></div>
     </div>
 
     <!-- ============ INICIO ============ -->
     <section class="view" id="v-inicio">
       <div class="hero">
+        <img class="heroimg" src="img/pozo.jpg" alt="Pozo profundo con su bomba, en medio de vegetación de Urabá, con el corte del terreno que muestra el agua subterránea" width="1500" height="847">
         <div class="txt">
           <span class="eyebrow">Unibán <i>•</i> Concesiones de agua <i>•</i> Corpourabá</span>
-          <h1 id="hello">Hola</h1>
-          <p>Aquí puedes hacer seguimiento del consumo de agua de los pozos profundos de Unibán y reportar a Corpourabá.</p>
-          <button class="remind" data-go="checklist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg><span><b>Recuerda:</b> <span id="remText">el reporte mensual debe enviarse entre el 1 y el 5 de cada mes.</span></span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg></button>
+          <h1>Hola, equipo Unibán</h1>
+          <p>Aquí puedes hacer seguimiento del consumo de agua de los pozos profundos de cada sede y compararlo con la concesión de Corpourabá.</p>
+          <a class="remind" href="https://tasas.corpouraba.gov.co/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg><span><b>Recuerda:</b> el consumo se reporta a Corpourabá del <b>1 al 5 de cada mes</b> en tasas.corpouraba.gov.co</span><svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg></a>
         </div>
         <p class="hand heroq">El agua<br>es vida, es<br>nuestro futuro<svg viewBox="0 0 120 14" aria-hidden="true"><path d="M4 10 C40 2 80 2 116 8" stroke="#2fa36b" stroke-width="3" fill="none" stroke-linecap="round"/></svg></p>
       </div>
@@ -432,17 +445,17 @@ button.ns:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
           <div class="legend" id="barLegend"></div>
         </div>
         <div class="card">
-          <div class="cardhead"><div class="ttl"><span class="ticon g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg></span><div><h3>Estado del reporte mensual</h3><p class="sub" id="estSub"></p></div></div></div>
-          <div class="estado"><div class="eh"><span>Sede</span><span>Estado</span><span>Fecha</span></div><div id="estList"></div></div>
+          <div class="cardhead"><div class="ttl"><span class="ticon g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h16M6 16l4-5 3 3 5-7"/></svg></span><div><h3>Uso de la concesión</h3><p class="sub" id="estSub"></p></div></div></div>
+          <div class="estado"><div class="eh"><span>Sede</span><span>Estado</span><span class="r">Uso</span></div><div id="estList"></div></div>
         </div>
       </div>
       <div class="card nextsteps">
         <span class="nsicon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3s-6 7-6 11a6 6 0 0 0 12 0c0-4-6-11-6-11z"/></svg></span>
-        <div class="nsbody"><h3>Seguimiento y próximos pasos</h3>
+        <div class="nsbody"><h3>Para tener en cuenta</h3>
           <div class="nsgrid">
-            <button class="ns" data-go="checklist"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg></i><span><b>1. Verifica sedes pendientes</b><small id="ns1"></small></span></button>
-            <button class="ns" data-go="registros"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 18a5 5 0 0 1-.6-10A6 6 0 0 1 18 9a4 4 0 0 1 0 9"/><path d="M12 12v8M9 15l3-3 3 3"/></svg></i><span><b>2. Carga los soportes</b><small>El único requisito es la evidencia de que el reporte fue enviado.</small></span></button>
-            <div class="ns"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg></i><span><b>3. No olvides</b><small>El plazo de envío es del 1 al 5 de cada mes.</small></span></div>
+            <a class="ns" href="https://tasas.corpouraba.gov.co/" target="_blank" rel="noopener"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M9 15l2 2 4-4"/></svg></i><span><b>1. Reporta a tiempo</b><small id="ns1"></small></span></a>
+            <button class="ns" data-go="consumo"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3s-6 7-6 11a6 6 0 0 0 12 0c0-4-6-11-6-11z"/><path d="M12 10v4M12 17v.5"/></svg></i><span><b>2. Revisa los excesos</b><small id="ns2"></small></span></button>
+            <button class="ns" data-go="datos"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M9 14l2 2 4-4"/></svg></i><span><b>3. Renueva concesiones</b><small id="ns3"></small></span></button>
           </div>
         </div>
         <p class="hand nsq">Juntos por<br>el uso responsable<br>del agua</p>
@@ -456,7 +469,7 @@ button.ns:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
         <div class="card">
           <div class="cardhead"><div><h3 id="tTitle">Sedes del mes</h3><p class="sub">Consumo frente a la concesión mensual de cada pozo</p></div>
             <div class="filters"><div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="tBuscar" placeholder="Buscar sede…" aria-label="Buscar sede"></div></div></div>
-          <div class="tbl"><table><thead><tr><th>Sede</th><th class="r">Consumo (m³)</th><th>Uso de la concesión</th><th>Estado</th><th class="r">Acciones</th></tr></thead><tbody id="tBody"></tbody></table></div>
+          <div class="tbl"><table><thead><tr><th>Sede</th><th class="r">Consumo (m³)</th><th class="r">Concesión</th><th>Uso de la concesión</th><th>Estado</th><th class="r">Gráfica</th></tr></thead><tbody id="tBody"></tbody></table></div>
           <p class="note" id="tFoot" style="margin:10px 0 0"></p>
         </div>
         <div class="card">
@@ -502,78 +515,25 @@ button.ns:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
       </div>
     </section>
 
-    <!-- ============ CHECKLIST ============ -->
-    <section class="view" id="v-checklist" hidden>
-      <div class="pagehead"><div><h2>Checklist mensual</h2><p>Marca el avance de cada actividad del reporte a Corpourabá y revisa qué sedes faltan.</p></div></div>
-      <div class="card alert pending" id="alert">
-        <div class="big" id="aBig">9</div>
-        <div><h3 id="aTitle"></h3><p id="aText"></p><div class="meter"><i id="aMeter" style="width:0"></i></div></div>
-        <div class="btns"><button class="btn" data-go="registros">Registrar reporte</button><a class="btn ghost" href="https://tasas.corpouraba.gov.co/" target="_blank" rel="noopener">Plataforma Corpourabá</a></div>
-      </div>
-      <div class="card">
-        <div class="cardhead"><div><h3>Actividades del mes</h3><p class="sub">Ventana de reporte: del 1 al 5 de cada mes</p></div><span class="pill info" id="stepsN"></span></div>
-        <div class="tbl"><table><thead><tr><th>#</th><th>Actividad</th><th>Responsable</th><th>Fecha límite</th><th>Estado</th><th class="r">Acción</th></tr></thead><tbody id="stepsBody"></tbody></table></div>
-        <p class="err" id="stepsErr"></p>
-      </div>
-      <div class="cols">
-        <div class="card"><div class="cardhead"><div><h3>Sedes que faltan</h3><p class="sub">Responsable y usuario en la plataforma</p></div><span class="pill warn" id="pendN"></span></div><div class="slist" id="pendList"></div></div>
-        <div class="card"><div class="cardhead"><div><h3>Sedes reportadas</h3><p class="sub">Quién lo hizo y en qué fecha</p></div><span class="pill ok" id="doneN"></span></div><div class="slist" id="doneList"></div></div>
-      </div>
-    </section>
-
-    <!-- ============ REGISTROS Y EVIDENCIAS ============ -->
-    <section class="view" id="v-registros" hidden>
-      <div class="pagehead"><div><h2>Registros y evidencias</h2><p>Carga el soporte de que el consumo se reportó a Corpourabá: la fecha y la foto, nada más.</p></div><button class="btn" id="openForm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>Cargar evidencia</button></div>
-      <div class="card panel" id="formCard" hidden>
-        <div class="cardhead"><div><h3>Nuevo registro</h3><p class="sub" id="rSub"></p></div><button class="icb" id="closeForm" aria-label="Cerrar formulario"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-        <form class="form" id="rForm" novalidate>
-          <div class="f"><label for="rSede">Sede</label><select id="rSede"></select></div>
-          <div class="f"><label for="rFecha">Fecha del reporte</label><input type="date" id="rFecha"></div>
-          <div class="f"><label for="rTipo">Tipo de registro</label><select id="rTipo"></select></div>
-          <div class="f"><label for="rCons">Consumo (m³) · opcional</label><input id="rCons" inputmode="decimal" placeholder="Ej.: 2600"></div>
-          <label class="drop w2" id="rDrop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a5 5 0 0 1-.6-10A6 6 0 0 1 18 9a4 4 0 0 1 0 9"/><path d="M12 12v8M9 15l3-3 3 3"/></svg><span>Arrastra archivos aquí o <b>haz clic para seleccionar</b></span><small>JPG, PNG o PDF · máx. 20 MB</small><input type="file" id="rFile" accept="image/*,application/pdf" multiple></label>
-          <div class="f w2"><label for="rNota">Observación · opcional</label><textarea id="rNota" placeholder="Ej.: radicado de la plataforma, lectura estimada…"></textarea></div>
-          <div class="chips w4" id="rChips"></div>
-          <div class="btns w4"><button class="btn" type="submit" id="rSave">Guardar</button><button class="btn ghost" type="button" id="rCancel">Cancelar</button><span id="rMsg"></span></div>
-          <p class="note w4" id="rPerm"></p>
-        </form>
+    <!-- ============ DATOS ============ -->
+    <section class="view" id="v-datos" hidden>
+      <div class="pagehead"><div><h2>Datos y concesiones</h2><p>Todas las lecturas desde 2016 y el estado de las concesiones de agua de cada sede.</p></div>
+        <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="hBuscar" placeholder="Buscar sede o mes…" aria-label="Buscar en los datos"></div></div>
+      <div class="card" id="concCard">
+        <div class="cardhead"><div><h3>Concesiones de agua</h3><p class="sub">Volumen concesionado y vigencia de cada resolución · hoja «General»</p></div></div>
+        <div class="tbl"><table><thead><tr><th>Sede</th><th>Resolución</th><th>Matrícula</th><th class="r">Concesión m³/mes</th><th>Vigencia</th></tr></thead><tbody id="conc"></tbody></table></div>
       </div>
       <div class="card">
         <div class="cardhead">
-          <div><h3 id="eTitle">Registros del mes</h3><p class="sub">Cada fila es una sede reportada con sus soportes</p></div>
-          <div class="filters">
-            <div class="f"><label for="eSede">Sede</label><select id="eSede"><option value="">Todas las sedes</option></select></div>
-            <div class="f"><label for="eTipo">Tipo</label><select id="eTipo"><option value="">Todos</option></select></div>
-            <div class="f"><label for="eScope">Mostrar</label><select id="eScope"><option value="mes">Mes seleccionado</option><option value="todo">Todos los meses</option></select></div>
-          </div>
-        </div>
-        <div class="tbl"><table><thead><tr><th>Fecha</th><th>Periodo</th><th>Sede</th><th>Tipo de registro</th><th class="r">Consumo (m³)</th><th>Evidencia</th><th>Responsable</th><th class="r">Acciones</th></tr></thead><tbody id="eBody"></tbody></table></div>
-      </div>
-    </section>
-
-    <!-- ============ HISTORIAL ============ -->
-    <section class="view" id="v-historial" hidden>
-      <div class="pagehead"><div><h2>Historial de registros y reportes</h2><p>Toda la información: quién hizo cada actividad, cuándo, y las lecturas desde 2016.</p></div>
-        <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="hBuscar" placeholder="Buscar…" aria-label="Buscar en el historial"></div></div>
-      <div class="card">
-        <div class="cardhead"><div><h3>Actividad del equipo</h3><p class="sub">Reportes, actividades del checklist y evidencias</p></div></div>
-        <div class="tbl"><table><thead><tr><th>Fecha</th><th>Periodo</th><th>Sede</th><th>Actividad</th><th>Responsable</th><th>Estado</th><th>Evidencia</th></tr></thead><tbody id="logBody"></tbody></table></div>
-      </div>
-      <div class="card">
-        <div class="cardhead">
-          <div><h3>Lecturas y consumos · data madre</h3><p class="sub">Hoja «Registro Consumos» del Excel unida a los reportes hechos aquí</p></div>
+          <div><h3>Lecturas y consumos</h3><p class="sub">Hoja «Registro Consumos» de la BD Consumos de agua</p></div>
           <div class="filters">
             <div class="f"><label for="dSede">Sede</label><select id="dSede"><option value="">Todas</option></select></div>
             <div class="f"><label for="dAno">Año</label><select id="dAno"><option value="">Todos</option></select></div>
-            <button class="btn ghost" id="csvBtn" hidden>Exportar CSV</button>
+            <button class="btn ghost" id="csvBtn">Descargar CSV</button>
           </div>
         </div>
-        <div class="tbl"><table><thead><tr><th>Periodo</th><th>Sede</th><th class="r">Lectura actual</th><th class="r">Consumo m³</th><th class="r">Concesión m³</th><th>Uso</th><th>Fuente</th><th>Reportó</th></tr></thead><tbody id="dBody"></tbody></table></div>
+        <div class="tbl"><table><thead><tr><th>Periodo</th><th>Sede</th><th class="r">Lectura actual</th><th class="r">Consumo m³</th><th class="r">Concesión m³</th><th>Uso de la concesión</th></tr></thead><tbody id="dBody"></tbody></table></div>
         <div class="pager"><span class="note" id="dPage"></span><div class="pgb" id="dPgb"></div></div>
-      </div>
-      <div class="card">
-        <div class="cardhead"><div><h3>Concesiones de agua</h3><p class="sub">Hoja «General» de la BD Consumos de agua</p></div></div>
-        <div class="tbl"><table><thead><tr><th>Sede</th><th>Resolución</th><th>Matrícula</th><th class="r">Concesión m³/mes</th><th>Vigencia</th></tr></thead><tbody id="conc"></tbody></table></div>
       </div>
     </section>
   </main>
@@ -636,18 +596,18 @@ const IC={
 
 
 /* ---------- navegación ---------- */
-const VIEWS=[["inicio","Inicio","home"],["consumo","Consumo por sede","sedes"],["comparativo","Comparativo anual","chart"],["checklist","Checklist mensual","check"],["registros","Registros y evidencias","up"],["historial","Historial","hist"]];
+const VIEWS=[["inicio","Inicio","home"],["consumo","Consumo por sede","sedes"],["comparativo","Comparativo anual","chart"],["datos","Datos y concesiones","hist"]];
 let view="inicio";
 try{const h=location.hash.slice(1);if(VIEWS.some(v=>v[0]===h))view=h}catch{}
-function go(v){view=v;VIEWS.forEach(([k])=>$("v-"+k).hidden=k!==v);$("monthPicker").hidden=["comparativo","historial"].includes(v);renderNav();window.scrollTo({top:0})}
-function renderNav(){const nav=$("nav");nav.textContent="";const pend=SEDES.filter(s=>!rec(s).done).length;
+function go(v){view=v;VIEWS.forEach(([k])=>$("v-"+k).hidden=k!==v);$("monthPicker").hidden=["comparativo","datos"].includes(v);renderNav();window.scrollTo({top:0})}
+function renderNav(){const nav=$("nav");nav.textContent="";
   VIEWS.forEach(([k,t,i])=>{const b=el("button","nav"+(view===k?" on":""));b.innerHTML=svgI(IC[i]);b.append(el("span",null,t));
-    if(k==="checklist"&&pend)b.append(el("span","badge",String(pend)));b.onclick=()=>go(k);if(view===k)b.setAttribute("aria-current","page");nav.append(b)})}
+    b.onclick=()=>go(k);if(view===k)b.setAttribute("aria-current","page");nav.append(b)})}
 document.addEventListener("click",e=>{const g=e.target.closest("[data-go]");if(g)go(g.dataset.go)});
 
 /* ---------- periodo ---------- */
 const today=new Date();
-let pY=today.getFullYear(),pM=today.getMonth();if(pM===0){pM=12;pY--}
+let [pY,pM]=CONS.reduce((m,r)=>r[0]>m[0]||(r[0]===m[0]&&r[1]>m[1])?[r[0],r[1]]:m,[0,0]);
 const curY=pY,curM=pM;
 const pid=(y=pY,m=pM)=>`${y}-${String(m).padStart(2,"0")}`;
 const pName=(y=pY,m=pM)=>`${cap(MESES[m-1])} ${y}`;
@@ -733,22 +693,25 @@ function spark(vals,color){const v=vals.filter(x=>x!=null);if(v.length<2)return"
   const pts=vals.map((x,i)=>x==null?null:[i*(W/(vals.length-1)),H-4-(x-mn)/((mx-mn)||1)*(H-10)]).filter(Boolean);
   const d=pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
   return `<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="spk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${color}" stop-opacity=".35"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></linearGradient></defs><path d="${d} L${pts[pts.length-1][0]} ${H} L${pts[0][0]} ${H}z" fill="url(#spk)"/><path d="${d}" fill="none" stroke="${color}" stroke-width="2"/></svg>`}
+const useState=(v,c)=>v==null?["n","Sin dato",null]:!c?["n","Sin concesión",null]:v/c>1?["x","Supera",v/c*100]:v/c>=.9?["p","Cerca",v/c*100]:["ok","Dentro",v/c*100];
+const concVenc=()=>CONC.filter(r=>r[5]&&new Date(r[5]+"T00:00")<today);
 function renderInicio(){
   const vals=SEDES.map(s=>sVal(s)).filter(v=>v!=null),tot=vals.reduce((a,b)=>a+b,0);
   const pm=pM===1?[pY-1,12]:[pY,pM-1];const pv=SEDES.map(s=>sVal(s,pm[0],pm[1])).filter(v=>v!=null),prev=pv.reduce((a,b)=>a+b,0);
   const ch=prev&&vals.length?((tot-prev)/prev*100):null;
-  const done=SEDES.filter(s=>rec(s).done).length,steps=STEPS.filter(x=>stepDone(x.key)).length;
-  const withData=SEDES.filter(s=>sVal(s)!=null).length;
   const last12=[];for(let i=11;i>=0;i--){let y=pY,m=pM-i;while(m<1){m+=12;y--}last12.push(monthTotal(y,m))}
+  let ytd=0,ytdPrev=0,prevFull=0;for(let m=1;m<=12;m++){const a=monthTotal(pY,m),b=monthTotal(pY-1,m);if(m<=pM&&a!=null){ytd+=a;if(b!=null)ytdPrev+=b}if(b!=null)prevFull+=b}
+  const chY=ytdPrev?((ytd-ytdPrev)/ytdPrev*100):null;
+  const withC=SEDES.filter(s=>sVal(s)!=null&&sConc(s));const over=withC.filter(s=>sVal(s)>sConc(s));
+  const venc=concVenc();
   const k=$("kpis");k.textContent="";
   const card=(icCls,ic,lab,big,pc,pcCls,sub,viz)=>{const c=el("div","card kpi2");const h=el("div","kh");const i=el("span","ic "+icCls);i.innerHTML=svgI(IC[ic]);h.append(i,el("span",null,lab));
     c.append(h,el("b","big",big));if(pc)c.append(el("span","pc "+pcCls,pc));c.append(el("span","lab",sub));const v=el("div","viz");v.innerHTML=viz;c.append(v);k.append(c)};
-  const bar=(p,col,bg)=>`<div class="bar" style="background:${bg}"><i style="width:${Math.max(3,p)}%;background:${col}"></i></div>`;
-  card("blue","drop","Consumo total (m³)",vals.length?fmt(tot):"—",ch==null?"":`${ch>=0?"↑":"↓"} ${Math.abs(ch).toFixed(1)}%`,ch==null?"":ch>=0?"up":"down",ch==null?pName():"vs. mes anterior",spark(last12,"#3a9be0"));
-  const p1=Math.round(withData/SEDES.length*100),p2=Math.round(steps/STEPS.length*100),p3=Math.round(done/SEDES.length*100);
-  card("green","build","Sedes con dato",`${withData} / ${SEDES.length}`,p1+"%","g","sedes registradas",bar(p1,"linear-gradient(90deg,#1f9a5e,#43c07f)","#e6f4ee"));
-  card("violet","task","Tareas completadas",`${steps} / ${STEPS.length}`,p2+"%","v","de avance",bar(p2,"linear-gradient(90deg,#8f6fe8,#b9a3f3)","#efeafb"));
-  card("amber","send","Reportes enviados",`${done} / ${SEDES.length}`,p3+"%","a","de avance",bar(p3,"linear-gradient(90deg,#f0a14a,#f6c27e)","#fcf0de"));
+  const bar=(p,col,bg)=>`<div class="bar" style="background:${bg}"><i style="width:${Math.max(3,Math.min(100,p))}%;background:${col}"></i></div>`;
+  card("blue","drop",`Consumo de ${MESES[pM-1]} (m³)`,vals.length?fmt(tot):"—",ch==null?"":`${ch>=0?"↑":"↓"} ${Math.abs(ch).toFixed(1)}%`,ch==null?"":ch>=0?"up":"down","vs. mes anterior",spark(last12,"#3a9be0"));
+  card("green","chart",`Acumulado ${pY} (m³)`,fmt(ytd),chY==null?"":`${chY>=0?"↑":"↓"} ${Math.abs(chY).toFixed(1)}%`,chY==null?"":chY>=0?"up":"down",`vs. ene–${MES3[pM-1].toLowerCase()} de ${pY-1}`,bar(prevFull?ytd/prevFull*100:0,"linear-gradient(90deg,#1f9a5e,#43c07f)","#e6f4ee"));
+  card("amber","drop","Sedes sobre la concesión",`${over.length} / ${withC.length}`,over.length?`${Math.round(over.length/withC.length*100)}%`:"Ninguna",over.length?"a":"g",`en ${MESES[pM-1]} de ${pY}`,bar(withC.length?over.length/withC.length*100:0,"linear-gradient(90deg,#f0a14a,#f6c27e)","#fcf0de"));
+  card("violet","file","Concesiones vencidas",`${venc.length} / ${CONC.length}`,venc.length?"Por renovar":"Al día",venc.length?"up":"g","según la hoja «General»",bar(venc.length/CONC.length*100,"linear-gradient(90deg,#e0675e,#f19a92)","#fbe9e7"));
   // gráfica
   let data;
   if(barMode==="mes"){data=SEDES.map(s=>({n:SHORT[s.name]||s.name,v:sVal(s),c:sConc(s)}));$("barSub").textContent=pName()}
@@ -756,42 +719,38 @@ function renderInicio(){
   data.sort((a,b)=>(b.v??-1)-(a.v??-1));
   $("barChart").innerHTML=barChart({labels:data.map(d=>d.n),values:data.map(d=>d.v),caps:data.map(d=>d.c),title:"Consumo por sede",W:640});
   $("barLegend").innerHTML=barMode==="mes"?'<span><i style="background:linear-gradient(#4aa6e6,#9be0b8)"></i>Consumo del mes</span><span><i style="background:#f3b46c"></i>Por encima de la concesión</span>':'<span><i style="background:linear-gradient(#4aa6e6,#9be0b8)"></i>Consumo acumulado del año</span>';
-  // estado
-  const [dy,dm]=dueMonth();const due=new Date(dy,dm-1,DUE_DAY);const dueTxt=`${String(DUE_DAY).padStart(2,"0")} ${MES3[dm-1].toLowerCase()} ${dy}`;
-  $("estSub").textContent=`Consumo de ${MESES[pM-1]} · plazo hasta el ${DUE_DAY} de ${MESES[dm-1]}`;
-  const L=$("estList");L.textContent="";
-  SEDES.map(s=>{const r=rec(s);const st=r.done?["ok","Enviado","#1f9a5e"]:sVal(s)==null?["x","Sin dato","#d9443a"]:["p","Pendiente","#f0a14a"];return{s,r,st}})
-   .sort((a,b)=>["ok","p","x"].indexOf(a.st[0])-["ok","p","x"].indexOf(b.st[0]))
-   .forEach(({s,r,st})=>{const row=el("div","er");const n=el("span");const d=el("i","d");d.style.background=st[2];n.append(d,s.name);
-    const p=el("span","st "+st[0]);p.textContent=(st[0]==="ok"?"✓ ":st[0]==="p"?"★ ":"✕ ")+st[1];
-    row.append(n,p,el("span","fe",r.done&&r.fechaReporte?(()=>{const[y,m,d]=r.fechaReporte.split("-");return `${d} ${MES3[+m-1].toLowerCase()} ${y}`})():dueTxt));row.title=r.done?`Reportó ${nameOf(r.by)}`:`Responsable: ${s.resp}`;L.append(row)});
-  const pend=SEDES.length-done;
-  $("remText").innerHTML="";const rt=$("remText");
-  if(pend){rt.append(`el reporte mensual debe enviarse entre el 1 y el ${DUE_DAY} de cada mes. Hay `,el("b",null,`${pend} sede${pend>1?"s":""} pendiente${pend>1?"s":""}`),".")}
-  else rt.append(`el reporte de ${MESES[pM-1]} ya está completo en todas las sedes.`);
-  $("ns1").textContent=pend?`${pend} sede${pend>1?"s aún no han":" aún no ha"} enviado su reporte de consumo.`:"Todas las sedes ya enviaron su reporte.";
+  // uso de la concesión
+  $("estSub").textContent=`${pName()} · consumo frente al volumen concesionado`;
+  const L=$("estList");L.textContent="";const ord={x:0,p:1,ok:2,n:3};
+  SEDES.map(s=>({s,u:useState(sVal(s),sConc(s))})).sort((a,b)=>ord[a.u[0]]-ord[b.u[0]]||(b.u[2]||0)-(a.u[2]||0)).forEach(({s,u})=>{
+    const row=el("div","er");const n=el("span");const d=el("i","d");d.style.background={ok:"#1f9a5e",p:"#f0a14a",x:"#d9443a",n:"#9fb3ae"}[u[0]];n.append(d,s.name);
+    const p=el("span","st "+(u[0]==="n"?"n":u[0]));p.textContent=({ok:"✓ ",p:"★ ",x:"✕ ",n:""}[u[0]])+u[1];
+    row.append(n,p,el("span","fe r",u[2]!=null?u[2].toFixed(0)+"%":"—"));row.title=`${s.name}: ${fmt(sVal(s))} m³ de ${fmt(sConc(s))} m³`;L.append(row)});
+  // para tener en cuenta
+  const [dy,dm]=pM===12?[pY+1,1]:[pY,pM+1];
+  $("ns1").textContent=`El consumo de ${MESES[pM-1]} se reporta del 1 al ${DUE_DAY} de ${MESES[dm-1]} en la plataforma de Corpourabá.`;
+  $("ns2").textContent=over.length?`${over.map(s=>s.name).join(", ")} ${over.length>1?"superaron":"superó"} la concesión en ${MESES[pM-1]}.`:`Ninguna sede superó la concesión en ${MESES[pM-1]}.`;
+  $("ns3").textContent=venc.length?`${venc.length} concesiones vencidas: ${venc.map(r=>r[0]).join(", ")}.`:"Todas las concesiones están vigentes.";
 }
 
 /* ---------- CONSUMO POR SEDE ---------- */
 $("mSede").innerHTML='<option value="">Todas las sedes</option>';HSEDES.forEach(h=>{const o=el("option",null,h);o.value=h;$("mSede").append(o)});
 [...YEARS].reverse().forEach(y=>{const o=el("option",null,String(y));o.value=y;$("mYear").append(o)});$("mYear").value=pY;
 $("mSede").onchange=renderConsumo;$("mYear").onchange=renderConsumo;$("tBuscar").oninput=renderConsumo;
-function statusOf(s){const r=rec(s);if(r.done)return["ok","Reportado"];if(r.consumo!=null||(r.fotos||[]).length)return["warn","En proceso"];return today>dueDate()?["bad","Atrasado"]:["neutral","Pendiente"]}
+function statusOf(s){const u=useState(sVal(s),sConc(s));return[{ok:"ok",p:"warn",x:"bad",n:"neutral"}[u[0]],u[1]]}
 function renderConsumo(){
   const q=$("tBuscar").value.trim().toLowerCase();const tb=$("tBody");tb.textContent="";let shown=0;
   $("tTitle").textContent=`Sedes · ${pName()}`;
   for(const s of SEDES){if(q&&!s.name.toLowerCase().includes(q))continue;shown++;
     const v=sVal(s),c=sConc(s),pct=v!=null&&c?v/c*100:null;const st=statusOf(s);
-    const tr=el("tr");const tdN=el("td");tdN.append(el("b",null,s.name),el("div","note",s.resp));
+    const tr=el("tr");const tdN=el("td");tdN.append(el("b",null,s.name));
     const tdU=el("td");if(pct!=null){const u=el("div","use");const t=el("div","tr");const i=el("i",pct>100?"over":"");i.style.width=Math.min(100,pct)+"%";t.append(i);const sp=el("span",null,pct.toFixed(0)+"%");if(pct>100)sp.style.color="var(--warn)";u.append(t,sp);tdU.append(u)}else tdU.append(el("span","note",c?"sin dato":"sin concesión registrada"));
     const tdS=el("td");tdS.append(el("span","pill "+st[0],st[1]));
     const tdA=el("td");const act=el("div","act");
-    const bV=el("button","icb");bV.innerHTML=svgI(IC.eye);bV.title="Ver evidencias";bV.setAttribute("aria-label","Ver evidencias de "+s.name);bV.onclick=()=>{$("eSede").value=s.key;$("eScope").value="mes";go("registros");renderEvid()};
-    const bR=el("button","icb g");bR.innerHTML=svgI(IC.plus);bR.title="Registrar";bR.setAttribute("aria-label","Registrar "+s.name);bR.onclick=()=>{go("registros");openForm(s.key)};
     const bH=el("button","icb");bH.innerHTML=svgI(IC.chart);bH.title="Ver en la gráfica";bH.setAttribute("aria-label","Graficar "+s.name);bH.disabled=!s.hist;bH.onclick=()=>{$("mSede").value=s.hist;renderConsumo();$("mChart").scrollIntoView({behavior:"smooth",block:"center"})};
-    act.append(bV,bR,bH);tdA.append(act);
-    tr.append(tdN,el("td","r num",fmt(v)),tdU,tdS,tdA);tb.append(tr)}
-  if(!shown){const tr=el("tr"),td=el("td","note","Ninguna sede coincide con la búsqueda.");td.colSpan=5;tr.append(td);tb.append(tr)}
+    act.append(bH);tdA.append(act);
+    tr.append(tdN,el("td","r num",fmt(v)),el("td","r num muted",fmt(c)),tdU,tdS,tdA);tb.append(tr)}
+  if(!shown){const tr=el("tr"),td=el("td","note","Ninguna sede coincide con la búsqueda.");td.colSpan=6;tr.append(td);tb.append(tr)}
   $("tFoot").textContent=`Mostrando ${shown} de ${SEDES.length} sedes`;
   // donut
   const items=SEDES.map(s=>({n:s.name,v:sVal(s)||0,c:s.hist?colorOf(s.hist):"#c4d4d0"})).filter(i=>i.v>0).sort((a,b)=>b.v-a.v);
@@ -849,173 +808,36 @@ function renderComp(){
   $("cTblSub").textContent=`${met==="tot"?"Total anual":"Promedio mensual"} en m³ · el color se compara dentro de cada sede · toca una fila para graficarla`;
 }
 
-/* ---------- CHECKLIST ---------- */
-const stepDone=k=>k==="reportar"?SEDES.every(s=>rec(s).done):!!procs[pid()]?.steps?.[k]?.done;
-function renderChecklist(){
-  const pend=SEDES.filter(s=>!rec(s).done),done=SEDES.filter(s=>rec(s).done);const [dy,dm]=dueMonth();const late=today>dueDate()&&pend.length;
-  $("alert").className="card alert "+(!pend.length?"done":late?"late":"pending");
-  $("aBig").textContent=pend.length||"✓";
-  $("aTitle").textContent=!pend.length?`Consumo de ${MESES[pM-1]} reportado en todas las sedes`:`${pend.length===1?"Falta 1 sede":`Faltan ${pend.length} sedes`} por reportar el consumo de ${MESES[pM-1]}`;
-  $("aText").textContent=!pend.length?"Revisa que cada sede tenga su evidencia cargada.":late?`La ventana de reporte (1 al ${DUE_DAY} de ${MESES[dm-1]} de ${dy}) ya pasó. Repórtalas cuanto antes.`:`Repórtalas en la plataforma de Corpourabá entre el 1 y el ${DUE_DAY} de ${MESES[dm-1]} de ${dy}.`;
-  $("aMeter").style.width=(done.length/SEDES.length*100)+"%";
-  const tb=$("stepsBody");tb.textContent="";let n=0;
-  STEPS.forEach((x,i)=>{const dn=stepDone(x.key);if(dn)n++;const info=procs[pid()]?.steps?.[x.key];const due=dueDate(x.day);const tr=el("tr");
-    const who=x.auto?(dn?"Automático":`${done.length} de ${SEDES.length} sedes`):(dn&&info?`${nameOf(info.by)}`:"—");
-    const pill=dn?["ok","Completado"]:today>due?["bad","Vencido"]:["warn","Pendiente"];const tdS=el("td");tdS.append(el("span","pill "+pill[0],pill[1]));
-    const tdA=el("td");const act=el("div","act");
-    if(x.auto){const b=el("button","icb");b.innerHTML=svgI(IC.sedes);b.title="Ver sedes";b.setAttribute("aria-label","Ver sedes pendientes");b.onclick=()=>$("pendList").scrollIntoView({behavior:"smooth"});act.append(b)}
-    else{const b=el("button","icb g");b.innerHTML=svgI(dn?IC.undo:IC.tick);b.title=dn?"Desmarcar":"Marcar como completada";b.setAttribute("aria-label",b.title);b.disabled=!canWrite;b.onclick=()=>toggleStep(x.key);act.append(b)}
-    tdA.append(act);const tdT=el("td");tdT.append(el("b",null,x.t));if(dn&&info?.at&&!x.auto)tdT.append(el("div","note",dFull(info.at)));
-    tr.append(el("td","num",String(i+1)),tdT,el("td",null,who),el("td","num",dShort(due)),tdS,tdA);tb.append(tr)});
-  $("stepsN").textContent=`${n} de ${STEPS.length} completadas`;
-  $("pendN").textContent=`${pend.length} pendientes`;$("doneN").textContent=`${done.length} reportadas`;
-  const pl=$("pendList");pl.textContent="";if(!pend.length)pl.append(el("p","note","No falta ninguna sede."));
-  pend.forEach(s=>{const it=el("div","si p");const d=el("div","dot");d.innerHTML=svgI(IC.clock);const t=el("div");t.append(el("b",null,s.name),el("small",null,s.resp));
-    const b=el("button","btn ghost","Registrar");b.onclick=()=>{go("registros");openForm(s.key)};it.append(d,t,b);pl.append(it)});
-  const dl=$("doneList");dl.textContent="";if(!done.length)dl.append(el("p","note","Todavía ninguna sede está reportada este mes."));
-  done.forEach(s=>{const r=rec(s);const it=el("div","si d");const d=el("div","dot");d.innerHTML=svgI(IC.tick);const t=el("div");t.append(el("b",null,s.name),el("small",null,`${nameOf(r.by)} · ${r.fechaReporte?fDate(r.fechaReporte):dShort(r.at)}`));
-    const k=(r.fotos||[]).length;it.append(d,t,el("span","pill "+(k?"info":"warn"),k?`${k} evidencia${k>1?"s":""}`:"Sin evidencia"));dl.append(it)});
-}
-async function toggleStep(k){const cur=procs[pid()]||{steps:{}};const steps={...(cur.steps||{})};
-  steps[k]=steps[k]?.done?{done:false}:{done:true,by:myId,at:new Date().toISOString()};procs[pid()]={periodo:pid(),steps};renderAll();
-  try{await db.collection("procesos").doc(pid()).set({periodo:pid(),steps});$("stepsErr").textContent=""}catch(e){$("stepsErr").textContent="No se pudo guardar la actividad ("+(e?.code||"error")+"). Inténtalo de nuevo."}}
-
-/* ---------- REGISTROS Y EVIDENCIAS ---------- */
-SEDES.forEach(s=>{[["rSede"],["eSede"]].forEach(([id])=>{const o=el("option",null,s.name);o.value=s.key;$(id).append(o)})});
-TIPOS.forEach(t=>{[["rTipo"],["eTipo"]].forEach(([id])=>{const o=el("option",null,t);o.value=t;$(id).append(o)})});
-["eSede","eTipo","eScope"].forEach(id=>$(id).onchange=renderEvid);
-const iso=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-$("rFecha").value=iso(today);
-let pending=[];
-function openForm(key){$("formCard").hidden=false;if(key)$("rSede").value=key;fillForm();$("rMsg").textContent="";setTimeout(()=>{$("formCard").scrollIntoView({behavior:"smooth",block:"start"});$("rFecha").focus()},40)}
-function closeForm(){$("formCard").hidden=true;pending.forEach(p=>p.url&&URL.revokeObjectURL(p.url));pending=[];renderChips()}
-$("openForm").onclick=()=>openForm();$("closeForm").onclick=closeForm;$("rCancel").onclick=closeForm;
-function fillForm(){const s=SEDES.find(x=>x.key===$("rSede").value);const r=rec(s);$("rCons").value=r.consumo??"";$("rNota").value=r.nota??"";if(r.fechaReporte)$("rFecha").value=r.fechaReporte}
-$("rSede").onchange=fillForm;
-function renderChips(){const c=$("rChips");c.textContent="";pending.forEach((p,i)=>{const ch=el("div","chip");if(p.url){const im=el("img");im.src=p.url;im.alt="";ch.append(im)}else ch.append(el("b",null,"PDF"));
-  ch.append(el("span",null,p.file.name));const x=el("button",null,"✕");x.type="button";x.setAttribute("aria-label","Quitar "+p.file.name);x.onclick=()=>{if(p.url)URL.revokeObjectURL(p.url);pending.splice(i,1);renderChips()};ch.append(x);c.append(ch)})}
-function addFiles(fs){for(const f of fs){if(!(f.type.startsWith("image/")||f.type==="application/pdf"))continue;pending.push({file:f,url:f.type.startsWith("image/")?URL.createObjectURL(f):null})}renderChips()}
-$("rFile").onchange=e=>{addFiles([...e.target.files]);e.target.value=""};
-const drop=$("rDrop");drop.ondragover=e=>{e.preventDefault();drop.classList.add("over")};drop.ondragleave=()=>drop.classList.remove("over");drop.ondrop=e=>{e.preventDefault();drop.classList.remove("over");addFiles([...e.dataTransfer.files])};
-const numOrNull=v=>{if(v===""||v==null)return null;if(typeof v==="number")return v;let s=String(v).trim();if(s.includes(","))s=s.replace(/\./g,"").replace(",",".");const n=Number(s);return isFinite(n)?n:null};
-async function shrink(f){if(!f.type.startsWith("image/")||f.type==="image/svg+xml"||f.size<900000)return f;
-  try{const b=await createImageBitmap(f);const sc=Math.min(1,1800/Math.max(b.width,b.height));const c=document.createElement("canvas");c.width=Math.round(b.width*sc);c.height=Math.round(b.height*sc);c.getContext("2d").drawImage(b,0,0,c.width,c.height);return await new Promise(r=>c.toBlob(x=>r(x||f),"image/jpeg",.85))}catch{return f}}
-$("rForm").onsubmit=async e=>{e.preventDefault();if(!canWrite||!db)return;
-  const s=SEDES.find(x=>x.key===$("rSede").value);const id=docId(s.key);const r=records[id]||{};
-  const msg=$("rMsg");msg.className="note";msg.textContent=pending.length?"Subiendo evidencias…":"Guardando…";$("rSave").disabled=true;
-  const fotos=[...(r.fotos||[])],mm={...(r.fotosMeta||{})};let fail=0;
-  if(pending.length&&!assets)fail=pending.length;
-  else for(const p of pending){try{const b=await shrink(p.file);const u=await assets.upload(b,b.type?undefined:{type:p.file.type});fotos.push(u.id);mm[u.id]={type:u.contentType,tipo:$("rTipo").value,nombre:p.file.name,subidoPor:myId,en:new Date().toISOString()}}catch{fail++}}
-  const cons=numOrNull($("rCons").value);
-  const next={...r,periodo:pid(),sede:s.name,done:true,by:r.done?r.by:myId,at:r.done?r.at:new Date().toISOString(),fechaReporte:$("rFecha").value||iso(today),tipo:$("rTipo").value,
-    consumo:cons??r.consumo??null,nota:$("rNota").value||"",fotos,fotosMeta:mm,editadoPor:myId,editadoEn:new Date().toISOString()};
-  try{await db.collection("reportes").doc(id).set(next);records[id]=next;pending.forEach(p=>p.url&&URL.revokeObjectURL(p.url));pending=[];renderChips();
-    msg.className=fail?"err":"okmsg";msg.textContent=fail?`Registro guardado, pero ${fail} archivo(s) no se subieron. Usa JPG, PNG o PDF de menos de 20 MB.`:`✓ ${s.name} quedó registrada como reportada.`;renderAll()}
-  catch(err){msg.className="err";msg.textContent="No se pudo guardar ("+(err?.code||"error")+"). Revisa la conexión o tus permisos."}
-  $("rSave").disabled=false};
-function renderEvid(){
-  $("rSub").textContent=`Periodo: ${pName()} · al guardar, la sede queda marcada como reportada`;
-  $("rPerm").textContent=!connected?"Abre la página con tu cuenta para registrar.":!canWrite?"Tienes acceso de solo lectura.":!assets?"Puedes registrar la fecha. Para subir fotos necesitas acceso de Editor.":"";
-  $("rSave").disabled=!canWrite||!connected;$("openForm").hidden=connected&&!canWrite;
-  const fs=$("eSede").value,ft=$("eTipo").value,all=$("eScope").value==="todo";
-  $("eTitle").textContent=all?"Todos los registros":`Registros de ${MESES[pM-1]} ${pY}`;
-  const rows=[];for(const [id,r] of Object.entries(records)){const [p,k]=id.split("__");if(!all&&p!==pid())continue;const s=SEDES.find(x=>x.key===k);if(!s)continue;if(fs&&k!==fs)continue;if(!r.done&&!(r.fotos||[]).length)continue;
-    const tipos=[...new Set((r.fotos||[]).map(f=>r.fotosMeta?.[f]?.tipo).filter(Boolean))];if(ft&&!tipos.includes(ft)&&r.tipo!==ft)continue;rows.push({id,p,s,r,tipos})}
-  rows.sort((a,b)=>(b.r.fechaReporte||b.r.at||"").localeCompare(a.r.fechaReporte||a.r.at||""));
-  const tb=$("eBody");tb.textContent="";
-  if(!rows.length){const tr=el("tr"),td=el("td");td.colSpan=8;const e=el("div","empty");e.innerHTML=`<svg viewBox="0 0 48 48" aria-hidden="true"><use href="#drop"/></svg>`;e.append(el("b",null,"Aún no hay registros"+(all?"":" este mes")),el("span",null,"Usa «Cargar evidencia» para subir la foto del reporte."));td.append(e);tr.append(td);tb.append(tr);return}
-  rows.forEach(({p,s,r,tipos})=>{const tr=el("tr");const [y,m]=p.split("-").map(Number);
-    const tdE=el("td");const th=el("div","thumbs");(r.fotos||[]).slice(0,3).forEach(fid=>{const mt=r.fotosMeta?.[fid]||{};const b=el("button","tmb");b.type="button";b.setAttribute("aria-label","Ampliar evidencia");
-      if(mt.type==="application/pdf"){b.append(el("span","pdf","PDF"));b.onclick=()=>window.open("/_blob/"+fid,"_blank")}else{const i=el("img");i.src="/_blob/"+fid;i.alt="";i.loading="lazy";b.append(i);b.onclick=()=>openLb(fid,`${s.name} · ${mt.tipo||""}`)}th.append(b)});
-    if((r.fotos||[]).length>3)th.append(el("span","more",`+${r.fotos.length-3}`));if(!(r.fotos||[]).length)th.append(el("span","pill warn","Sin evidencia"));tdE.append(th);
-    const tdA=el("td");const act=el("div","act");
-    if(canWrite){const bE=el("button","icb g");bE.innerHTML=svgI(IC.plus);bE.title="Agregar evidencia";bE.setAttribute("aria-label","Agregar evidencia a "+s.name);bE.onclick=()=>{if(p!==pid()){const[yy,mm]=p.split("-").map(Number);pY=yy;pM=mm;renderAll()}openForm(s.key)};act.append(bE)}
-    if(assets&&canWrite&&(r.fotos||[]).length){const bD=el("button","icb r");bD.innerHTML=svgI(IC.trash);bD.title="Quitar la última evidencia";bD.setAttribute("aria-label","Quitar la última evidencia de "+s.name);
-      bD.onclick=()=>{if(bD.dataset.c){removePhoto(s,p,r.fotos[r.fotos.length-1])}else{bD.dataset.c="1";bD.style.background="var(--bad-soft)";bD.title="Toca otra vez para confirmar";setTimeout(()=>{delete bD.dataset.c;bD.style.background=""},3000)}};act.append(bD)}
-    tdA.append(act);
-    tr.append(el("td","num",r.fechaReporte?fDate(r.fechaReporte):dShort(r.at)),el("td",null,pName(y,m)),el("td",null,s.name),el("td",null,tipos.join(", ")||r.tipo||"Reporte"),el("td","r num",fmt(r.consumo??sVal(s,y,m))),tdE,el("td",null,nameOf(r.by)),tdA);tb.append(tr)});
-}
-async function removePhoto(s,p,fid){const id=docId(s.key,p),r=records[id]||{};const mm={...(r.fotosMeta||{})};delete mm[fid];
-  const next={...r,fotos:(r.fotos||[]).filter(x=>x!==fid),fotosMeta:mm,editadoPor:myId,editadoEn:new Date().toISOString()};
-  try{await db.collection("reportes").doc(id).set(next);records[id]=next;renderAll();try{await assets.delete(fid)}catch{}}catch{}}
-
-/* ---------- HISTORIAL ---------- */
+/* ---------- DATOS ---------- */
 HSEDES.forEach(h=>{const o=el("option",null,h);o.value=h;$("dSede").append(o)});
 [...YEARS].reverse().forEach(y=>{const o=el("option",null,String(y));o.value=y;$("dAno").append(o)});
 let dPage=0;const PS=25;
-$("dSede").onchange=()=>{dPage=0;renderData()};$("dAno").onchange=()=>{dPage=0;renderData()};$("hBuscar").oninput=()=>{dPage=0;renderData();renderLog()};
-function dataRows(){
-  const rows=CONS.filter(r=>r[2]!=="Zona Industrial (inactivo)").map(r=>({y:r[0],m:r[1],sede:r[2],lec:r[3],con:r[4],conc:r[5],src:"Excel",by:null,n:0}));
-  const idx={};rows.forEach(r=>idx[r.sede+"|"+r.y+"|"+r.m]=r);
-  for(const [id,r] of Object.entries(records)){const [p,k]=id.split("__");const s=SEDES.find(x=>x.key===k);if(!s)continue;const [y,m]=p.split("-").map(Number);const nm=s.hist||s.name;const ex=idx[nm+"|"+y+"|"+m];
-    if(ex){if(r.consumo!=null)ex.con=r.consumo;ex.src=r.done?"Excel + reporte":"Excel";ex.by=r.by;ex.n=(r.fotos||[]).length}
-    else rows.push({y,m,sede:nm,lec:r.lectura??null,con:r.consumo??null,conc:s.hist?concM(s.hist,y,m):null,src:r.done?"Reporte en la página":"Borrador",by:r.by,n:(r.fotos||[]).length})}
-  return rows.sort((a,b)=>b.y-a.y||b.m-a.m||a.sede.localeCompare(b.sede));
-}
+$("dSede").onchange=()=>{dPage=0;renderData()};$("dAno").onchange=()=>{dPage=0;renderData()};$("hBuscar").oninput=()=>{dPage=0;renderData()};
+function dataRows(){return CONS.filter(r=>r[2]!=="Zona Industrial (inactivo)").map(r=>({y:r[0],m:r[1],sede:r[2],lec:r[3],con:r[4],conc:r[5]})).sort((a,b)=>b.y-a.y||b.m-a.m||a.sede.localeCompare(b.sede))}
 function filtered(){const fs=$("dSede").value,fy=$("dAno").value,q=$("hBuscar").value.trim().toLowerCase();
-  return dataRows().filter(r=>(!fs||r.sede===fs)&&(!fy||r.y===+fy)&&(!q||`${r.sede} ${MESES[r.m-1]} ${r.y} ${r.src}`.toLowerCase().includes(q)))}
+  return dataRows().filter(r=>(!fs||r.sede===fs)&&(!fy||r.y===+fy)&&(!q||`${r.sede} ${MESES[r.m-1]} ${r.y}`.toLowerCase().includes(q)))}
 function renderData(){
   const rows=filtered();const pages=Math.max(1,Math.ceil(rows.length/PS));dPage=Math.min(Math.max(0,dPage),pages-1);
   const tb=$("dBody");tb.textContent="";
   rows.slice(dPage*PS,dPage*PS+PS).forEach(r=>{const tr=el("tr");const pct=r.con!=null&&r.con>=0&&r.conc?r.con/r.conc*100:null;
     const tdU=el("td");if(pct!=null){const u=el("div","use");const t=el("div","tr");const i=el("i",pct>100?"over":"");i.style.width=Math.min(100,pct)+"%";t.append(i);const sp=el("span",null,pct.toFixed(0)+"%");if(pct>100)sp.style.color="var(--warn)";u.append(t,sp);tdU.append(u)}else tdU.append(el("span","note","—"));
-    const src=el("td");src.append(el("span","pill "+(r.src==="Excel"?"neutral":"info"),r.src+(r.n?` · ${r.n} evid.`:"")));
-    tr.append(el("td","num",`${MES3[r.m-1]} ${r.y}`),el("td",null,r.sede),el("td","r num",typeof r.lec==="number"?fmt1(r.lec):"—"),el("td","r num",r.con!=null&&r.con>=0?fmt1(r.con):r.con<0?"lectura inválida":"—"),el("td","r num",fmt(r.conc)),tdU,src,el("td","note",r.by?nameOf(r.by):"—"));tb.append(tr)});
-  if(!rows.length){const tr=el("tr"),td=el("td","note","No hay registros con ese filtro.");td.colSpan=8;tr.append(td);tb.append(tr)}
+    tr.append(el("td","num",`${MES3[r.m-1]} ${r.y}`),el("td",null,r.sede),el("td","r num",typeof r.lec==="number"?fmt1(r.lec):"—"),el("td","r num",r.con!=null&&r.con>=0?fmt1(r.con):r.con<0?"lectura inválida":"—"),el("td","r num",fmt(r.conc)),tdU);tb.append(tr)});
+  if(!rows.length){const tr=el("tr"),td=el("td","note","No hay registros con ese filtro.");td.colSpan=6;tr.append(td);tb.append(tr)}
   $("dPage").textContent=`${rows.length.toLocaleString("es-CO")} registros · página ${dPage+1} de ${pages}`;
   const pg=$("dPgb");pg.textContent="";const mk=(t,p,dis,on)=>{const b=el("button",on?"on":"",t);b.disabled=dis;b.onclick=()=>{dPage=p;renderData()};pg.append(b)};
   mk("‹",dPage-1,dPage===0);const st=Math.max(0,Math.min(dPage-2,pages-5));for(let i=st;i<Math.min(pages,st+5);i++)mk(String(i+1),i,false,i===dPage);mk("›",dPage+1,dPage>=pages-1);
 }
-function renderLog(){
-  const q=$("hBuscar").value.trim().toLowerCase();const ev=[];
-  for(const [id,r] of Object.entries(records)){const [p,k]=id.split("__");const s=SEDES.find(x=>x.key===k);if(!s)continue;
-    if(r.done&&r.at)ev.push({at:r.at,p,sede:s.name,act:"Reporte a Corpourabá"+(r.fechaReporte?` (${fDate(r.fechaReporte)})`:""),by:r.by,st:["ok","Enviado"],n:(r.fotos||[]).length});
-    for(const fid of r.fotos||[]){const m=(r.fotosMeta||{})[fid]||{};if(m.en)ev.push({at:m.en,p,sede:s.name,act:"Adjuntó: "+(m.tipo||"evidencia"),by:m.subidoPor,st:["info","Evidencia"],fid,type:m.type})}}
-  for(const [p,pr] of Object.entries(procs))for(const [k,v] of Object.entries(pr.steps||{}))if(v.done&&v.at){const st=STEPS.find(x=>x.key===k);ev.push({at:v.at,p,sede:"Todas",act:st?st.t:k,by:v.by,st:["ok","Completado"]})}
-  ev.sort((a,b)=>b.at.localeCompare(a.at));const tb=$("logBody");tb.textContent="";
-  const list=ev.filter(e=>!q||`${e.sede} ${e.act} ${nameOf(e.by)}`.toLowerCase().includes(q));
-  if(!list.length){const tr=el("tr"),td=el("td","note",ev.length?"Nada coincide con la búsqueda.":"Aún no hay actividad. Cada reporte, actividad del checklist o evidencia quedará aquí con el nombre de quien lo hizo.");td.colSpan=7;tr.append(td);tb.append(tr);return}
-  list.slice(0,100).forEach(e=>{const tr=el("tr");const [y,m]=e.p.split("-").map(Number);const tdS=el("td");tdS.append(el("span","pill "+e.st[0],e.st[1]));
-    const tdE=el("td");if(e.fid){const b=el("button","icb");b.innerHTML=svgI(IC.file);b.title="Ver evidencia";b.setAttribute("aria-label","Ver evidencia");b.onclick=()=>e.type==="application/pdf"?window.open("/_blob/"+e.fid,"_blank"):openLb(e.fid,e.sede);tdE.append(b)}else tdE.append(el("span","note",e.n?`${e.n} adjunta${e.n>1?"s":""}`:"—"));
-    tr.append(el("td","num",dFull(e.at)),el("td",null,pName(y,m)),el("td",null,e.sede),el("td",null,e.act),el("td",null,nameOf(e.by)),tdS,tdE);tb.append(tr)})}
 (function(){const tb=$("conc");CONC.forEach(r=>{const tr=el("tr");const v=r[5]?new Date(r[5]+"T00:00"):null;const d=v?(v-today)/864e5:null;
   tr.append(el("td",null,r[0]),el("td","num",r[4]||"—"),el("td","num",r[1]||"—"),el("td","r num",fmt1(r[3])));
   const td=el("td");td.append(el("span","pill "+(d==null?"neutral":d<0?"bad":d<365?"warn":"ok"),v?v.toLocaleDateString("es-CO",{day:"numeric",month:"short",year:"numeric"})+(d<0?" · vencida":d<365?" · vence pronto":" · vigente"):"—"));tr.append(td);tb.append(tr)})})();
+$("csvBtn").onclick=async()=>{const rows=filtered();const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
+  const L=[["Año","Mes","Sede","Lectura actual","Consumo m3","Concesión m3"].map(q).join(";")];rows.forEach(r=>L.push([r.y,r.m,r.sede,r.lec,r.con,r.conc].map(q).join(";")));
+  const blob=new Blob(["﻿"+L.join("\r\n")],{type:"text/csv"});const name="consumos-agua-uniban.csv";
+  try{const dl=window.claude?.use?await claude.use("downloads"):null;if(dl){await dl.save({filename:name,data:blob});return}}catch{}
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)};
 
-/* ---------- lightbox ---------- */
-function openLb(fid,cap){$("lbImg").src="/_blob/"+fid;$("lbCap").textContent=cap||"";$("lb").hidden=false}
-$("lbClose").onclick=()=>$("lb").hidden=true;$("lb").onclick=e=>{if(e.target.id==="lb")$("lb").hidden=true};
-document.addEventListener("keydown",e=>{if(e.key==="Escape")$("lb").hidden=true});
-
-function renderAll(){$("pLabel").textContent=pName();$("nextP").disabled=pY===curY&&pM===curM;renderNav();renderInicio();renderConsumo();renderComp();renderChecklist();renderEvid();renderData();renderLog()}
-
-/* ---------- conexión ---------- */
-async function resolveNames(){if(!user)return;const ids=new Set();
-  Object.values(records).forEach(r=>{if(r.by)ids.add(r.by);Object.values(r.fotosMeta||{}).forEach(m=>m.subidoPor&&ids.add(m.subidoPor))});
-  Object.values(procs).forEach(p=>Object.values(p.steps||{}).forEach(v=>v.by&&ids.add(v.by)));
-  const miss=[...ids].filter(i=>!names[i]);if(!miss.length)return;
-  try{const ps=await user.profiles(miss);miss.forEach(i=>names[i]=ps[i]?.name||"Alguien del equipo");renderAll()}catch{}}
-function setMe(nm,role){["meName","meName2"].forEach(i=>$(i).textContent=nm);["meAv","meAv2"].forEach(i=>$(i).textContent=initials(nm));["meRole","meRole2"].forEach(i=>$(i).textContent=role)}
-(async()=>{
-  go(view);renderAll();setMe("Sin conexión","");
-  if(!window.claude?.use){$("ghlink").hidden=false;setMe("Modo consulta","Solo lectura");return}
-  [db,user]=await Promise.all([claude.use("db"),claude.use("user")]);
-  let nm="",role="Equipo";
-  if(user){try{const me=await user.me();myId=me.id;nm=me.name||"";if(myId&&nm)names[myId]=nm;role=(await user.isOwner())?"Administrador":(await user.canEdit())?"Editor":"Equipo"}catch{}}
-  $("hello").textContent=nm?`Hola, ${nm.split(" ")[0]}`:"Hola";
-  if(!db){setMe(nm||"Invitado","Inicia sesión para registrar");return}
-  connected=true;let w=null;try{w=user?await user.can("data.write"):null}catch{}
-  canWrite=w!==false;if(!canWrite)role="Solo lectura";setMe(nm||"Tu cuenta",role);
-  assets=canWrite?await claude.use("assets"):null;
-  db.collection("reportes").onSnapshot(sn=>{for(const k in records)delete records[k];sn.docs.forEach(d=>{if(d.exists)records[d.id]=d.data()});renderAll();resolveNames()},()=>{});
-  db.collection("procesos").onSnapshot(sn=>{for(const k in procs)delete procs[k];sn.docs.forEach(d=>{if(d.exists)procs[d.id]=d.data()});renderAll();resolveNames()},()=>{});
-  renderAll();
-  downloads=await claude.use("downloads");
-  if(downloads){const b=$("csvBtn");b.hidden=false;b.onclick=async()=>{const rows=filtered();const q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
-    const L=[["Año","Mes","Sede","Lectura actual","Consumo m3","Concesión m3","Fuente","Reportó","Evidencias"].map(q).join(";")];
-    rows.forEach(r=>L.push([r.y,r.m,r.sede,r.lec,r.con,r.conc,r.src,r.by?nameOf(r.by):"",r.n||0].map(q).join(";")));
-    try{await downloads.save({filename:"consumos-agua-unibán.csv",data:new Blob(["﻿"+L.join("\r\n")],{type:"text/csv"})})}catch{}}}
-})();
+function renderAll(){$("pLabel").textContent=pName();$("nextP").disabled=pY===curY&&pM===curM;renderNav();renderInicio();renderConsumo();renderComp();renderData()}
+go(view);renderAll();
 </script>
 
 </body>
