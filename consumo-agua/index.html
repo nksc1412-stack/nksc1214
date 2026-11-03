@@ -534,6 +534,7 @@ a.ns:hover b{color:var(--green)}
       <div class="card">
         <div class="cardhead">
           <div><h3 id="lTitle">Consumo mensual por año (m³)</h3><p class="sub" id="lSub"></p></div>
+          <div class="seg" role="group" aria-label="Ver la gráfica por"><button id="cvAno" class="on" type="button">Por año</button><button id="cvMes" type="button">Por mes</button></div>
           <div class="filters">
             <div class="f"><label for="cSede">Sede</label><select id="cSede"></select></div>
             <div class="f"><label for="cFrom">Año inicial</label><select id="cFrom"></select></div>
@@ -698,7 +699,7 @@ function barChart({labels,values,ghost,caps,cap,avg,title,W=760}){
     else s+=`<text x="${x+bw/2}" y="${y(0)-6}" text-anchor="middle">s/d</text>`;
     const parts=lb.length>11&&lb.includes(" ")?lb.split(" "):[lb];parts.slice(0,2).forEach((p,j)=>s+=`<text x="${x+bw/2}" y="${H-B+16+j*12}" text-anchor="middle">${p}</text>`)});
   if(cap)s+=`<line class="cap" x1="${L}" x2="${W-R}" y1="${y(cap)}" y2="${y(cap)}"/><text x="${W-R}" y="${y(cap)-6}" text-anchor="end" style="fill:var(--bad)">Concesión ${fmt(cap)}</text>`;
-  if(avg)s+=`<line class="avg" x1="${L}" x2="${W-R}" y1="${y(avg)}" y2="${y(avg)}"/><text x="${W-R}" y="${y(avg)+14}" text-anchor="end" style="fill:var(--green);font-weight:700">Promedio ${fmt(avg)}</text>`;
+  if(avg)s+=`<line class="avg" x1="${L}" x2="${W-R}" y1="${y(avg)}" y2="${y(avg)}"/>`;
   return s+"</svg>";
 }
 function groupedBars({labels,series,title}){
@@ -715,7 +716,7 @@ function groupedBars({labels,series,title}){
     s+=`<text x="${gx+gw/2}" y="${H-B+18}" text-anchor="middle">${lb}</text>`});
   return s+"</svg>";
 }
-let hiddenYears=new Set();
+let hiddenYears=new Set();let compView="ano";
 function lineChart({labels,series,title}){
   const W=760,H=290,L=58,R=16,T=18,B=30,n=labels.length;
   const all=series.flatMap(s=>s.values).filter(v=>v!=null);
@@ -840,20 +841,34 @@ function renderConsumo(){
 /* ---------- COMPARATIVO ---------- */
 $("cSede").innerHTML='<option value="">Todas las sedes</option>';HSEDES.forEach(h=>{const o=el("option",null,h);o.value=h;$("cSede").append(o)});
 YEARS.forEach(y=>{["cFrom","cTo"].forEach(id=>{const o=el("option",null,String(y));o.value=y;$(id).append(o)})});
-$("cFrom").value=YEARS[YEARS.length-4];$("cTo").value=YEARS[YEARS.length-1];
+$("cFrom").value=YEARS[0];$("cTo").value=YEARS[YEARS.length-1];
 ["cSede","cFrom","cTo","cMetric"].forEach(id=>$(id).onchange=renderComp);
+$("cvAno").onclick=()=>{compView="ano";$("cvAno").classList.add("on");$("cvMes").classList.remove("on");if(+$("cFrom").value>YEARS[0]&&$("cFrom").dataset.auto!=="0"){}renderComp()};
+$("cvMes").onclick=()=>{compView="mes";$("cvMes").classList.add("on");$("cvAno").classList.remove("on");renderComp()};
 function yearStat(list,y){let t=0,ms=new Set();list.forEach(h=>{for(let m=1;m<=12;m++){const v=val(h,y,m);if(v!=null){t+=v;ms.add(m)}}});return{t,n:ms.size}}
 function renderComp(){
   let a=+$("cFrom").value,b=+$("cTo").value;if(a>b)[a,b]=[b,a];
   const sel=$("cSede").value,list=sel?[sel]:HSEDES;const yrs=YEARS.filter(y=>y>=a&&y<=b);
   const YC=["#b9dcf2","#8fd8bf","#c9b3f2","#f4c07f","#eba3bb","#9bd69b","#8fd0e0","#e6c96d","#b6c2cd","#7fb8e8","#4fbf8a"];
   const series=yrs.map((y,i)=>({name:String(y),color:i===yrs.length-1?"#2b84c2":YC[(YEARS.indexOf(y))%YC.length],values:MES3.map((_,m)=>{let t=0,any=false;list.forEach(h=>{const v=val(h,y,m+1);if(v!=null){t+=v;any=true}});return any?t:null})}));
-  const shown=series.filter(s=>!hiddenYears.has(s.name));
-  $("lChart").innerHTML=groupedBars({labels:MES3,series:shown,title:"Consumo mensual por año"});
-  $("lTitle").textContent=`Consumo mensual por año · ${sel||"todas las sedes"} (m³)`;
-  $("lSub").textContent=`${a}–${b} · cada mes muestra una columna por año · toca un año en la leyenda para ocultarlo o mostrarlo`;
-  const lg=$("lLegend");lg.textContent="";series.forEach(s=>{const b=el("button","yt"+(hiddenYears.has(s.name)?" off":""));b.type="button";b.setAttribute("aria-pressed",!hiddenYears.has(s.name));
-    const i=el("i");i.style.background=s.color;b.append(i,s.name);b.onclick=()=>{hiddenYears.has(s.name)?hiddenYears.delete(s.name):(shown.length>1&&hiddenYears.add(s.name));renderComp()};lg.append(b)});
+  const lg=$("lLegend");lg.textContent="";
+  if(compView==="ano"){
+    const st=yrs.map(y=>yearStat(list,y));const tot=st.map(s=>s.n?s.t:null);
+    const lab=yrs.map((y,i)=>st[i].n&&st[i].n<12?`${y}*`:String(y));
+    const full=st.filter(s=>s.n===12).map(s=>s.t);const avg=full.length?full.reduce((p,c)=>p+c,0)/full.length:null;
+    $("lChart").innerHTML=barChart({labels:lab,values:tot,avg,title:"Consumo por año",W:900});
+    $("lTitle").textContent=`Consumo por año · ${sel||"todas las sedes"} (m³)`;
+    const part=yrs.filter((y,i)=>st[i].n&&st[i].n<12).map((y)=>`${y}: ${yearStat(list,y).n} meses`);
+    $("lSub").textContent=`${a}–${b} · total de cada año${part.length?` · * año incompleto (${part.join(", ")})`:""}`;
+    lg.innerHTML=`<span><i style="background:linear-gradient(#4aa6e6,#9be0b8)"></i>Total del año</span>${avg?`<span><i style="background:var(--green);height:3px"></i>Promedio de los años completos: <b>${fmt(avg)} m³</b></span>`:""}`;
+  }else{
+    const shown=series.filter(s=>!hiddenYears.has(s.name));
+    $("lChart").innerHTML=groupedBars({labels:MES3,series:shown,title:"Consumo mensual por año"});
+    $("lTitle").textContent=`Consumo mensual por año · ${sel||"todas las sedes"} (m³)`;
+    $("lSub").textContent=`${a}–${b} · cada mes muestra una columna por año · toca un año en la leyenda para ocultarlo o mostrarlo`;
+    series.forEach(s=>{const bt=el("button","yt"+(hiddenYears.has(s.name)?" off":""));bt.type="button";bt.setAttribute("aria-pressed",!hiddenYears.has(s.name));
+      const i=el("i");i.style.background=s.color;bt.append(i,s.name);bt.onclick=()=>{hiddenYears.has(s.name)?hiddenYears.delete(s.name):(shown.length>1&&hiddenYears.add(s.name));renderComp()};lg.append(bt)});
+  }
   const yc=$("ycards");yc.textContent="";let prevT=null;
   const before=yearStat(list,a-1);if(before.n===12)prevT=before.t;
   yrs.forEach(y=>{const s=yearStat(list,y);const c=el("div","yc");c.append(el("span",null,String(y)+(s.n&&s.n<12?` · ${s.n} meses`:"")),el("b","num",s.n?fmt(s.t):"—"));
