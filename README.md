@@ -17,4 +17,4 @@ Los datos de los seguimientos vienen dentro del archivo `ptap/index.html`. Lo qu
 Consumo mensual de agua de los pozos profundos por sede, comparativo anual, estado del reporte del mes y concesiones de Corpourabá.
 Página: https://nksc1412-stack.github.io/nksc1214/consumo-agua/
 
-Para ver un mes nuevo, toca **Cargar Excel** en la página y elige la BD Consumos de agua actualizada. Los datos quedan guardados solo en ese navegador. Los usuarios y contraseñas de la plataforma de tasas se leen del Excel al cargarlo y no están publicados en este repositorio. Para que todos vean el mes nuevo sin cargar el Excel, hay que actualizar `consumo-agua/index.html`.
+Para ver un mes nuevo, toca **Cargar Excel** en la página y elige la BD Consumos de agua actualizada. Los datos quedan guardados solo en ese navegador. La pestaña Reporte Corpourabá muestra, por sede, el usuario y la contraseña de la plataforma de tasas, razón social, NIT, resolución, captación, uso del agua y responsable (hoja «Registro Corpourabá»). Para que todos vean el mes nuevo sin cargar el Excel, hay que actualizar `consumo-agua/index.html`.
