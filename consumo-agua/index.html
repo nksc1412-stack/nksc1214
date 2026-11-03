@@ -426,6 +426,10 @@ a.ns:hover b{color:var(--green)}
 .ficha dt{color:var(--muted)}
 .ficha dd{margin:0;color:#24433d;overflow-wrap:anywhere}
 .fnote{margin:0;font-size:.78rem;color:var(--warn);font-weight:700}
+.legend .yt{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:#fff;font-size:.8rem;font-weight:700;color:#2c4a44}
+.legend .yt:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.legend .yt.off{opacity:.45;text-decoration:line-through}
+#lChart svg{min-width:720px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -697,6 +701,21 @@ function barChart({labels,values,ghost,caps,cap,avg,title,W=760}){
   if(avg)s+=`<line class="avg" x1="${L}" x2="${W-R}" y1="${y(avg)}" y2="${y(avg)}"/><text x="${W-R}" y="${y(avg)+14}" text-anchor="end" style="fill:var(--green);font-weight:700">Promedio ${fmt(avg)}</text>`;
   return s+"</svg>";
 }
+function groupedBars({labels,series,title}){
+  const W=900,H=320,L=60,R=12,T=16,B=34,n=labels.length,k=Math.max(1,series.length);
+  const all=series.flatMap(s=>s.values).filter(v=>v!=null);
+  const st=niceStep(Math.max(1,...all)/4),top=Math.ceil(Math.max(1,...all)/st)*st;
+  const y=v=>T+(H-T-B)*(1-v/top);const gw=(W-L-R)/n;const inner=gw*.8;const bw=Math.min(22,inner/k);const gap=k>1?Math.min(3,bw*.15):0;
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${title}">`;
+  for(let v=0;v<=top+1e-9;v+=st)s+=`<line class="grid" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end">${fmt(v)}</text>`;
+  labels.forEach((lb,i)=>{const gx=L+i*gw;const used=k*bw;const x0=gx+(gw-used)/2;
+    if(i%2===1)s+=`<rect x="${gx}" y="${T}" width="${gw}" height="${H-T-B}" fill="#f3f9f8" opacity=".7"/>`;
+    series.forEach((se,j)=>{const v=se.values[i];if(v==null)return;const x=x0+j*bw+gap/2,w=bw-gap,yy=y(v);
+      s+=`<rect x="${x.toFixed(1)}" y="${yy.toFixed(1)}" width="${w.toFixed(1)}" height="${Math.max(1.5,y(0)-yy).toFixed(1)}" rx="${Math.min(4,w/3).toFixed(1)}" fill="${se.color}"><title>${se.name} · ${lb}: ${fmt(v)} m³</title></rect>`});
+    s+=`<text x="${gx+gw/2}" y="${H-B+18}" text-anchor="middle">${lb}</text>`});
+  return s+"</svg>";
+}
+let hiddenYears=new Set();
 function lineChart({labels,series,title}){
   const W=760,H=290,L=58,R=16,T=18,B=30,n=labels.length;
   const all=series.flatMap(s=>s.values).filter(v=>v!=null);
@@ -827,12 +846,14 @@ function yearStat(list,y){let t=0,ms=new Set();list.forEach(h=>{for(let m=1;m<=1
 function renderComp(){
   let a=+$("cFrom").value,b=+$("cTo").value;if(a>b)[a,b]=[b,a];
   const sel=$("cSede").value,list=sel?[sel]:HSEDES;const yrs=YEARS.filter(y=>y>=a&&y<=b);
-  const YC=["#9fc9e8","#7fd1b9","#c3a8f0","#f3b46c","#e893ad","#8fd08f","#77c7da","#e0c060","#a7b4c2","#45a2e3","#1f8f6c"];
-  const series=yrs.map((y,i)=>({name:String(y),color:i===yrs.length-1?"#2b84c2":YC[i%YC.length],values:MES3.map((_,m)=>{let t=0,any=false;list.forEach(h=>{const v=val(h,y,m+1);if(v!=null){t+=v;any=true}});return any?t:null})}));
-  $("lChart").innerHTML=lineChart({labels:MES3,series,title:"Consumo mensual por año"});
+  const YC=["#b9dcf2","#8fd8bf","#c9b3f2","#f4c07f","#eba3bb","#9bd69b","#8fd0e0","#e6c96d","#b6c2cd","#7fb8e8","#4fbf8a"];
+  const series=yrs.map((y,i)=>({name:String(y),color:i===yrs.length-1?"#2b84c2":YC[(YEARS.indexOf(y))%YC.length],values:MES3.map((_,m)=>{let t=0,any=false;list.forEach(h=>{const v=val(h,y,m+1);if(v!=null){t+=v;any=true}});return any?t:null})}));
+  const shown=series.filter(s=>!hiddenYears.has(s.name));
+  $("lChart").innerHTML=groupedBars({labels:MES3,series:shown,title:"Consumo mensual por año"});
   $("lTitle").textContent=`Consumo mensual por año · ${sel||"todas las sedes"} (m³)`;
-  $("lSub").textContent=`${a}–${b} · la línea más gruesa es el año más reciente`;
-  $("lLegend").innerHTML=series.map(s=>`<span><i style="background:${s.color}"></i>${s.name}</span>`).join("");
+  $("lSub").textContent=`${a}–${b} · cada mes muestra una columna por año · toca un año en la leyenda para ocultarlo o mostrarlo`;
+  const lg=$("lLegend");lg.textContent="";series.forEach(s=>{const b=el("button","yt"+(hiddenYears.has(s.name)?" off":""));b.type="button";b.setAttribute("aria-pressed",!hiddenYears.has(s.name));
+    const i=el("i");i.style.background=s.color;b.append(i,s.name);b.onclick=()=>{hiddenYears.has(s.name)?hiddenYears.delete(s.name):(shown.length>1&&hiddenYears.add(s.name));renderComp()};lg.append(b)});
   const yc=$("ycards");yc.textContent="";let prevT=null;
   const before=yearStat(list,a-1);if(before.n===12)prevT=before.t;
   yrs.forEach(y=>{const s=yearStat(list,y);const c=el("div","yc");c.append(el("span",null,String(y)+(s.n&&s.n<12?` · ${s.n} meses`:"")),el("b","num",s.n?fmt(s.t):"—"));
