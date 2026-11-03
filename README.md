@@ -12,9 +12,9 @@ Página: https://nksc1412-stack.github.io/nksc1214/ptap/
 
 Los datos de los seguimientos vienen dentro del archivo `ptap/index.html`. Lo que se edite en la página se guarda solo en el navegador de quien lo edita; para que todos vean un cambio hay que actualizar ese archivo.
 
-## Consumo de agua y concesiones Corpourabá
+## Consumo de agua y reporte a Corpourabá
 
-Consumo mensual de agua de los pozos profundos por sede, comparativo anual y estado de las concesiones de Corpourabá, con los datos desde 2016.
+Consumo mensual de agua de los pozos profundos por sede, comparativo anual, estado del reporte del mes y concesiones de Corpourabá.
 Página: https://nksc1412-stack.github.io/nksc1214/consumo-agua/
 
-Los datos vienen dentro de `consumo-agua/index.html` (tomados de la BD Consumos de agua). Para agregar meses nuevos hay que actualizar ese archivo.
+Para ver un mes nuevo, toca **Cargar Excel** en la página y elige la BD Consumos de agua actualizada. Los datos quedan guardados solo en ese navegador. Los usuarios y contraseñas de la plataforma de tasas se leen del Excel al cargarlo y no están publicados en este repositorio. Para que todos vean el mes nuevo sin cargar el Excel, hay que actualizar `consumo-agua/index.html`.
